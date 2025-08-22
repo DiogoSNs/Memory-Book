@@ -85,7 +85,7 @@ mapa-memorias-afetivas/
 ## 🛠️ Como Rodar o Projeto
 ```bash
 # Clone o repositório
-git clone [https://github.com/seu-usuario/mapa-memorias-afetivas.git](https://github.com/DiogoSNs/Memories-Book)
+git clone https://github.com/DiogoSNs/Memories-Book.git
 
 # Entre na pasta
 cd mapa-memorias-afetivas
