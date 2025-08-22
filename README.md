@@ -43,6 +43,7 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 ---
 ## 🏗️ Arquitetura Inicial do Projeto
 
+```plaintext
 mapa-memorias-afetivas/
 │
 ├── backend/                  # API e regras de negócio
