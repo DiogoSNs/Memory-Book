@@ -68,7 +68,7 @@ mapa-memorias-afetivas/
 │
 ├── README.md                 # Documentação do projeto
 └── docker-compose.yml        # (opcional) para rodar backend + banco
-
+```
 ---
 
 ## 🔄 Fluxo de Funcionamento
