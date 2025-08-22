@@ -41,6 +41,40 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 - Opção de exportar sua linha do tempo como PDF ou vídeo.  
 
 ---
+## 🏗️ Arquitetura Inicial do Projeto
+
+mapa-memorias-afetivas/
+│
+├── backend/                  # API e regras de negócio
+│   ├── server.js             # Ponto de entrada do servidor Express
+│   ├── db.js                 # Conexão com o banco de dados PostgreSQL
+│   ├── routes/               # Rotas da API
+│   │   └── memories.js       # Rotas para CRUD de memórias
+│   ├── models/               # Modelos de dados (opcional, para escalar)
+│   │   └── memory.js
+│   └── package.json          # Dependências do backend
+│
+├── frontend/                 # Interface do usuário (React + Vite)
+│   ├── src/
+│   │   ├── App.jsx           # Componente raiz
+│   │   ├── api.js            # Configuração Axios (comunicação com backend)
+│   │   ├── components/       
+│   │   │   ├── MapView.jsx   # Mapa interativo (Leaflet)
+│   │   │   └── MemoryForm.jsx# Formulário (futuro: adicionar fotos/áudios)
+│   │   └── assets/           # Imagens, ícones, etc.
+│   ├── index.html            # Página principal
+│   └── package.json          # Dependências do frontend
+│
+├── README.md                 # Documentação do projeto
+└── docker-compose.yml        # (opcional) para rodar backend + banco
+
+---
+
+## 🔄 Fluxo de Funcionamento
+
+- Usuário -> Frontend (React + Leaflet) -> API Backend (Express) -> Banco (PostgreSQL)
+  
+---
 
 ## 📷 Protótipo (Preview)
 *(Aqui você pode colocar imagens do protótipo no Figma ou prints de tela do app)*  
