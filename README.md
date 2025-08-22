@@ -23,8 +23,8 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 ---
 
 ## 📌 Funcionalidades (Backlog Inicial)
-- [x] Mapa interativo base  
-- [x] Adicionar marcador manual  
+- [ ] Mapa interativo base  
+- [ ] Adicionar marcador manual  
 - [ ] Autenticação de usuários (login/cadastro)  
 - [ ] Salvar memórias no banco de dados  
 - [ ] Upload de fotos e áudios  
