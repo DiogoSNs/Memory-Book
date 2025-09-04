@@ -36,9 +36,9 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 
 ## 🎨 Diferenciais
 - Design minimalista e acolhedor.  
-- Sons/cores diferentes para cada tipo de lembrança.  
+- Cores diferentes para cada tipo de lembrança.  
 - Animações suaves ao abrir memórias.  
-- Opção de exportar sua linha do tempo como PDF ou vídeo.  
+- Opção de exportar sua linha do tempo como PDF.  
 
 ---
 ## 🏗️ Arquitetura Inicial do Projeto
