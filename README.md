@@ -73,7 +73,10 @@ mapa-memorias-afetivas/
 ---
 
 ## 📷 Protótipo (Preview)
-*(Aqui você pode colocar imagens do protótipo no Figma ou prints de tela do app)*  
+
+<img src="img/img1.png" alt="Protótipo 1" width="300"/>
+<img src="img/img2.png" alt="Protótipo 2" width="300"/>
+<img src="img/img3.png" alt="Protótipo 3" width="300"/>
 
 ---
 
