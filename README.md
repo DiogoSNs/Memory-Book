@@ -14,12 +14,7 @@ O **Mapa de Memórias Afetivas** é um aplicativo web que permite:
 - 🤝 Compartilhar com amigos, família ou casal.  
 
 Mais do que um CRUD, é um espaço digital poético para revisitar histórias.  
-
----
-
-## 🚀 Tecnologias Utilizadas
  
-
 ---
 
 ## 📌 Funcionalidades (Backlog Inicial)
