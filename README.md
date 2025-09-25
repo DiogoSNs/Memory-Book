@@ -74,7 +74,6 @@ mapa-memorias-afetivas/
 
 ## 📷 Protótipo (Preview)
 
-## 📷 Protótipo (Preview)
 
 ![Protótipo 1](img/img1.jpg)
 ![Protótipo 2](img/img2.png)
