@@ -50,7 +50,7 @@ mapa-memorias-afetivas/
 │   │   └── memory.js
 │   └── package.json          # Dependências do backend
 │
-├── frontend/                 # Interface do usuário (React + Vite)
+├── frontend/                 # Interface do usuário (React)
 │   ├── src/
 │   │   ├── App.jsx           # Componente raiz
 │   │   ├── api.js            # Configuração Axios (comunicação com backend)
