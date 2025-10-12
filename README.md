@@ -205,8 +205,7 @@ Ferramentas auxiliares como **Prettier** serão utilizadas para padronização.
 
 ### 🔒 Padrões Não Funcionais
 - **Segurança:** evitar exposição de dados sensíveis e uso de autenticação segura.  
-- **Usabilidade:** interface intuitiva, responsiva e com feedback visual claro.  
-- **Desempenho:** tempo de resposta da API inferior a 3 segundos.  
+- **Usabilidade:** interface intuitiva, responsiva e com feedback visual claro.   
 - **Confiabilidade:** persistência garantida em banco de dados relacional.  
 
 ---
