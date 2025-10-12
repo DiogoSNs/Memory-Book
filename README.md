@@ -68,7 +68,7 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 
 🔹 **Padrão escolhido:** Arquitetura em Camadas com o padrão **MVC (Model–View–Controller)**
 
-### Justificativa (resumida)
+### Justificativa
 
 | Critério | Decisão / Benefício |
 |---|---|
