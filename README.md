@@ -112,9 +112,7 @@ mapa-memorias-afetivas/
 └── docker-compose.yml        # (opcional) para rodar backend + banco
 ```
 
-### Fluxo e Conexão entre as Camadas (visão simplificada)
-
-### Visão Geral da Arquitetura
+### Fluxo e Conexão entre as Camadas
 
 ```
 ┌──────────────────────────────┐
@@ -145,7 +143,7 @@ mapa-memorias-afetivas/
 ```
 ---
 
-## 4. Especificação por Camada (Rápida)
+## Especificação por Camada
 
 - **Apresentação (View)**
   - Função: UI (mapa, formulários, listagens).
