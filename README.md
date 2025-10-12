@@ -114,15 +114,35 @@ mapa-memorias-afetivas/
 
 ### Fluxo e Conexão entre as Camadas (visão simplificada)
 
-- **Frontend (React)**
-  - Componente principal (`App.jsx`) consome a API via `api.js` (Axios) e exibe mapa/menus.
-- **Backend (Node.js + Express)**
-  - Rotas → Controllers → Models (Sequelize) → DB.
-- **Banco (PostgreSQL + PostGIS)**
-  - Tabela `memories` com colunas: `id`, `titulo`, `descricao`, `lat`, `long`, `data`, `tags`, `media_refs`.
+### Visão Geral da Arquitetura
 
-Dados trafegam em JSON (Axios) e consultas geoespaciais são feitas via SQL/PostGIS.
-
+```
+┌──────────────────────────────┐
+│ Apresentação                 │
+│ (Frontend - React + Leaflet) │
+│ - Interface SPA              │
+│ - Exibição e criação de      │
+│   memórias no mapa           │
+└───────────────▲──────────────┘
+                │
+    Comunicação via API REST (JSON)
+                │
+┌───────────────▼──────────────┐
+│ Lógica de Negócio            │
+│ (Backend - Node.js / Express)│
+│ - Controllers e validações   │
+│ - Regras de CRUD             │
+│ - Integração com banco       │
+└───────────────▲──────────────┘
+                │
+┌───────────────▼──────────────┐
+│ Persistência de Dados        │
+│ (PostgreSQL + Sequelize)     │
+│ - Tabelas: Usuários,         │
+│   Memórias, Mídias, Tags     │
+│ - Extensão PostGIS (geo)     │
+└──────────────────────────────┘
+```
 ---
 
 ## 4. Especificação por Camada (Rápida)
