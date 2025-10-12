@@ -56,70 +56,75 @@ A arquitetura precisa ser modular, escalável e preparada para futuras funcional
 
 ### Requisitos Não Funcionais (RNF)
 
-- **RNF01:** Interface responsiva e mobile-friendly.
-- **RNF02:** Persistência em banco relacional (PostgreSQL).
-- **RNF03:** Tempo de resposta ≤ 3 s.
-- **RNF04:** Interface simples e intuitiva.
-- **RNF05 (futuro):** Autenticação segura e controle de acesso.
+| Código | Descrição |
+|:-------|:-----------|
+| **RNF01** | Interface responsiva e intuitiva (mobile e desktop). |
+| **RNF02** | Persistência de dados em banco relacional (PostgreSQL). |
+| **RNF03** | Tempo médio de resposta ≤ 3 segundos. |
+| **RNF04** | Arquitetura modular e de fácil manutenção. |
+| **RNF05 (futuro)** | Autenticação e controle de acesso seguro. |
 
 ### Implicações Arquiteturais
 
-- Separação clara entre cliente e servidor.
-- Baixo acoplamento entre camadas, permitindo expansão futura (upload de mídia, login, etc.).
-- Uso de dados geográficos exige suporte geoespacial — **PostGIS** (extensão do PostgreSQL) recomendado.
-- Performance e organização são essenciais — recomenda-se arquitetura em camadas (MVC).
+- O sistema deve manter **fronteiras claras entre frontend, backend e banco de dados**, evitando acoplamento.  
+- Deve permitir **crescimento incremental**, com adição de novos módulos (upload, login).  
+- Requer **API leve e responsiva** para comunicação em tempo real com o mapa.  
+- A estrutura precisa facilitar **testes unitários e manutenibilidade** do código.
 
 ---
 
 ## Escolha do Padrão de Arquitetura Base
 
-🔹 **Padrão escolhido:** Arquitetura em Camadas com o padrão **MVC (Model–View–Controller)**
+### Padrão Arquitetural Adotado
 
-### Justificativa
+**🧱 Arquitetura Cliente-Servidor em Camadas com o padrão MVC (Model-View-Controller)**
 
-| Critério | Decisão / Benefício |
-|---|---|
-| Organização modular | Camadas separam responsabilidades entre interface (frontend), lógica (controllers) e dados (models/db). |
-| Aderência aos RF/RNF | Permite desenvolvimento paralelo e atende requisitos de responsividade e manutenibilidade. |
-| Escalabilidade futura | Autenticação e upload de mídias podem ser adicionados sem reestruturar a base. |
-| Reuso e testabilidade | Controllers e Models testáveis isoladamente. |
-| Desempenho e segurança | Backend (Express/Node) como camada intermediária para regras e proteção. |
-| Integração eficiente | API RESTful conecta frontend React ao backend Node.js via JSON. |
+| Critério | Decisão | Benefício |
+|:----------|:--------|:----------|
+| **Organização e clareza** | Uso do padrão **MVC** no backend | Facilita manutenção e entendimento do código. |
+| **Escalabilidade** | Separação entre frontend e backend | Permite evolução independente de cada camada. |
+| **Desempenho** | API RESTful leve (Express + JSON) | Garante comunicação rápida e flexível. |
+| **Manutenibilidade** | Arquitetura em camadas (View, Controller, Model, DB) | Possibilita substituição ou melhoria de módulos sem impacto global. |
+| **Segurança futura** | Middleware de autenticação | Permite implementar login e permissões (JWT). |
+| **Experiência do usuário** | SPA responsiva (React + Leaflet) | Atualizações dinâmicas e fluídas sem recarregar a página. |
 
-> O padrão MVC em camadas equilibra clareza estrutural, facilidade de manutenção e flexibilidade para expansão.
+> Essa abordagem combina a separação de responsabilidades do **MVC** com a distribuição lógica do **cliente-servidor**, o que garante escalabilidade e organização.
 
+### Justificativa da Escolha
+
+A arquitetura **Cliente-Servidor em Camadas com MVC** foi escolhida porque equilibra **simplicidade e extensibilidade**.  
+Ela permite o isolamento entre interface, regras de negócio e persistência de dados, o que torna o sistema mais **robusto, testável e escalável**.  
+
+Além disso, esse padrão é amplamente recomendado para aplicações **web distribuídas**, conforme **Sommerville (2019)** e **Pressman (2016)**, pois facilita a **manutenibilidade e modularidade**, reduzindo riscos durante a evolução do software.  
+
+> Em resumo, essa escolha garante uma base sólida para crescimento incremental — sem comprometer desempenho ou clareza estrutural.
 ---
 
-## Conexão da Proposta com o Projeto — Estrutura Inicial
+## Especificação Técnica e Estrutura
+### Estrutura de Diretórios
 
 ```
 mapa-memorias-afetivas/
 │
-├── backend/                  # API e regras de negócio
-│   ├── server.js             # Ponto de entrada do servidor Express
-│   ├── db.js                 # Conexão com o banco de dados PostgreSQL
-│   ├── routes/               # Rotas da API
-│   │   └── memories.js       # Rotas para CRUD de memórias
-│   ├── models/               # Modelos de dados (opcional, para escalar)
-│   │   └── memory.js
-│   └── package.json          # Dependências do backend
+├── frontend/ # Camada de Apresentação (React)
+│ ├── src/
+│ │ ├── components/ # MapView, MemoryForm, MemoryList
+│ │ ├── services/ # API.js (Axios)
+│ │ └── assets/ # Ícones, imagens
+│ └── package.json
 │
-├── frontend/                 # Interface do usuário (React)
-│   ├── src/
-│   │   ├── App.jsx           # Componente raiz
-│   │   ├── api.js            # Configuração Axios (comunicação com backend)
-│   │   ├── components/
-│   │   │   ├── MapView.jsx   # Mapa interativo (Leaflet)
-│   │   │   └── MemoryForm.jsx# Formulário (futuro: adicionar fotos/áudios)
-│   │   └── assets/           # Imagens, ícones, etc.
-│   ├── index.html            # Página principal
-│   └── package.json          # Dependências do frontend
+├── backend/ # Camada de Aplicação (Node/Express)
+│ ├── routes/ # Rotas REST (memories, users)
+│ ├── controllers/ # Lógica de negócio
+│ ├── models/ # Estrutura ORM (Sequelize)
+│ ├── db.js # Conexão PostgreSQL
+│ └── server.js # Inicialização da API
 │
-├── README.md                 # Documentação do projeto
-└── docker-compose.yml        # (opcional) para rodar backend + banco
+└── docker-compose.yml # Integração backend + banco
 ```
 
-### Fluxo e Conexão entre as Camadas
+## Conexão da Proposta com o Projeto *Memory Book*
+### Visão Geral da Arquitetura
 
 ```
 ┌──────────────────────────────┐
@@ -148,62 +153,18 @@ mapa-memorias-afetivas/
 │ - Extensão PostGIS (geo)     │
 └──────────────────────────────┘
 ```
----
+### Relação com os Requisitos
 
-## Especificação por Camada
+| Requisito | Solução Arquitetural |
+|:-----------|:---------------------|
+| RF01–RF03 | Implementados via rotas CRUD (Express) e renderização dinâmica (React + Leaflet). |
+| RF04 | Controlador gera links únicos ou QR Codes para compartilhamento. |
+| RF05 | Planejado via integração com serviços externos (AWS S3 / Firebase Storage). |
+| RNF01 | SPA responsiva garante compatibilidade entre dispositivos. |
+| RNF02 | PostgreSQL assegura integridade e persistência de dados. |
+| RNF03 | API leve com cache local e consultas otimizadas. |
+| RNF04 | Separação entre camadas reduz acoplamento e facilita manutenção. |
 
-- **Apresentação (View)**
-  - Função: UI (mapa, formulários, listagens).
-  - Tecnologias: React.js + Leaflet.js + Axios.
-
-- **Controle (Controller)**
-  - Função: interpretar requisições, validação e orquestração.
-  - Tecnologias: Node.js + Express.js.
-
-- **Modelo (Model)**
-  - Função: definir estruturas e persistência.
-  - Tecnologias: Sequelize ORM + PostgreSQL.
-
-- **Banco de Dados**
-  - Função: armazenar memórias e coordenadas.
-  - Tecnologias: PostgreSQL + PostGIS.
-
-- **Infraestrutura (opcional)**
-  - Docker + docker-compose para ambiente local padronizado.
-
-- **Segurança (futuro)**
-  - JWT / OAuth2 para autenticação e controle de acesso.
-
-- **Integrações (futuro)**
-  - Armazenamento de mídia: AWS S3 ou Firebase Storage.
-
----
-
-## 🧱 Decisões Arquiteturais Fundamentais
-
-- **MVC em Camadas** — separação de responsabilidades, facilita manutenção e testes.
-- **API RESTful** — comunicação leve e padrão entre frontend e backend.
-- **PostgreSQL + PostGIS** — suporte geoespacial nativo, ideal para buscas por proximidade/área.
-- **Frontend desacoplado (SPA)** — interface dinâmica e responsiva.
-- **Uso opcional de Docker** — padroniza ambiente de desenvolvimento / CI.
-- **Extensibilidade** — arquitetura pensada para evoluir com autenticação e mídia.
-
----
-
-## Observações e Próximos Passos Recomendados
-
-1. **Modelagem detalhada do banco** — definir colunas, índices geoespaciais e políticas de particionamento/retenção.
-2. **Contrato da API (OpenAPI/Swagger)** — documentar endpoints para front/back integrados.
-3. **Plano de autenticação (MVP vs Futuro)** — decidir se o MVP terá login ou será público inicialmente.
-4. **Estratégia de armazenamento de mídia** — interna (DB/FS) vs externa (S3/Firebase) e impacto de custos.
-5. **Testes & CI** — pipeline básico (lint, unit tests, migration tests) e deploy automatizado.
-
----
----
-## 🔄 Fluxo de Funcionamento
-
-- Usuário -> Frontend (React + Leaflet) -> API Backend (Express) -> Banco (PostgreSQL)
-  
 ---
 
 ## 📷 Protótipo (Preview)
@@ -213,8 +174,6 @@ mapa-memorias-afetivas/
 ![Protótipo 2](img/img2.png)
 ![Protótipo 3](img/img3.jpg)
 
-
----
 ---
 
 ## 🧩 Plano de Gerenciamento de Qualidade
