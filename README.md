@@ -36,34 +36,86 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 - Opção de exportar sua linha do tempo.  
 
 ---
-## 🏗️ Arquitetura Inicial do Projeto
+## 🧩 Análise dos Requisitos do Projeto
+Requisitos Funcionais Principais (RF):
 
-```plaintext
+RF01–RF03: Criar, visualizar, editar e excluir memórias geolocalizadas.
+RF04: Filtrar memórias por data, tag ou tipo de mídia.
+RF05: Compartilhar memórias via link ou QR Code.
+RF06 (futuro): Anexar mídias (fotos, vídeos e áudios).
+
+Requisitos Não Funcionais (RNF):
+
+RNF01: Interface responsiva e mobile-friendly.
+RNF02: Persistência em banco relacional (PostgreSQL).
+RNF03: Tempo de resposta ≤ 3 s.
+RNF04: Interface simples e intuitiva.
+RNF05 (futuro): Autenticação segura e controle de acesso.
+
+Implicações Arquiteturais:
+
+O projeto precisa de separação clara entre cliente e servidor.
+Exige baixo acoplamento entre as camadas, permitindo expansão futura (ex.: upload de mídia, login).
+O uso de dados geográficos (mapa) sugere o uso de PostGIS (extensão do PostgreSQL).
+Performance e organização são essenciais — recomendando MVC em camadas.
+
+2. Escolha e Justificativa do Padrão de Arquitetura Base
+🔹 Padrão escolhido: Arquitetura em Camadas com o padrão MVC (Model–View–Controller)
+Justificativa:
+CritérioDecisão / BenefícioOrganização modularA estrutura em camadas separa responsabilidades entre interface (frontend), lógica (controllers) e dados (models/db).Aderência aos RF/RNFPermite desenvolvimento paralelo entre equipes (frontend e backend) e cumpre os RNFs de responsividade e manutenibilidade.Escalabilidade futuraA adição de autenticação e upload de mídias pode ser feita sem alterar a arquitetura existente.Reuso e testabilidadeControllers e Models podem ser testados isoladamente.Desempenho e segurançaO backend Express funciona como camada intermediária de controle e segurança.Integração eficienteAPI RESTful conecta frontend React e backend Node.js com trocas leves em JSON.
+O padrão MVC em camadas é ideal para o Memory Book pois combina clareza estrutural, facilidade de manutenção e flexibilidade para expansão.
+3. Conexão da Proposta com o Projeto Memory Book
+Abaixo, a arquitetura real inicial do projeto, já estruturada conforme boas práticas de camadas e MVC:
 mapa-memorias-afetivas/
 │
-├── backend/                  # API e regras de negócio
+├── backend/                  # API e regras de negócio (Controller + Model)
 │   ├── server.js             # Ponto de entrada do servidor Express
 │   ├── db.js                 # Conexão com o banco de dados PostgreSQL
-│   ├── routes/               # Rotas da API
-│   │   └── memories.js       # Rotas para CRUD de memórias
-│   ├── models/               # Modelos de dados (opcional, para escalar)
-│   │   └── memory.js
+│   ├── routes/               # Rotas da API (Camada de Controle)
+│   │   └── memories.js       # Endpoints CRUD de memórias
+│   ├── models/               # Modelos de dados (Camada de Modelo)
+│   │   └── memory.js         # Estrutura da entidade "Memória"
 │   └── package.json          # Dependências do backend
 │
-├── frontend/                 # Interface do usuário (React)
+├── frontend/                 # Interface do usuário (Camada de Visão)
 │   ├── src/
-│   │   ├── App.jsx           # Componente raiz
+│   │   ├── App.jsx           # Componente raiz da aplicação React
 │   │   ├── api.js            # Configuração Axios (comunicação com backend)
-│   │   ├── components/       
+│   │   ├── components/
 │   │   │   ├── MapView.jsx   # Mapa interativo (Leaflet)
-│   │   │   └── MemoryForm.jsx# Formulário (futuro: adicionar fotos/áudios)
-│   │   └── assets/           # Imagens, ícones, etc.
+│   │   │   └── MemoryForm.jsx# Formulário (futuro: fotos/áudios)
+│   │   └── assets/           # Ícones, imagens, etc.
 │   ├── index.html            # Página principal
 │   └── package.json          # Dependências do frontend
 │
 ├── README.md                 # Documentação do projeto
-└── docker-compose.yml        # (opcional) para rodar backend + banco
-```
+└── docker-compose.yml        # (Opcional) Executa backend + banco PostgreSQL + pgAdmin
+Fluxo e Conexão entre as Camadas
+Visão geral da arquitetura (camadas e fluxo de dados):
+┌────────────────────────────────────────────────┐
+│              Frontend (React)                   │
+│  - App.jsx / MapView.jsx / MemoryForm.jsx       │
+│  - Consome API REST via Axios (api.js)          │
+│  - Exibe mapa interativo e formulários          │
+└───────────────▲─────────────────────────────────┘
+                │  JSON (Axios)
+┌───────────────▼─────────────────────────────────┐
+│                Backend (Node.js + Express)      │
+│  - Rotas (routes/memories.js)                   │
+│  - Controladores processam requests e responses │
+│  - Models (models/memory.js) definem entidades  │
+│  - db.js conecta ao PostgreSQL via Sequelize    │
+└───────────────▲─────────────────────────────────┘
+                │  SQL Queries
+┌───────────────▼─────────────────────────────────┐
+│          Banco de Dados (PostgreSQL + PostGIS)  │
+│  - Tabela: memórias (id, título, descrição, lat, long, data) │
+│  - Suporte geoespacial para consultas por local  │
+└─────────────────────────────────────────────────┘
+4. Especificação e Documentação da Proposta
+CamadaFunçãoTecnologiasApresentação (View)Interface com o usuário: mapa, formulários, visualização de memórias.React.js + Leaflet.js + AxiosControle (Controller)Interpreta requisições e chama o Model.Node.js + Express.js (rotas em routes/memories.js)Modelo (Model)Define estrutura dos dados e persistência.Sequelize ORM + PostgreSQLBanco de DadosArmazena memórias e coordenadas.PostgreSQL + extensão PostGISInfraestrutura (opcional)Gerencia containers e dependências.Docker + docker-composeCamada de Segurança (futuro)Controle de acesso e autenticação.JWT / OAuth2Integrações (futuro)Upload e armazenamento de mídias.AWS S3 / Firebase Storage
+Decisões Arquiteturais Fundamentais
+DecisãoJustificativaMVC em CamadasSepara responsabilidades, facilita manutenção e testes.API RESTfulComunicação leve entre frontend e backend.Banco PostgreSQL + PostGISSuporte geoespacial nativo, ideal para dados de mapa.Frontend desacoplado (SPA)Interface dinâmica, responsiva e independente.Uso de Docker (opcional)Facilita ambiente unificado de desenvolvimento.Extensível para autenticação e mídiasGarante evolução modular do projeto.
 ---
 
 ## 🔄 Fluxo de Funcionamento
@@ -159,3 +211,4 @@ npm install
 
 # Rode o servidor de desenvolvimento
 npm run dev
+
