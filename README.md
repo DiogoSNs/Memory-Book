@@ -77,7 +77,7 @@ A arquitetura precisa ser modular, escalável e preparada para futuras funcional
 
 ### Padrão Arquitetural Adotado
 
-**Arquitetura Cliente-Servidor em Camadas com o padrão MVC (Model-View-Controller)**
+** Arquitetura Cliente-Servidor em Camadas com o padrão MVC (Model-View-Controller)**
 
 | Critério | Decisão | Benefício |
 |:----------|:--------|:----------|
