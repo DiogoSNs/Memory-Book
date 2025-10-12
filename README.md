@@ -97,7 +97,7 @@ Ela permite o isolamento entre interface, regras de negócio e persistência de 
 
 Além disso, esse padrão é amplamente recomendado para aplicações **web distribuídas**, conforme **Sommerville (2019)** e **Pressman (2016)**, pois facilita a **manutenibilidade e modularidade**, reduzindo riscos durante a evolução do software.  
 
-> Em resumo, essa escolha garante uma base sólida para crescimento incremental — sem comprometer desempenho ou clareza estrutural.
+> Em resumo, essa escolha garante uma base sólida para crescimento incremental, sem comprometer desempenho ou clareza estrutural.
 ---
 
 ## Especificação Técnica e Estrutura
