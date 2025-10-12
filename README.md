@@ -36,275 +36,141 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 - Opção de exportar sua linha do tempo.  
 
 ---
-# Locadora de Carros / Anotações do Canal 🎓┃𝗘𝘀𝗰𝗼𝗹𝗮
+# 🧩 Proposta de Arquitetura — Sistema *Memory Book*
 
-> Este documento reúne o conteúdo compartilhado no canal, incluindo diagramas conceituais, exemplo de GUI em Java, captura de imagens/prints e um guia rápido de fluxo de trabalho Git e arquitetura do projeto *Memory Book*.
+## Análise dos Requisitos do Projeto
 
----
+### Requisitos Funcionais Principais (RF)
 
-## Índice
+- **RF01–RF03:** Criar, visualizar, editar e excluir memórias geolocalizadas.
+- **RF04:** Filtrar memórias por data, tag ou tipo de mídia.
+- **RF05:** Compartilhar memórias via link ou QR Code.
+- **RF06 (futuro):** Anexar mídias (fotos, vídeos e áudios).
 
-1. [Resumo](#resumo)
-2. [Diagrama de Classes](#diagrama-de-classes)
-3. [Diagrama de Casos de Uso](#diagrama-de-casos-de-uso)
-4. [Diagrama de Sequência — Processo de Aluguel](#diagrama-de-sequencia--processo-de-aluguel)
-5. [Exemplo de Interface GUI (Java Swing)](#exemplo-de-interface-gui-java-swing)
-6. [Imagens / Prints](#imagens--prints)
-7. [Guia Git — Fluxo rápido e comandos úteis](#guia-git---fluxo-rapido-e-comandos-uteis)
-8. [Proposta de Arquitetura — *Memory Book* (resumo)](#proposta-de-arquitetura--memory-book-resumo)
+### Requisitos Não Funcionais (RNF)
 
----
+- **RNF01:** Interface responsiva e mobile-friendly.
+- **RNF02:** Persistência em banco relacional (PostgreSQL).
+- **RNF03:** Tempo de resposta ≤ 3 s.
+- **RNF04:** Interface simples e intuitiva.
+- **RNF05 (futuro):** Autenticação segura e controle de acesso.
 
-## Resumo
+### Implicações Arquiteturais
 
-Anotações extraídas do canal (mensagens de *Pietra*, *Dark* e contribuições posteriores) com foco em um sistema de locadora de carros e trechos de documentação/arquitetura do projeto *Memory Book*.
-
----
-
-## Diagrama de Classes
-
-**Classes principais**
-
-- **Cliente**
-  - Atributos: `id`, `nome`, `CPF`, `email`
-  - Métodos: `realizarLocacao()`, `consultarHistorico()`
-
-- **Carro**
-  - Atributos: `id`, `modelo`, `placa`, `ano`, `valorDiaria`, `disponivel`
-  - Métodos: `verificarDisponibilidade()`, `atualizarStatus()`
-
-- **Locacao**
-  - Atributos: `id`, `dataInicio`, `dataFim`, `valorTotal`
-  - Métodos: `calcularValorTotal()`, `finalizarLocacao()`
-
-- **Pagamento**
-  - Atributos: `id`, `metodo`, `valor`, `status`
-  - Métodos: `processarPagamento()`, `confirmarPagamento()`
-
-- **Funcionario**
-  - Atributos: `id`, `nome`, `cargo`
-  - Métodos: `cadastrarCarro()`, `gerarRelatorio()`
-
-**Relações**
-
-- Cliente — Locacao: 1 cliente pode ter várias locações.
-- Locacao agrega Carro e Pagamento (1 locação tem 1 carro e 1 pagamento associado).
-- Funcionario gerencia Carro e Locacao.
+- Separação clara entre cliente e servidor.
+- Baixo acoplamento entre camadas, permitindo expansão futura (upload de mídia, login, etc.).
+- Uso de dados geográficos exige suporte geoespacial — **PostGIS** (extensão do PostgreSQL) recomendado.
+- Performance e organização são essenciais — recomenda-se arquitetura em camadas (MVC).
 
 ---
 
-## Diagrama de Casos de Uso
+## Escolha do Padrão de Arquitetura Base
 
-**Atores**: Cliente, Funcionário.
+🔹 **Padrão escolhido:** Arquitetura em Camadas com o padrão **MVC (Model–View–Controller)**
 
-**Casos de Uso (resumido)**
+### Justificativa (resumida)
 
-- **Cliente**: "Alugar Carro", "Consultar Disponibilidade", "Cancelar Locação".
-- **Funcionário**: "Cadastrar Carro", "Registrar Devolução", "Gerar Relatório".
+| Critério | Decisão / Benefício |
+|---|---|
+| Organização modular | Camadas separam responsabilidades entre interface (frontend), lógica (controllers) e dados (models/db). |
+| Aderência aos RF/RNF | Permite desenvolvimento paralelo e atende requisitos de responsividade e manutenibilidade. |
+| Escalabilidade futura | Autenticação e upload de mídias podem ser adicionados sem reestruturar a base. |
+| Reuso e testabilidade | Controllers e Models testáveis isoladamente. |
+| Desempenho e segurança | Backend (Express/Node) como camada intermediária para regras e proteção. |
+| Integração eficiente | API RESTful conecta frontend React ao backend Node.js via JSON. |
 
-**Fluxo principal — Alugar Carro**
-
-1. Cliente seleciona carro
-2. Sistema verifica disponibilidade
-3. Sistema cria locação
-4. Sistema processa pagamento
-5. Confirmação exibida ao cliente
-
----
-
-## Diagrama de Sequência — Processo de Aluguel
-
-**Interações principais**
-
-1. Cliente solicita aluguel
-2. Sistema chama `Carro.verificarDisponibilidade()`
-3. Sistema cria nova `Locacao`
-4. Sistema chama `Locacao.calcularValorTotal()`
-5. Sistema inicia `Pagamento.processarPagamento()`
-6. Retorna confirmação ao cliente
+> O padrão MVC em camadas equilibra clareza estrutural, facilidade de manutenção e flexibilidade para expansão.
 
 ---
 
-## Exemplo de Interface GUI (Java Swing)
-
-Trecho de código compartilhado (exemplo mínimo de uma GUI para listar carros e alugar):
-
-```java
-import javax.swing.*;
-import java.awt.event.*;
-
-public class LocadoraGUI {
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Locadora de Carros");
-        frame.setSize(600, 400);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JPanel panel = new JPanel();
-        frame.add(panel);
-        placeComponents(panel);
-
-        frame.setVisible(true);
-    }
-
-    private static void placeComponents(JPanel panel) {
-        panel.setLayout(null);
-
-        // Tabela de carros disponíveis
-        String[] colunas = {"ID", "Modelo", "Placa", "Valor Diária"};
-        Object[][] dados = {{1, "Fiat Argo", "ABC-1234", 150.0}};
-        JTable tabelaCarros = new JTable(dados, colunas);
-        JScrollPane scrollPane = new JScrollPane(tabelaCarros);
-        scrollPane.setBounds(20, 20, 500, 150);
-        panel.add(scrollPane);
-
-        // Botão para alugar
-        JButton alugarButton = new JButton("Alugar Carro");
-        alugarButton.setBounds(20, 200, 120, 30);
-        panel.add(alugarButton);
-
-        // Tratamento de evento
-        alugarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int linhaSelecionada = tabelaCarros.getSelectedRow();
-                if (linhaSelecionada >= 0) {
-                    JOptionPane.showMessageDialog(panel, "Carro alugado com sucesso!");
-                } else {
-                    JOptionPane.showMessageDialog(panel, "Selecione um carro!", "Erro", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-    }
-}
-```
-
----
-
-## Imagens / Prints
-
-O conteúdo original inclui várias imagens compartilhadas em horários diferentes. Recomenda-se adicionar as imagens na pasta `./docs/images/` e referenciá-las aqui, por exemplo:
-
-```markdown
-![Print: Diagrama de Classes](./docs/images/diagrama-classes.png)
-![Print: GUI](./docs/images/gui-example.png)
-```
-
----
-
-## Guia Git — Fluxo rápido e comandos úteis
-
-**Clonar repositório**
-
-```bash
-git clone https://github.com/DiogoSNs/Memory-Book.git
-cd Memory-Book
-```
-
-**Atualizar antes de trabalhar**
-
-```bash
-git pull origin main
-```
-
-**Criar branch por funcionalidade (boa prática)**
-
-```bash
-git checkout main
-git pull origin main
-git checkout -b feature/nome-da-branch
-# depois de trabalhar
-git add .
-git commit -m "feat: descrição do que fez"
-git push origin feature/nome-da-branch
-```
-
-**Ver branches locais e remotas**
-
-```bash
-git branch         # branches locais
-git fetch origin    # busca branches remotas atualizadas
-git branch -r       # lista branches remotas
-```
-
-**Criar cópia local de uma branch remota**
-
-```bash
-git checkout -b feature/nome-da-branch origin/feature/nome-da-branch
-```
-
-**Fluxo ao colaborar no grupo (resumido)**
-
-- Antes de começar a trabalhar na branch:
-  ```bash
-  git checkout feature/nome-da-branch
-  git pull origin feature/nome-da-branch
-  ```
-- Depois de finalizar alterações:
-  ```bash
-  git add .
-  git commit -m "feat: descrição do que fez"
-  git push origin feature/nome-da-branch
-  ```
-
-**Merge para a `main` (opção via terminal)**
-
-```bash
-git checkout main
-git pull origin main
-git merge feature/nome-da-branch
-# resolva conflitos, então:
-git add .
-git commit -m "merge: integra feature XYZ na main"
-git push origin main
-# (opcional) apagar branch
-git branch -d feature/nome-da-branch
-git push origin --delete feature/nome-da-branch
-```
-
----
-
-## Proposta de Arquitetura — *Memory Book* (resumo)
-
-**Visão geral**: sistema web para registrar memórias geolocalizadas com suporte a textos e mídias. Arquitetura sugerida: *MVC em camadas* (Frontend React, Backend Node/Express, PostgreSQL + PostGIS).
-
-**Estrutura inicial de pasta**
+## Conexão da Proposta com o Projeto — Estrutura Inicial
 
 ```
 mapa-memorias-afetivas/
-├── backend/
-│   ├── server.js
-│   ├── db.js
-│   ├── routes/
-│   │   └── memories.js
-│   ├── models/
+├── backend/                  # API e regras de negócio (Controller + Model)
+│   ├── server.js             # Ponto de entrada (Express)
+│   ├── db.js                 # Conexão com PostgreSQL
+│   ├── routes/               # Rotas da API (controllers)
+│   │   └── memories.js       # Endpoints CRUD
+│   ├── controllers/          # Lógica de negócio
+│   ├── models/               # Modelos (Sequelize)
 │   │   └── memory.js
 │   └── package.json
-├── frontend/
+├── frontend/                 # Interface (React)
 │   ├── src/
 │   │   ├── App.jsx
-│   │   ├── api.js
-│   │   └── components/
-│   │       ├── MapView.jsx
-│   │       └── MemoryForm.jsx
+│   │   ├── api.js            # Axios
+│   │   ├── components/
+│   │   │   ├── MapView.jsx
+│   │   │   └── MemoryForm.jsx
+│   │   └── assets/
 │   └── package.json
 ├── README.md
-└── docker-compose.yml
+└── docker-compose.yml       # opcional: backend + postgres + pgadmin
 ```
 
-**Decisões e justificativas (resumido)**
+### Fluxo e Conexão entre as Camadas (visão simplificada)
 
-- **MVC em camadas**: separação clara de responsabilidades, manutenção mais fácil e testes isolados.
-- **API RESTful**: comunicação leve entre frontend e backend (JSON).
-- **PostgreSQL + PostGIS**: suporte geoespacial nativo para consultas por local.
-- **Docker (opcional)**: facilita padronização do ambiente de desenvolvimento.
+- **Frontend (React)**
+  - Componente principal (`App.jsx`) consome a API via `api.js` (Axios) e exibe mapa/menus.
+- **Backend (Node.js + Express)**
+  - Rotas → Controllers → Models (Sequelize) → DB.
+- **Banco (PostgreSQL + PostGIS)**
+  - Tabela `memories` com colunas: `id`, `titulo`, `descricao`, `lat`, `long`, `data`, `tags`, `media_refs`.
+
+Dados trafegam em JSON (Axios) e consultas geoespaciais são feitas via SQL/PostGIS.
 
 ---
 
-## Observações finais
+## 4. Especificação por Camada (Rápida)
 
-- Este README foi montado a partir de várias mensagens e trechos compartilhados no canal. Ajuste e refine se quiser organizar por tópicos mais específicos ou extrair diagramas em SVG/PNG.
-- Sugestão: mantenha imagens e diagramas na pasta `docs/images/` e referências a elas no README para melhor apresentação no GitHub.
+- **Apresentação (View)**
+  - Função: UI (mapa, formulários, listagens).
+  - Tecnologias: React.js + Leaflet.js + Axios.
 
+- **Controle (Controller)**
+  - Função: interpretar requisições, validação e orquestração.
+  - Tecnologias: Node.js + Express.js.
+
+- **Modelo (Model)**
+  - Função: definir estruturas e persistência.
+  - Tecnologias: Sequelize ORM + PostgreSQL.
+
+- **Banco de Dados**
+  - Função: armazenar memórias e coordenadas.
+  - Tecnologias: PostgreSQL + PostGIS.
+
+- **Infraestrutura (opcional)**
+  - Docker + docker-compose para ambiente local padronizado.
+
+- **Segurança (futuro)**
+  - JWT / OAuth2 para autenticação e controle de acesso.
+
+- **Integrações (futuro)**
+  - Armazenamento de mídia: AWS S3 ou Firebase Storage.
+
+---
+
+## 🧱 Decisões Arquiteturais Fundamentais
+
+- **MVC em Camadas** — separação de responsabilidades, facilita manutenção e testes.
+- **API RESTful** — comunicação leve e padrão entre frontend e backend.
+- **PostgreSQL + PostGIS** — suporte geoespacial nativo, ideal para buscas por proximidade/área.
+- **Frontend desacoplado (SPA)** — interface dinâmica e responsiva.
+- **Uso opcional de Docker** — padroniza ambiente de desenvolvimento / CI.
+- **Extensibilidade** — arquitetura pensada para evoluir com autenticação e mídia.
+
+---
+
+## Observações e Próximos Passos Recomendados
+
+1. **Modelagem detalhada do banco** — definir colunas, índices geoespaciais e políticas de particionamento/retenção.
+2. **Contrato da API (OpenAPI/Swagger)** — documentar endpoints para front/back integrados.
+3. **Plano de autenticação (MVP vs Futuro)** — decidir se o MVP terá login ou será público inicialmente.
+4. **Estratégia de armazenamento de mídia** — interna (DB/FS) vs externa (S3/Firebase) e impacto de custos.
+5. **Testes & CI** — pipeline básico (lint, unit tests, migration tests) e deploy automatizado.
+
+---
 ---
 ## 🔄 Fluxo de Funcionamento
 
