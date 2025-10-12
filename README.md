@@ -90,9 +90,9 @@ O presente plano define os processos e padrões adotados pela equipe para assegu
 ### 👥 Papéis e Responsabilidades
 | Papel | Responsável | Atribuições |
 |-------|--------------|-------------|
-| Product Owner | Diogo Nascimento | Define prioridades, garante alinhamento com objetivos e aprova entregas. |
+| Product Owner | Guilherme Franco | Define prioridades, garante alinhamento com objetivos e aprova entregas. |
 | Desenvolvedor Backend | Alberto Pontiery | Implementa API, banco de dados e rotas de comunicação. |
-| Desenvolvedor Frontend | Guilherme Franco | Cria a interface interativa e integra o frontend à API. |
+| Desenvolvedor Frontend | Diogo Nascimento | Cria a interface interativa e integra o frontend à API. |
 | QA / Revisor | Rotativo entre os membros | Realiza testes, revisa código e valida requisitos. |
 
 ---
