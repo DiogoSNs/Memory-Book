@@ -87,26 +87,29 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 
 ```
 mapa-memorias-afetivas/
-├── backend/                  # API e regras de negócio (Controller + Model)
-│   ├── server.js             # Ponto de entrada (Express)
-│   ├── db.js                 # Conexão com PostgreSQL
-│   ├── routes/               # Rotas da API (controllers)
-│   │   └── memories.js       # Endpoints CRUD
-│   ├── controllers/          # Lógica de negócio
-│   ├── models/               # Modelos (Sequelize)
+│
+├── backend/                  # API e regras de negócio
+│   ├── server.js             # Ponto de entrada do servidor Express
+│   ├── db.js                 # Conexão com o banco de dados PostgreSQL
+│   ├── routes/               # Rotas da API
+│   │   └── memories.js       # Rotas para CRUD de memórias
+│   ├── models/               # Modelos de dados (opcional, para escalar)
 │   │   └── memory.js
-│   └── package.json
-├── frontend/                 # Interface (React)
+│   └── package.json          # Dependências do backend
+│
+├── frontend/                 # Interface do usuário (React)
 │   ├── src/
-│   │   ├── App.jsx
-│   │   ├── api.js            # Axios
+│   │   ├── App.jsx           # Componente raiz
+│   │   ├── api.js            # Configuração Axios (comunicação com backend)
 │   │   ├── components/
-│   │   │   ├── MapView.jsx
-│   │   │   └── MemoryForm.jsx
-│   │   └── assets/
-│   └── package.json
-├── README.md
-└── docker-compose.yml       # opcional: backend + postgres + pgadmin
+│   │   │   ├── MapView.jsx   # Mapa interativo (Leaflet)
+│   │   │   └── MemoryForm.jsx# Formulário (futuro: adicionar fotos/áudios)
+│   │   └── assets/           # Imagens, ícones, etc.
+│   ├── index.html            # Página principal
+│   └── package.json          # Dependências do frontend
+│
+├── README.md                 # Documentação do projeto
+└── docker-compose.yml        # (opcional) para rodar backend + banco
 ```
 
 ### Fluxo e Conexão entre as Camadas (visão simplificada)
