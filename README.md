@@ -37,36 +37,53 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 
 ---
 ## 🧩 Análise dos Requisitos do Projeto
-Requisitos Funcionais Principais (RF):
 
-RF01–RF03: Criar, visualizar, editar e excluir memórias geolocalizadas.
-RF04: Filtrar memórias por data, tag ou tipo de mídia.
-RF05: Compartilhar memórias via link ou QR Code.
-RF06 (futuro): Anexar mídias (fotos, vídeos e áudios).
+### Requisitos Funcionais Principais (RF)
+- **RF01–RF03**: Criar, visualizar, editar e excluir memórias geolocalizadas.  
+- **RF04**: Filtrar memórias por data, tag ou tipo de mídia.  
+- **RF05**: Compartilhar memórias via link ou QR Code.  
+- **RF06 (futuro)**: Anexar mídias (fotos, vídeos e áudios).  
 
-Requisitos Não Funcionais (RNF):
+### Requisitos Não Funcionais (RNF)
+- **RNF01**: Interface responsiva e mobile-friendly.  
+- **RNF02**: Persistência em banco relacional (PostgreSQL).  
+- **RNF03**: Tempo de resposta ≤ 3 s.  
+- **RNF04**: Interface simples e intuitiva.  
+- **RNF05 (futuro)**: Autenticação segura e controle de acesso.  
 
-RNF01: Interface responsiva e mobile-friendly.
-RNF02: Persistência em banco relacional (PostgreSQL).
-RNF03: Tempo de resposta ≤ 3 s.
-RNF04: Interface simples e intuitiva.
-RNF05 (futuro): Autenticação segura e controle de acesso.
+### Implicações Arquiteturais
+- Separação clara entre cliente e servidor.  
+- Baixo acoplamento entre camadas, permitindo expansão futura (ex.: upload de mídia, login).  
+- Uso de dados geográficos (mapa) sugere o uso de **PostGIS** (extensão do PostgreSQL).  
+- Performance e organização são essenciais — recomenda-se arquitetura **MVC em camadas**.  
 
-Implicações Arquiteturais:
+---
 
-O projeto precisa de separação clara entre cliente e servidor.
-Exige baixo acoplamento entre as camadas, permitindo expansão futura (ex.: upload de mídia, login).
-O uso de dados geográficos (mapa) sugere o uso de PostGIS (extensão do PostgreSQL).
-Performance e organização são essenciais — recomendando MVC em camadas.
+## 2. Escolha e Justificativa do Padrão de Arquitetura Base
 
-2. Escolha e Justificativa do Padrão de Arquitetura Base
-🔹 Padrão escolhido: Arquitetura em Camadas com o padrão MVC (Model–View–Controller)
-Justificativa:
-CritérioDecisão / BenefícioOrganização modularA estrutura em camadas separa responsabilidades entre interface (frontend), lógica (controllers) e dados (models/db).Aderência aos RF/RNFPermite desenvolvimento paralelo entre equipes (frontend e backend) e cumpre os RNFs de responsividade e manutenibilidade.Escalabilidade futuraA adição de autenticação e upload de mídias pode ser feita sem alterar a arquitetura existente.Reuso e testabilidadeControllers e Models podem ser testados isoladamente.Desempenho e segurançaO backend Express funciona como camada intermediária de controle e segurança.Integração eficienteAPI RESTful conecta frontend React e backend Node.js com trocas leves em JSON.
-O padrão MVC em camadas é ideal para o Memory Book pois combina clareza estrutural, facilidade de manutenção e flexibilidade para expansão.
-3. Conexão da Proposta com o Projeto Memory Book
-Abaixo, a arquitetura real inicial do projeto, já estruturada conforme boas práticas de camadas e MVC:
-mapa-memorias-afetivas/
+**Padrão escolhido:** Arquitetura em Camadas com padrão **MVC (Model–View–Controller)**  
+
+**Justificativa:**
+
+| Critério / Benefício | Descrição |
+|---------------------|-----------|
+| Organização modular | Estrutura em camadas separa responsabilidades entre interface (frontend), lógica (controllers) e dados (models/db). |
+| Aderência aos RF/RNF | Permite desenvolvimento paralelo entre equipes (frontend e backend) e cumpre RNFs de responsividade e manutenibilidade. |
+| Escalabilidade futura | A adição de autenticação e upload de mídias pode ser feita sem alterar a arquitetura existente. |
+| Reuso e testabilidade | Controllers e Models podem ser testados isoladamente. |
+| Desempenho e segurança | Backend Express funciona como camada intermediária de controle e segurança. |
+| Integração eficiente | API RESTful conecta frontend React e backend Node.js, com trocas leves em JSON. |
+
+O padrão **MVC em camadas** é ideal para o *Memory Book*, pois combina clareza estrutural, facilidade de manutenção e flexibilidade para expansão.
+
+---
+
+## 3. Conexão da Proposta com o Projeto Memory Book
+
+Abaixo, a arquitetura inicial real do projeto, já estruturada conforme boas práticas de **camadas** e **MVC**:  
+
+`mapa-memorias-afetivas/`
+
 │
 ├── backend/                  # API e regras de negócio (Controller + Model)
 │   ├── server.js             # Ponto de entrada do servidor Express
