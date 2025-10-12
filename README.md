@@ -81,6 +81,70 @@ mapa-memorias-afetivas/
 
 
 ---
+---
+
+## 🧩 Plano de Gerenciamento de Qualidade
+
+O presente plano define os processos e padrões adotados pela equipe para assegurar a **qualidade do produto e do processo** durante o desenvolvimento do projeto **Mapa de Memórias Afetivas**.
+
+### 👥 Papéis e Responsabilidades
+| Papel | Responsável | Atribuições |
+|-------|--------------|-------------|
+| Product Owner | Diogo Nascimento | Define prioridades, garante alinhamento com objetivos e aprova entregas. |
+| Desenvolvedor Backend | Alberto Pontiery | Implementa API, banco de dados e rotas de comunicação. |
+| Desenvolvedor Frontend | Guilherme Franco | Cria a interface interativa e integra o frontend à API. |
+| QA / Revisor | Rotativo entre os membros | Realiza testes, revisa código e valida requisitos. |
+
+---
+
+### 🧱 Padrões de Desenvolvimento e Ferramentas
+- **Frontend:** React + Vite + Leaflet.js  
+- **Backend:** Node.js + Express  
+- **Banco de Dados:** PostgreSQL  
+- **Controle de Versão:** Git + GitHub (branches `feature/`, `dev`, `main`)  
+- **Documentação:** README + relatórios em LaTeX  
+- **Gestão de Tarefas:** Trello  
+
+Todos os membros seguem um padrão de código limpo, com boas práticas de nomeação, versionamento e comentários explicativos.  
+Ferramentas auxiliares como **ESLint** e **Prettier** serão utilizadas para padronização.
+
+---
+
+### 🔒 Padrões Não Funcionais
+- **Segurança:** evitar exposição de dados sensíveis e uso de autenticação segura.  
+- **Usabilidade:** interface intuitiva, responsiva e com feedback visual claro.  
+- **Desempenho:** tempo de resposta da API inferior a 3 segundos.  
+- **Confiabilidade:** persistência garantida em banco de dados relacional.  
+
+---
+
+### ⚙️ Processos de Garantia da Qualidade
+- **Gestão de atividades:** via Trello, com colunas de “A Fazer”, “Em Progresso”, “Em Revisão” e “Concluído”.  
+- **Revisão de código:** outro membro deve revisar antes do merge na `main`.  
+- **Validação:** uso de testes unitários e funcionais no backend.  
+- **Controle de mudanças:** registro de alterações via GitHub (issues e pull requests).  
+- **Revisão de documentos:** feita antes de cada entrega parcial.  
+
+---
+
+### 📊 Atividades e Métricas de Qualidade
+| Métrica | Descrição | Meta |
+|----------|------------|------|
+| Taxa de sucesso dos testes | Percentual de testes que passam | ≥ 90% |
+| Tempo médio de resposta | Tempo de retorno da API | ≤ 3s |
+| Bugs por entrega | Erros críticos detectados antes da entrega | ≤ 2 |
+| Frequência de commits | Média semanal por integrante | ≥ 3 |
+| Revisões de código | Pull requests revisadas antes do merge | 100% |
+
+---
+
+### ✅ Critérios de Conclusão
+- Todas as funcionalidades mínimas do MVP implementadas e testadas.  
+- Documentação e plano de qualidade atualizados no GitHub.  
+- Trello atualizado com atividades e responsáveis definidos.  
+- Código funcional, comentado e validado entre os membros.  
+
+---
 
 ## 🛠️ Como Rodar o Projeto
 ```bash
