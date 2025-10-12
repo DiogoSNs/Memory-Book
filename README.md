@@ -199,7 +199,7 @@ O presente plano define os processos e padrões adotados pela equipe para assegu
 - **Gestão de Tarefas:** Trello  
 
 Todos os membros seguem um padrão de código limpo, com boas práticas de nomeação, versionamento e comentários explicativos.  
-Ferramentas auxiliares como **ESLint** e **Prettier** serão utilizadas para padronização.
+Ferramentas auxiliares como **Prettier** serão utilizadas para padronização.
 
 ---
 
