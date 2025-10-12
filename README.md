@@ -36,16 +36,23 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 - Opção de exportar sua linha do tempo.  
 
 ---
-# 🧩 Proposta de Arquitetura — Sistema *Memory Book*
+
+# 🧩 Proposta de Arquitetura
 
 ## Análise dos Requisitos do Projeto
 
-### Requisitos Funcionais Principais (RF)
+O **Memory Book** é um sistema web interativo que permite aos usuários registrar lembranças pessoais em pontos geográficos, com textos e mídias associadas.  
+A arquitetura precisa ser modular, escalável e preparada para futuras funcionalidades, como upload de mídias e autenticação de usuários.
 
-- **RF01–RF03:** Criar, visualizar, editar e excluir memórias geolocalizadas.
-- **RF04:** Filtrar memórias por data, tag ou tipo de mídia.
-- **RF05:** Compartilhar memórias via link ou QR Code.
-- **RF06 (futuro):** Anexar mídias (fotos, vídeos e áudios).
+### Requisitos Funcionais (RF)
+
+| Código | Descrição |
+|:-------|:-----------|
+| **RF01** | Criar, visualizar, editar e excluir memórias geolocalizadas. |
+| **RF02** | Exibir memórias em um mapa interativo. |
+| **RF03** | Filtrar memórias por data, tag ou tipo de mídia. |
+| **RF04** | Compartilhar memórias via link ou QR Code. |
+| **RF05 (futuro)** | Adicionar mídias (fotos, vídeos, áudios). |
 
 ### Requisitos Não Funcionais (RNF)
 
