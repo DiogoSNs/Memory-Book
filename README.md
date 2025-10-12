@@ -90,7 +90,7 @@ O presente plano define os processos e padrões adotados pela equipe para assegu
 ### 👥 Papéis e Responsabilidades
 | Papel | Responsável | Atribuições |
 |-------|--------------|-------------|
-| Product Owner | Guilherme Franco | Define prioridades, garante alinhamento com objetivos e aprova entregas. |
+| Integração e Qualidade | Guilherme Franco | Garante a integração entre frontend e backend, valida a comunicação entre as APIs e verifica a consistência dos dados. |
 | Desenvolvedor Backend | Alberto Pontiery | Implementa API, banco de dados e rotas de comunicação. |
 | Desenvolvedor Frontend | Diogo Nascimento | Cria a interface interativa e integra o frontend à API. |
 | QA / Revisor | Rotativo entre os membros | Realiza testes, revisa código e valida requisitos. |
