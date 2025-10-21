@@ -109,33 +109,39 @@ Além disso, esse padrão é amplamente recomendado para aplicações **web dist
 ```
 mapa-memorias/
 │
-├── src/ # Frontend React + Vite
-│ ├── components/ # Componentes reutilizáveis
-│ │ ├── ConfirmationModal.jsx
-│ │ ├── FormField.jsx
-│ │ ├── MemoryForm.jsx
-│ │ ├── MemoryListModal.jsx
-│ │ ├── MemoryMarker.jsx
-│ │ └── ... (outros componentes)
-│ ├── contexts/ # Context API para gerenciamento de estado
-│ │ ├── AuthContext.jsx # Autenticação
-│ │ ├── GradientContext.jsx # Gradientes
-│ │ └── ToastContext.jsx # Notificações
-│ ├── controllers/ # Controladores de estado
-│ │ └── MemoryController.jsx
-│ ├── models/ # Modelos de dados
-│ │ ├── Memory.js
-│ │ └── MemoryRepository.js
-│ ├── views/ # Páginas principais
-│ │ ├── MapView.jsx # Mapa principal
-│ │ ├── AppHeader.jsx
-│ │ └── ... (outras views)
-│ ├── utils/ # Utilitários
-│ └── assets/ # Imagens e recursos
+├── frontend/ # Frontend React + Vite
+│ ├── src/ # Código fonte do frontend
+│ │ ├── components/ # Componentes reutilizáveis
+│ │ │ ├── ConfirmationModal.jsx
+│ │ │ ├── FormField.jsx
+│ │ │ ├── MemoryForm.jsx
+│ │ │ ├── MemoryListModal.jsx
+│ │ │ ├── MemoryMarker.jsx
+│ │ │ └── ... (outros componentes)
+│ │ ├── contexts/ # Context API para gerenciamento de estado
+│ │ │ ├── AuthContext.jsx # Autenticação
+│ │ │ ├── GradientContext.jsx # Gradientes
+│ │ │ └── ToastContext.jsx # Notificações
+│ │ ├── controllers/ # Controladores de estado
+│ │ │ └── MemoryController.jsx
+│ │ ├── models/ # Modelos de dados
+│ │ │ ├── Memory.js
+│ │ │ └── MemoryRepository.js
+│ │ ├── views/ # Páginas principais
+│ │ │ ├── MapView.jsx # Mapa principal
+│ │ │ ├── AppHeader.jsx
+│ │ │ └── ... (outras views)
+│ │ ├── utils/ # Utilitários
+│ │ └── assets/ # Imagens e recursos
+│ ├── public/ # Arquivos estáticos
+│ ├── package.json # Dependências do frontend
+│ ├── vite.config.js # Configuração do Vite
+│ └── node_modules/ # Dependências instaladas
 │
-├── public/ # Arquivos estáticos
-├── package.json # Dependências do projeto
-└── vite.config.js # Configuração do Vite
+├── backend/ # Backend (preparado para desenvolvimento futuro)
+│ └── README.md # Documentação do backend
+│
+└── README.md # Documentação principal do projeto
 ```
 
 ## Conexão da Proposta com o Projeto *Memory Book*
@@ -303,6 +309,9 @@ cd Memory-Book
 
 # Mude para o branch frontend
 git checkout frontend
+
+# Entre na pasta do frontend
+cd frontend
 
 # Instale as dependências
 npm install
