@@ -258,7 +258,11 @@ export function MapView() {
         <MapContainer
           center={[-23.5505, -46.6333]}
           zoom={5}
-          style={{ height: "100%", width: "100%", background: "#e5e7eb" }}
+          style={{ 
+            height: "100%", 
+            width: "100%", 
+            background: "#e5e7eb" // Volta para o fundo cinza original
+          }}
           ref={mapRef}
         >
           <TileLayer
@@ -428,67 +432,75 @@ export function MapView() {
           </div>
         )}
 
-        {/* Botão de lista de memórias - Responsivo */}
-        <button
-          onClick={() => setShowMemoryList(true)}
+        {/* Container do botão de lista com contador - Responsivo */}
+        <div
           style={{
             position: "absolute",
             bottom: isMobile ? "1rem" : "2rem",
             left: isMobile ? "1rem" : "2rem",
-            background: gradientData.gradient,
-            color: "white",
-            border: "none",
-            borderRadius: "50%",
-            width: isMobile ? "3.5rem" : "4rem",
-            height: isMobile ? "3.5rem" : "4rem",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 10px 25px rgba(76, 29, 149, 0.3)",
-            transition: "all 0.3s ease",
             zIndex: 1000,
           }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.transform = "scale(1.1)";
-            e.currentTarget.style.boxShadow = "0 15px 35px rgba(76, 29, 149, 0.4)";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.transform = "scale(1)";
-            e.currentTarget.style.boxShadow = "0 10px 25px rgba(76, 29, 149, 0.3)";
-          }}
-          title="Ver todas as memórias"
         >
-          <List style={{ 
-            width: isMobile ? "1.25rem" : "1.5rem", 
-            height: isMobile ? "1.25rem" : "1.5rem" 
-          }} />
-        </button>
-
-        {/* Contador de memórias - Responsivo */}
-        {memories.length > 0 && (
-          <div
+          {/* Botão de lista de memórias */}
+          <button
+            onClick={() => setShowMemoryList(true)}
             style={{
-              position: "absolute",
-              bottom: isMobile ? "3.9rem" : "4.9rem",
-              left: isMobile ? "3.9rem" : "4.9rem",
-              background: "#ef4444",
+              background: gradientData.gradient,
               color: "white",
+              border: "none",
               borderRadius: "50%",
-              width: isMobile ? "1.25rem" : "1.5rem",
-              height: isMobile ? "1.25rem" : "1.5rem",
+              width: isMobile ? "3.5rem" : "4rem",
+              height: isMobile ? "3.5rem" : "4rem",
+              cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: isMobile ? "0.625rem" : "0.75rem",
-              fontWeight: "bold",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-              zIndex: 1001,
+              boxShadow: "0 10px 25px rgba(76, 29, 149, 0.3)",
+              transition: "all 0.3s ease",
+              position: "relative",
             }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = "scale(1.1)";
+              e.currentTarget.style.boxShadow = "0 15px 35px rgba(76, 29, 149, 0.4)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "0 10px 25px rgba(76, 29, 149, 0.3)";
+            }}
+            title="Ver todas as memórias"
           >
-            {memories.length}
-          </div>
-        )}
+            <List style={{ 
+              width: isMobile ? "1.25rem" : "1.5rem", 
+              height: isMobile ? "1.25rem" : "1.5rem" 
+            }} />
+          </button>
+
+          {/* Contador de memórias - Grudado no botão e oculto quando modal aberto */}
+          {memories.length > 0 && !showMemoryList && (
+            <div
+              style={{
+                position: "absolute",
+                top: "-0.5rem",
+                right: "-0.5rem",
+                background: "#ef4444",
+                color: "white",
+                borderRadius: "50%",
+                width: isMobile ? "1.25rem" : "1.5rem",
+                height: isMobile ? "1.25rem" : "1.5rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: isMobile ? "0.625rem" : "0.75rem",
+                fontWeight: "bold",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                border: "2px solid red",
+                zIndex: 1,
+              }}
+            >
+              {memories.length > 99 ? "99+" : memories.length}
+            </div>
+          )}
+        </div>
 
       {showForm && selectedLocation && (
         <MemoryForm

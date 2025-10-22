@@ -3,7 +3,6 @@ import { Eye, EyeOff, Mail, Lock, MapPin } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
-import backgroundImage from '../assets/memory-map-background.jpg';
 
 const LoginForm = ({ onSwitchToRegister }) => {
   const [formData, setFormData] = useState({
@@ -12,9 +11,9 @@ const LoginForm = ({ onSwitchToRegister }) => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
-  const [isMobile, setIsMobile] = useState(false);
-  
-  const { login, isLoading } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const { login } = useAuth();
   const { showToast } = useToast();
   const { getCurrentGradientData } = useGradient();
   const gradientData = getCurrentGradientData();
@@ -80,7 +79,7 @@ const LoginForm = ({ onSwitchToRegister }) => {
   return (
     <div style={{
       minHeight: "100vh",
-      backgroundImage: `url(${backgroundImage})`,
+      backgroundImage: gradientData.backgroundImage ? `url(${gradientData.backgroundImage})` : 'none',
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",

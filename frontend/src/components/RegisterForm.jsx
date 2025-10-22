@@ -3,7 +3,6 @@ import { Eye, EyeOff, Mail, Lock, User, MapPin } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
-import backgroundImage from '../assets/memory-map-background.jpg';
 
 const RegisterForm = ({ onSwitchToLogin }) => {
   const [formData, setFormData] = useState({
@@ -15,12 +14,13 @@ const RegisterForm = ({ onSwitchToLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   
-  const { register, isLoading } = useAuth();
+  const { register } = useAuth();
   const { showToast } = useToast();
   const { getCurrentGradientData } = useGradient();
-  const gradientData = getCurrentGradientData();
+  const gradientData = getCurrentGradientData() || {};
 
   // Hook para detectar tamanho da tela
   useEffect(() => {
@@ -87,17 +87,28 @@ const RegisterForm = ({ onSwitchToLogin }) => {
       return;
     }
 
+    setIsLoading(true);
     try {
-      await register(formData.name, formData.email, formData.password);
+      const result = await register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      });
+      
+      if (!result.success) {
+        setErrors({ general: result.error || 'Erro ao criar conta' });
+      }
     } catch (error) {
-      setErrors({ general: error.message });
+      setErrors({ general: error.message || 'Erro ao criar conta' });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div style={{
       minHeight: "100vh",
-      backgroundImage: `url(${backgroundImage})`,
+      backgroundImage: gradientData.backgroundImage ? `url(${gradientData.backgroundImage})` : 'none',
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",

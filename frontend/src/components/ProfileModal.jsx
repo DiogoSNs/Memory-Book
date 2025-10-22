@@ -6,6 +6,19 @@ import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
 import { ConfirmationModal } from './ConfirmationModal.jsx';
 
+// Configuração para suprimir avisos de WebGL robustness
+if (typeof window !== 'undefined') {
+  const originalGetContext = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function(contextType, contextAttributes) {
+    if (contextType === 'webgl' || contextType === 'webgl2') {
+      contextAttributes = contextAttributes || {};
+      contextAttributes.failIfMajorPerformanceCaveat = false;
+      contextAttributes.powerPreference = 'default';
+    }
+    return originalGetContext.call(this, contextType, contextAttributes);
+  };
+}
+
 const ProfileModal = ({ isOpen, onClose, onThemeToggle, currentTheme, currentThemeIcon, memories = [] }) => {
   
   const { user, logout } = useAuth();
@@ -60,7 +73,13 @@ const ProfileModal = ({ isOpen, onClose, onThemeToggle, currentTheme, currentThe
   const handleShareMemories = async () => {
     try {
       // Gerar PDF com as memórias
-      const doc = new jsPDF();
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        putOnlyUsedFonts: true,
+        floatPrecision: 16
+      });
       
       // Configurar fonte e título
       doc.setFontSize(20);
@@ -378,6 +397,7 @@ const ProfileModal = ({ isOpen, onClose, onThemeToggle, currentTheme, currentThe
                       background: gradient.gradient,
                       border: "2px solid white",
                       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                      flexShrink: 0,
                     }}
                   />
                   <div>

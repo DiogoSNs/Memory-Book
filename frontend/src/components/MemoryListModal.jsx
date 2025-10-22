@@ -3,8 +3,8 @@
 // Modal para listar e editar memórias
 // ============================================
 
-import React, { useState, useMemo } from "react";
-import { X, List, FileText, Calendar, Image, Upload, Music, Save, Edit3, Trash2, Filter } from "lucide-react";
+import React, { useState, useMemo, useEffect } from "react";
+import { X, List, FileText, Calendar, Image, Upload, Music, Save, Edit3, Trash2, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemories } from '../controllers/MemoryController.jsx';
 import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
@@ -17,6 +17,7 @@ export function MemoryListModal({ isOpen, onClose }) {
   const { showToast } = useToast();
   const { getCurrentGradientData } = useGradient();
   const gradientData = getCurrentGradientData();
+  const [isMobile, setIsMobile] = useState(false);
   const [editingMemory, setEditingMemory] = useState(null);
   const [editForm, setEditForm] = useState({
     title: "",
@@ -32,6 +33,24 @@ export function MemoryListModal({ isOpen, onClose }) {
     startDate: "",
     endDate: "",
   });
+  const [showFullImage, setShowFullImage] = useState(false);
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
+  const [selectedMemoryPhotos, setSelectedMemoryPhotos] = useState([]);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const [showControls, setShowControls] = useState(true);
+  const [hideTimeout, setHideTimeout] = useState(null);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const filteredMemories = useMemo(() => {
     if (!dateFilter.startDate && !dateFilter.endDate) {
@@ -152,6 +171,77 @@ export function MemoryListModal({ isOpen, onClose }) {
     setShowConfirmModal(false);
   };
 
+  const openPhoto = (photos, index) => {
+    setSelectedMemoryPhotos(photos);
+    setSelectedPhotoIndex(index);
+    setShowFullImage(true);
+    setShowControls(true);
+    resetHideTimer();
+  };
+
+  // Reset timer to hide controls
+  const resetHideTimer = () => {
+    if (hideTimeout) {
+      clearTimeout(hideTimeout);
+    }
+    setShowControls(true);
+    const timer = setTimeout(() => {
+      setShowControls(false);
+    }, 5000);
+    setHideTimeout(timer);
+  };
+
+  // Toggle controls on image click
+  const toggleControls = (e) => {
+    e.stopPropagation();
+    if (showControls) {
+      if (hideTimeout) clearTimeout(hideTimeout);
+      setShowControls(false);
+    } else {
+      resetHideTimer();
+    }
+  };
+
+  const nextPhoto = () => {
+    setSelectedPhotoIndex((prev) => 
+      prev === selectedMemoryPhotos.length - 1 ? 0 : prev + 1
+    );
+    resetHideTimer();
+  };
+
+  const prevPhoto = () => {
+    setSelectedPhotoIndex((prev) => 
+      prev === 0 ? selectedMemoryPhotos.length - 1 : prev - 1
+    );
+    resetHideTimer();
+  };
+
+  // Touch gesture functions for mobile swipe navigation
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (selectedMemoryPhotos.length > 1) {
+      if (isLeftSwipe) {
+        nextPhoto();
+      } else if (isRightSwipe) {
+        prevPhoto();
+      }
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -171,32 +261,48 @@ export function MemoryListModal({ isOpen, onClose }) {
         <div
           style={{
             background: "white",
-            borderRadius: "0.75rem",
+            borderRadius: isMobile ? "0.5rem" : "0.75rem",
             boxShadow: "0 20px 25px rgba(0,0,0,0.15)",
-            maxWidth: "60rem",
+            maxWidth: isMobile ? "100%" : "60rem",
             width: "100%",
-            maxHeight: "90vh",
+            maxHeight: isMobile ? "95vh" : "90vh",
             display: "flex",
             flexDirection: "column",
+            margin: isMobile ? "0.5rem" : "0",
           }}
         >
           <div
             style={{
               display: "flex",
-              alignItems: "center",
+              alignItems: "flex-start",
               justifyContent: "space-between",
-              padding: "1.5rem",
+              padding: isMobile ? "1rem" : "1.5rem",
               borderBottom: "1px solid #e5e7eb",
+              flexDirection: isMobile ? "column" : "row",
+              gap: isMobile ? "1rem" : "0",
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem", flex: 1 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ 
+              display: "flex", 
+              flexDirection: "column", 
+              gap: isMobile ? "0.75rem" : "1rem", 
+              flex: 1,
+              width: "100%"
+            }}>
+              <div style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                justifyContent: "space-between",
+                width: "100%"
+              }}>
                 <h2
                   style={{
-                    fontSize: "1.5rem",
+                    fontSize: isMobile ? "1.25rem" : "1.5rem",
                     fontWeight: "bold",
                     color: "#1f2937",
                     margin: 0,
+                    flex: 1,
+                    paddingRight: "1rem"
                   }}
                 >
                   Minhas Memórias ({filteredMemories.length})
@@ -208,66 +314,134 @@ export function MemoryListModal({ isOpen, onClose }) {
                     background: "transparent",
                     border: "none",
                     cursor: "pointer",
+                    padding: "0.25rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0
                   }}
                 >
-                  <X style={{ width: "1.5rem", height: "1.5rem" }} />
+                  <X style={{ 
+                    width: isMobile ? "1.25rem" : "1.5rem", 
+                    height: isMobile ? "1.25rem" : "1.5rem" 
+                  }} />
                 </button>
               </div>
               
               <div style={{ 
                 display: "flex", 
-                alignItems: "center", 
-                gap: "1rem",
-                padding: "1rem",
+                alignItems: isMobile ? "flex-start" : "center", 
+                gap: isMobile ? "0.5rem" : "1rem",
+                padding: isMobile ? "0.75rem" : "1rem",
                 background: "#f9fafb",
                 borderRadius: "0.5rem",
-                border: "1px solid #e5e7eb"
+                border: "1px solid #e5e7eb",
+                flexDirection: isMobile ? "column" : "row",
+                width: "100%"
               }}>
-                <Filter style={{ width: "1rem", height: "1rem", color: "#6b7280" }} />
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <label style={{ fontSize: "0.875rem", color: "#374151", fontWeight: "500" }}>
-                    De:
-                  </label>
-                  <input
-                    type="date"
-                    value={dateFilter.startDate}
-                    onChange={(e) => setDateFilter(prev => ({ ...prev, startDate: e.target.value }))}
-                    style={{
-                      padding: "0.375rem 0.5rem",
-                      border: "1px solid #d1d5db",
-                      borderRadius: "0.375rem",
-                      fontSize: "0.875rem",
-                    }}
-                  />
+                <div style={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  gap: "0.5rem",
+                  width: isMobile ? "100%" : "auto"
+                }}>
+                  <Filter style={{ 
+                    width: "1rem", 
+                    height: "1rem", 
+                    color: "#6b7280",
+                    flexShrink: 0
+                  }} />
+                  {!isMobile && (
+                    <span style={{ 
+                      fontSize: "0.875rem", 
+                      color: "#374151", 
+                      fontWeight: "500",
+                      whiteSpace: "nowrap"
+                    }}>
+                      Filtrar por período:
+                    </span>
+                  )}
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <label style={{ fontSize: "0.875rem", color: "#374151", fontWeight: "500" }}>
-                    Até:
-                  </label>
-                  <input
-                    type="date"
-                    value={dateFilter.endDate}
-                    onChange={(e) => setDateFilter(prev => ({ ...prev, endDate: e.target.value }))}
-                    style={{
-                      padding: "0.375rem 0.5rem",
-                      border: "1px solid #d1d5db",
-                      borderRadius: "0.375rem",
-                      fontSize: "0.875rem",
-                    }}
-                  />
+                
+                <div style={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  gap: isMobile ? "0.75rem" : "0.5rem",
+                  flexDirection: isMobile ? "column" : "row",
+                  width: isMobile ? "100%" : "auto"
+                }}>
+                  <div style={{ 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: "0.5rem",
+                    width: isMobile ? "100%" : "auto"
+                  }}>
+                    <label style={{ 
+                      fontSize: isMobile ? "0.8rem" : "0.875rem", 
+                      color: "#374151", 
+                      fontWeight: "500",
+                      minWidth: isMobile ? "2rem" : "auto"
+                    }}>
+                      De:
+                    </label>
+                    <input
+                      type="date"
+                      value={dateFilter.startDate}
+                      onChange={(e) => setDateFilter(prev => ({ ...prev, startDate: e.target.value }))}
+                      style={{
+                        padding: isMobile ? "0.5rem" : "0.375rem 0.5rem",
+                        border: "1px solid #d1d5db",
+                        borderRadius: "0.375rem",
+                        fontSize: isMobile ? "0.8rem" : "0.875rem",
+                        flex: isMobile ? 1 : "none",
+                        minWidth: isMobile ? "0" : "auto"
+                      }}
+                    />
+                  </div>
+                  
+                  <div style={{ 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: "0.5rem",
+                    width: isMobile ? "100%" : "auto"
+                  }}>
+                    <label style={{ 
+                      fontSize: isMobile ? "0.8rem" : "0.875rem", 
+                      color: "#374151", 
+                      fontWeight: "500",
+                      minWidth: isMobile ? "2rem" : "auto"
+                    }}>
+                      Até:
+                    </label>
+                    <input
+                      type="date"
+                      value={dateFilter.endDate}
+                      onChange={(e) => setDateFilter(prev => ({ ...prev, endDate: e.target.value }))}
+                      style={{
+                        padding: isMobile ? "0.5rem" : "0.375rem 0.5rem",
+                        border: "1px solid #d1d5db",
+                        borderRadius: "0.375rem",
+                        fontSize: isMobile ? "0.8rem" : "0.875rem",
+                        flex: isMobile ? 1 : "none",
+                        minWidth: isMobile ? "0" : "auto"
+                      }}
+                    />
+                  </div>
                 </div>
                 {(dateFilter.startDate || dateFilter.endDate) && (
                   <button
                     onClick={() => setDateFilter({ startDate: "", endDate: "" })}
                     style={{
-                      padding: "0.375rem 0.75rem",
+                      padding: isMobile ? "0.5rem 0.75rem" : "0.375rem 0.75rem",
                       background: "#ef4444",
                       color: "white",
                       border: "none",
                       borderRadius: "0.375rem",
-                      fontSize: "0.75rem",
+                      fontSize: isMobile ? "0.8rem" : "0.75rem",
                       cursor: "pointer",
                       fontWeight: "500",
+                      alignSelf: isMobile ? "flex-start" : "auto",
+                      marginTop: isMobile ? "0.5rem" : "0"
                     }}
                   >
                     Limpar
@@ -281,7 +455,7 @@ export function MemoryListModal({ isOpen, onClose }) {
             style={{
               flex: 1,
               overflowY: "auto",
-              padding: "1rem",
+              padding: isMobile ? "0.75rem" : "1rem",
             }}
           >
             {filteredMemories.length === 0 ? (
@@ -304,8 +478,10 @@ export function MemoryListModal({ isOpen, onClose }) {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
-                  gap: "1rem",
+                  gridTemplateColumns: isMobile 
+                    ? "1fr" 
+                    : "repeat(auto-fill, minmax(350px, 1fr))",
+                  gap: isMobile ? "0.75rem" : "1rem",
                 }}
               >
                 {filteredMemories.map((memory) => (
@@ -313,8 +489,8 @@ export function MemoryListModal({ isOpen, onClose }) {
                     key={memory.id}
                     style={{
                       border: "1px solid #e5e7eb",
-                      borderRadius: "0.75rem",
-                      padding: "1rem",
+                      borderRadius: isMobile ? "0.5rem" : "0.75rem",
+                      padding: isMobile ? "0.75rem" : "1rem",
                       background: "white",
                       boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                     }}
@@ -607,13 +783,22 @@ export function MemoryListModal({ isOpen, onClose }) {
                                 key={idx}
                                 src={photo}
                                 alt={`Foto ${idx + 1}`}
+                                onClick={() => openPhoto(memory.photos, idx)}
                                 style={{
                                   width: "100%",
                                   height: "60px",
                                   objectFit: "cover",
                                   borderRadius: "0.375rem",
                                   border: "2px solid #e5e7eb",
+                                  cursor: "pointer",
+                                  transition: "transform 0.2s",
                                 }}
+                                onMouseOver={(e) =>
+                                  (e.currentTarget.style.transform = "scale(1.05)")
+                                }
+                                onMouseOut={(e) =>
+                                  (e.currentTarget.style.transform = "scale(1)")
+                                }
                               />
                             ))}
                           </div>
@@ -664,6 +849,146 @@ export function MemoryListModal({ isOpen, onClose }) {
           </div>
         </div>
       </div>
+
+      {showFullImage && selectedMemoryPhotos.length > 0 && (
+        <div
+          onClick={() => setShowFullImage(false)}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.95)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: isMobile ? "1rem" : "2rem",
+            cursor: "pointer",
+          }}
+        >
+          {showControls && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowFullImage(false);
+              }}
+              style={{
+                position: "absolute",
+                top: isMobile ? "0.75rem" : "1rem",
+                right: isMobile ? "0.75rem" : "1rem",
+                background: "rgba(255,255,255,0.2)",
+              border: "none",
+              borderRadius: "50%",
+              width: isMobile ? "3.5rem" : "3rem",
+              height: isMobile ? "3.5rem" : "3rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "white",
+              fontSize: "1.5rem",
+              backdropFilter: "blur(10px)",
+              zIndex: 10001,
+            }}
+          >
+            <X size={isMobile ? 28 : 24} />
+          </button>
+          )}
+
+          {selectedMemoryPhotos.length > 1 && showControls && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevPhoto();
+                }}
+                style={{
+                  position: "absolute",
+                  left: isMobile ? "0.75rem" : "2rem",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "rgba(255,255,255,0.2)",
+                  border: "none",
+                  borderRadius: "50%",
+                  width: isMobile ? "4rem" : "3rem",
+                  height: isMobile ? "4rem" : "3rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  color: "white",
+                  backdropFilter: "blur(10px)",
+                  zIndex: 10001,
+                }}
+              >
+                <ChevronLeft size={isMobile ? 32 : 24} />
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextPhoto();
+                }}
+                style={{
+                  position: "absolute",
+                  right: isMobile ? "0.75rem" : "2rem",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "rgba(255,255,255,0.2)",
+                  border: "none",
+                  borderRadius: "50%",
+                  width: isMobile ? "4rem" : "3rem",
+                  height: isMobile ? "4rem" : "3rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  color: "white",
+                  backdropFilter: "blur(10px)",
+                  zIndex: 10001,
+                }}
+              >
+                <ChevronRight size={isMobile ? 32 : 24} />
+              </button>
+            </>
+          )}
+
+          <img
+            src={selectedMemoryPhotos[selectedPhotoIndex]}
+            alt={`Foto ${selectedPhotoIndex + 1}`}
+            style={{
+              maxWidth: isMobile ? "95%" : "90%",
+              maxHeight: isMobile ? "85%" : "90%",
+              objectFit: "contain",
+              borderRadius: "0.5rem",
+            }}
+            onClick={toggleControls}
+          />
+
+          {selectedMemoryPhotos.length > 1 && showControls && (
+            <div
+              style={{
+                position: "absolute",
+                bottom: isMobile ? "1.5rem" : "2rem",
+                left: "50%",
+                transform: "translateX(-50%)",
+                background: "rgba(255,255,255,0.2)",
+                padding: isMobile ? "0.75rem 1.25rem" : "0.5rem 1rem",
+                borderRadius: "1rem",
+                color: "white",
+                fontSize: isMobile ? "1rem" : "0.875rem",
+                fontWeight: "500",
+                backdropFilter: "blur(10px)",
+                zIndex: 10001,
+              }}
+            >
+              {selectedPhotoIndex + 1} / {selectedMemoryPhotos.length}
+            </div>
+          )}
+        </div>
+      )}
 
       <ConfirmationModal
         isOpen={showConfirmModal}

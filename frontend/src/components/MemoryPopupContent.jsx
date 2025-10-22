@@ -10,23 +10,83 @@ import { extractSpotifyId } from '../utils/helpers.js';
 export function MemoryPopupContent({ memory, onDelete }) {
   const [showFullImage, setShowFullImage] = useState(false);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const [showControls, setShowControls] = useState(true);
+  const [hideTimeout, setHideTimeout] = useState(null);
   const spotifyId = extractSpotifyId(memory.spotifyUrl);
+
+  // Mobile detection
+  const isMobile = window.innerWidth <= 768;
 
   const openPhoto = (index) => {
     setSelectedPhotoIndex(index);
     setShowFullImage(true);
+    setShowControls(true);
+    resetHideTimer();
+  };
+
+  // Reset timer to hide controls
+  const resetHideTimer = () => {
+    if (hideTimeout) {
+      clearTimeout(hideTimeout);
+    }
+    setShowControls(true);
+    const timer = setTimeout(() => {
+      setShowControls(false);
+    }, 5000);
+    setHideTimeout(timer);
+  };
+
+  // Toggle controls on image click
+  const toggleControls = (e) => {
+    e.stopPropagation();
+    if (showControls) {
+      if (hideTimeout) clearTimeout(hideTimeout);
+      setShowControls(false);
+    } else {
+      resetHideTimer();
+    }
   };
 
   const nextPhoto = () => {
     setSelectedPhotoIndex((prev) => 
       prev === memory.photos.length - 1 ? 0 : prev + 1
     );
+    resetHideTimer();
   };
 
   const prevPhoto = () => {
     setSelectedPhotoIndex((prev) => 
       prev === 0 ? memory.photos.length - 1 : prev - 1
     );
+    resetHideTimer();
+  };
+
+  // Touch gesture functions for mobile swipe navigation
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (memory.photos.length > 1) {
+      if (isLeftSwipe) {
+        nextPhoto();
+      } else if (isRightSwipe) {
+        prevPhoto();
+      }
+    }
   };
 
   return (
@@ -148,33 +208,43 @@ export function MemoryPopupContent({ memory, onDelete }) {
 
       {showFullImage && memory.photos && (
         <div
-          onClick={() => setShowFullImage(false)}
+          onClick={() => {
+            if (hideTimeout) clearTimeout(hideTimeout);
+            setShowFullImage(false);
+            setShowControls(true);
+          }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onMouseMove={resetHideTimer}
           style={{
             position: "fixed",
             inset: 0,
             background: "rgba(0,0,0,0.95)",
-            zIndex: 9999,
+            zIndex: 99999,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "2rem",
+            padding: isMobile ? "0.5rem" : "2rem",
             cursor: "pointer",
           }}
         >
           <button
             onClick={(e) => {
               e.stopPropagation();
+              if (hideTimeout) clearTimeout(hideTimeout);
               setShowFullImage(false);
+              setShowControls(true);
             }}
             style={{
               position: "absolute",
-              top: "1rem",
-              right: "1rem",
+              top: isMobile ? "0.75rem" : "1rem",
+              right: isMobile ? "0.75rem" : "1rem",
               background: "rgba(255,255,255,0.2)",
               border: "none",
               borderRadius: "50%",
-              width: "3rem",
-              height: "3rem",
+              width: isMobile ? "3.5rem" : "3rem",
+              height: isMobile ? "3.5rem" : "3rem",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -182,9 +252,13 @@ export function MemoryPopupContent({ memory, onDelete }) {
               color: "white",
               fontSize: "1.5rem",
               backdropFilter: "blur(10px)",
+              zIndex: 10001,
+              opacity: showControls ? 1 : 0,
+              transition: "opacity 0.3s ease",
+              pointerEvents: showControls ? "auto" : "none",
             }}
           >
-            <X size={24} />
+            <X size={isMobile ? 28 : 24} />
           </button>
 
           {memory.photos.length > 1 && (
@@ -196,21 +270,27 @@ export function MemoryPopupContent({ memory, onDelete }) {
                 }}
                 style={{
                   position: "absolute",
-                  left: "1rem",
+                  left: isMobile ? "0.75rem" : "2rem",
+                  top: "50%",
+                  transform: "translateY(-50%)",
                   background: "rgba(255,255,255,0.2)",
                   border: "none",
                   borderRadius: "50%",
-                  width: "3rem",
-                  height: "3rem",
+                  width: isMobile ? "4rem" : "3rem",
+                  height: isMobile ? "4rem" : "3rem",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   cursor: "pointer",
                   color: "white",
                   backdropFilter: "blur(10px)",
+                  zIndex: 10001,
+                  opacity: showControls ? 1 : 0,
+                  transition: "opacity 0.3s ease",
+                  pointerEvents: showControls ? "auto" : "none",
                 }}
               >
-                <ChevronLeft size={24} />
+                <ChevronLeft size={isMobile ? 32 : 24} />
               </button>
 
               <button
@@ -220,21 +300,27 @@ export function MemoryPopupContent({ memory, onDelete }) {
                 }}
                 style={{
                   position: "absolute",
-                  right: "1rem",
+                  right: isMobile ? "0.75rem" : "2rem",
+                  top: "50%",
+                  transform: "translateY(-50%)",
                   background: "rgba(255,255,255,0.2)",
                   border: "none",
                   borderRadius: "50%",
-                  width: "3rem",
-                  height: "3rem",
+                  width: isMobile ? "4rem" : "3rem",
+                  height: isMobile ? "4rem" : "3rem",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   cursor: "pointer",
                   color: "white",
                   backdropFilter: "blur(10px)",
+                  zIndex: 10001,
+                  opacity: showControls ? 1 : 0,
+                  transition: "opacity 0.3s ease",
+                  pointerEvents: showControls ? "auto" : "none",
                 }}
               >
-                <ChevronRight size={24} />
+                <ChevronRight size={isMobile ? 32 : 24} />
               </button>
             </>
           )}
@@ -243,27 +329,31 @@ export function MemoryPopupContent({ memory, onDelete }) {
             src={memory.photos[selectedPhotoIndex]}
             alt={`Foto ${selectedPhotoIndex + 1}`}
             style={{
-              maxWidth: "90%",
-              maxHeight: "90%",
+              maxWidth: isMobile ? "98%" : "90%",
+              maxHeight: isMobile ? "90%" : "90%",
               objectFit: "contain",
               borderRadius: "0.5rem",
             }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={toggleControls}
           />
 
           {memory.photos.length > 1 && (
             <div
               style={{
                 position: "absolute",
-                bottom: "2rem",
+                bottom: isMobile ? "1.5rem" : "2rem",
                 left: "50%",
                 transform: "translateX(-50%)",
                 background: "rgba(255,255,255,0.2)",
-                padding: "0.5rem 1rem",
+                padding: isMobile ? "0.75rem 1.25rem" : "0.5rem 1rem",
                 borderRadius: "1rem",
                 color: "white",
-                fontSize: "0.875rem",
+                fontSize: isMobile ? "1rem" : "0.875rem",
                 backdropFilter: "blur(10px)",
+                zIndex: 10001,
+                opacity: showControls ? 1 : 0,
+                transition: "opacity 0.3s ease",
+                pointerEvents: "none",
               }}
             >
               {selectedPhotoIndex + 1} / {memory.photos.length}
