@@ -258,6 +258,11 @@ export function MapView() {
         <MapContainer
           center={[-23.5505, -46.6333]}
           zoom={5}
+          minZoom={2}
+          maxZoom={18}
+          maxBounds={[[-90, -180], [90, 180]]}
+          maxBoundsViscosity={1.0}
+          worldCopyJump={false}
           style={{ 
             height: "100%", 
             width: "100%", 
@@ -269,6 +274,12 @@ export function MapView() {
             key={mapTheme} // Força re-render quando o tema muda
             attribution={mapThemes[mapTheme]?.attribution || '&copy; OpenStreetMap'}
             url={mapThemes[mapTheme]?.url || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'}
+            bounds={[[-90, -180], [90, 180]]}
+            noWrap={true}
+            keepBuffer={2}
+            updateWhenIdle={false}
+            updateWhenZooming={false}
+            errorTileUrl="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
           />
 
           <MapClickHandler
