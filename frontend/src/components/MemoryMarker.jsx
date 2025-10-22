@@ -4,8 +4,10 @@
 // ============================================
 
 import React, { useState } from "react";
-import { Marker, Popup } from "react-leaflet";
+import ReactDOM from "react-dom";
+import { Marker } from "react-leaflet";
 import L from "leaflet";
+import { X } from "lucide-react";
 import { useMemories } from '../controllers/MemoryController.jsx';
 import { MemoryPopupContent } from './MemoryPopupContent.jsx';
 import { ConfirmationModal } from './ConfirmationModal.jsx';
@@ -13,6 +15,7 @@ import { ConfirmationModal } from './ConfirmationModal.jsx';
 export function MemoryMarker({ memory }) {
   const { deleteMemory } = useMemories();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleDelete = () => {
     setShowConfirmModal(true);
@@ -37,11 +40,62 @@ export function MemoryMarker({ memory }) {
       <Marker
         position={[memory.lat, memory.lng]}
         icon={createColoredIcon(memory.color)}
-      >
-        <Popup maxWidth={350} minWidth={320}>
-          <MemoryPopupContent memory={memory} onDelete={handleDelete} />
-        </Popup>
-      </Marker>
+        eventHandlers={{
+          click: () => setShowPopup(true),
+        }}
+      />
+      
+      {showPopup && ReactDOM.createPortal(
+        <div
+          onClick={() => setShowPopup(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 999999,
+            padding: "1rem",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "white",
+              borderRadius: "0.75rem",
+              boxShadow: "0 20px 25px rgba(0,0,0,0.15)",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              position: "relative",
+              maxWidth: "400px",
+              width: "100%",
+            }}
+          >
+            <button
+              onClick={() => setShowPopup(false)}
+              style={{
+                position: "absolute",
+                top: "0.75rem",
+                right: "0.75rem",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                color: "#9ca3af",
+                zIndex: 1,
+                padding: "0.25rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <X size={20} />
+            </button>
+            <MemoryPopupContent memory={memory} onDelete={handleDelete} onClose={() => setShowPopup(false)} />
+          </div>
+        </div>,
+        document.body
+      )}
       
       <ConfirmationModal
         isOpen={showConfirmModal}

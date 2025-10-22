@@ -21,3 +21,12 @@ html, body {
     transform: rotate(360deg);
   }
 }
+
+/* Fix for Leaflet popup z-index to appear above map controls */
+.leaflet-popup-pane {
+  z-index: 10001 !important;
+}
+
+.leaflet-tooltip-pane {
+  z-index: 10001 !important;
+}

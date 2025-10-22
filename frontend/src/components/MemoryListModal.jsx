@@ -4,6 +4,7 @@
 // ============================================
 
 import React, { useState, useMemo, useEffect } from "react";
+import ReactDOM from "react-dom";
 import { X, List, FileText, Calendar, Image, Upload, Music, Save, Edit3, Trash2, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemories } from '../controllers/MemoryController.jsx';
 import { useToast } from '../contexts/ToastContext.jsx';
@@ -850,7 +851,7 @@ export function MemoryListModal({ isOpen, onClose }) {
         </div>
       </div>
 
-      {showFullImage && selectedMemoryPhotos.length > 0 && (
+      {showFullImage && selectedMemoryPhotos.length > 0 && ReactDOM.createPortal(
         <div
           onClick={() => setShowFullImage(false)}
           onTouchStart={handleTouchStart}
@@ -860,7 +861,7 @@ export function MemoryListModal({ isOpen, onClose }) {
             position: "fixed",
             inset: 0,
             background: "rgba(0,0,0,0.95)",
-            zIndex: 9999,
+            zIndex: 9999999,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -987,7 +988,8 @@ export function MemoryListModal({ isOpen, onClose }) {
               {selectedPhotoIndex + 1} / {selectedMemoryPhotos.length}
             </div>
           )}
-        </div>
+        </div>,
+        document.body
       )}
 
       <ConfirmationModal

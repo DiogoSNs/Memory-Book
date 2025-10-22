@@ -4,10 +4,11 @@
 // ============================================
 
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import { Trash2, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { extractSpotifyId } from '../utils/helpers.js';
 
-export function MemoryPopupContent({ memory, onDelete }) {
+export function MemoryPopupContent({ memory, onDelete, onClose }) {
   const [showFullImage, setShowFullImage] = useState(false);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
@@ -188,7 +189,10 @@ export function MemoryPopupContent({ memory, onDelete }) {
       </p>
 
       <button
-        onClick={onDelete}
+        onClick={() => {
+          onDelete();
+          if (onClose) onClose();
+        }}
         style={{
           color: "#ef4444",
           background: "transparent",
@@ -206,7 +210,7 @@ export function MemoryPopupContent({ memory, onDelete }) {
         Excluir memória
       </button>
 
-      {showFullImage && memory.photos && (
+      {showFullImage && memory.photos && ReactDOM.createPortal(
         <div
           onClick={() => {
             if (hideTimeout) clearTimeout(hideTimeout);
@@ -221,7 +225,7 @@ export function MemoryPopupContent({ memory, onDelete }) {
             position: "fixed",
             inset: 0,
             background: "rgba(0,0,0,0.95)",
-            zIndex: 99999,
+            zIndex: 9999999,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -359,7 +363,8 @@ export function MemoryPopupContent({ memory, onDelete }) {
               {selectedPhotoIndex + 1} / {memory.photos.length}
             </div>
           )}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

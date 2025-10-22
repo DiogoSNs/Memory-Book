@@ -304,7 +304,7 @@ export function MapView() {
               ? "0 10px 25px rgba(239, 68, 68, 0.3)" 
               : "0 10px 25px rgba(76, 29, 149, 0.3)",
             transition: "all 0.3s ease",
-            zIndex: 1000,
+            zIndex: 950,
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.transform = "scale(1.1)";
@@ -349,7 +349,7 @@ export function MapView() {
               justifyContent: "center",
               boxShadow: "0 8px 20px rgba(76, 29, 149, 0.3)",
               transition: "all 0.3s ease",
-              zIndex: 1000,
+              zIndex: 950,
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.transform = "scale(1.1)";
@@ -386,7 +386,7 @@ export function MapView() {
               justifyContent: "center",
               boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
               transition: "all 0.3s ease",
-              zIndex: 1000,
+              zIndex: 950,
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.transform = "scale(1.1)";
@@ -424,7 +424,7 @@ export function MapView() {
               textAlign: "center",
               maxWidth: isMobile ? "90%" : "auto",
               boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-              zIndex: 1001,
+              zIndex: 951,
               animation: "fadeInSlide 0.3s ease-out",
             }}
           >
@@ -438,7 +438,7 @@ export function MapView() {
             position: "absolute",
             bottom: isMobile ? "1rem" : "2rem",
             left: isMobile ? "1rem" : "2rem",
-            zIndex: 1000,
+            zIndex: 950,
           }}
         >
           {/* Botão de lista de memórias */}
