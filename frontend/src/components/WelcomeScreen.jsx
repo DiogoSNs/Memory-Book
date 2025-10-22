@@ -213,7 +213,7 @@ const WelcomeScreen = ({ onClose }) => {
               Como começar
             </h3>
             <p style={{ color: "#374151", marginBottom: "16px" }}>
-              Para criar sua primeira memória, simplesmente clique em qualquer lugar do mapa. 
+              Para criar sua primeira memória, primeiro clique no botão com símbolo de <strong>"+"</strong> e depois clique em qualquer lugar do mapa. 
               Uma janela se abrirá onde você poderá adicionar o título, descrição, fotos e todos os detalhes da sua lembrança especial.
             </p>
             <div style={{
