@@ -34,6 +34,11 @@ const RegisterForm = ({ onSwitchToLogin }) => {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
+  // Debug: monitorar mudanças no estado errors
+  useEffect(() => {
+    console.log('🔍 [RegisterForm] Estado errors atualizado:', errors);
+  }, [errors]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -89,14 +94,33 @@ const RegisterForm = ({ onSwitchToLogin }) => {
 
     setIsLoading(true);
     try {
+      console.log('🔍 [RegisterForm] Iniciando registro com:', { 
+        name: formData.name, 
+        email: formData.email 
+      });
       const result = await register({
         name: formData.name,
         email: formData.email,
         password: formData.password
       });
+      console.log('🔍 [RegisterForm] Resultado do registro:', result);
       
       if (!result.success) {
-        setErrors({ general: result.error || 'Erro ao criar conta' });
+        const errorMessage = result?.error || 'Erro ao criar conta';
+        const errorSuggestion = result?.suggestion || null;
+        const errorType = result?.errorType || null;
+        
+        console.log('🔍 [RegisterForm] Definindo erros:', { 
+          general: errorMessage,
+          suggestion: errorSuggestion,
+          errorType: errorType
+        });
+        
+        setErrors({ 
+          general: errorMessage,
+          suggestion: errorSuggestion,
+          errorType: errorType
+        });
       }
     } catch (error) {
       setErrors({ general: error.message || 'Erro ao criar conta' });
@@ -173,19 +197,56 @@ const RegisterForm = ({ onSwitchToLogin }) => {
           {errors.general && (
             <div style={{
               backgroundColor: "#fef2f2",
-              border: "1px solid #fecaca",
+              border: "2px solid #fecaca",
               borderRadius: "8px",
-              padding: "12px",
+              padding: "16px",
               marginBottom: "24px"
             }}>
               <p style={{ 
                 color: "#dc2626", 
-                fontSize: isMobile ? "12px" : "14px", 
-                fontWeight: "500",
-                margin: 0
+                fontSize: isMobile ? "13px" : "14px", 
+                fontWeight: "600",
+                margin: "0 0 8px 0",
+                lineHeight: "1.5"
               }}>
                 {errors.general}
               </p>
+              {errors.suggestion && (
+                <p style={{ 
+                  color: "#991b1b", 
+                  fontSize: isMobile ? "12px" : "13px", 
+                  margin: "0 0 12px 0",
+                  lineHeight: "1.4"
+                }}>
+                  {errors.suggestion}
+                </p>
+              )}
+              {errors.errorType === 'email_already_exists' && (
+                <button
+                  onClick={onSwitchToLogin}
+                  style={{
+                    background: "none",
+                    border: "1px solid #dc2626",
+                    color: "#dc2626",
+                    padding: "8px 16px",
+                    borderRadius: "6px",
+                    fontSize: isMobile ? "12px" : "13px",
+                    fontWeight: "500",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease"
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.backgroundColor = "#dc2626";
+                    e.target.style.color = "white";
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.color = "#dc2626";
+                  }}
+                >
+                  Fazer Login
+                </button>
+              )}
             </div>
           )}
 

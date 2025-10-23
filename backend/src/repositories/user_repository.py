@@ -75,6 +75,30 @@ class UserRepository(BaseRepository):
         
         return None
     
+    def authenticate_with_details(self, email: str, password: str) -> tuple[Optional[User], str]:
+        """
+        Autentica um usuário com detalhes sobre o erro
+        
+        Args:
+            email (str): Email do usuário
+            password (str): Senha em texto plano
+            
+        Returns:
+            Tupla com (usuário autenticado ou None, mensagem de erro)
+        """
+        user = self.get_by_email(email)
+        
+        if not user:
+            return None, "user_not_found"
+        
+        if not user.is_active:
+            return None, "user_inactive"
+        
+        if not user.check_password(password):
+            return None, "invalid_password"
+        
+        return user, "success"
+    
     def get_active_users(self):
         """
         Busca todos os usuários ativos

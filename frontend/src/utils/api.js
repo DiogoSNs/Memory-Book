@@ -95,7 +95,6 @@ class ApiFacade {
         throw error;
       }
       
-      // Erro de rede ou outros erros
       throw new ApiError(
         'Erro de conexão com o servidor',
         0,

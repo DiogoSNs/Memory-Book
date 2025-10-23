@@ -126,15 +126,16 @@ export function MemoryListModal({ isOpen, onClose }) {
   const handlePhotoUpload = async (e) => {
     const files = Array.from(e.target.files);
 
-    if (!validatePhotoLimit(editForm.photos.length, files.length)) {
-      showToast("Você pode adicionar no máximo 6 fotos por memória!", "error");
+    const photoValidation = validatePhotoLimit(editForm.photos.length, files.length);
+    if (!photoValidation.valid) {
+      showToast(photoValidation.error, "error");
       e.target.value = ''; // Reset input
       return;
     }
 
-    const oversizedFiles = files.filter(file => !validateFileSize(file));
-    if (oversizedFiles.length > 0) {
-      showToast(`${oversizedFiles.length} foto(s) excedem o limite de 3MB! (Limite reduzido para melhor performance)`, "error");
+    const fileSizeValidation = validateFileSize(files);
+    if (!fileSizeValidation.valid) {
+      showToast(fileSizeValidation.error, "error");
       e.target.value = ''; // Reset input
       return;
     }

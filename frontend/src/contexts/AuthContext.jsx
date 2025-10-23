@@ -62,14 +62,37 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true, user: response.user };
     } catch (error) {
-      console.error('Erro no login:', error);
-      
       let errorMessage = 'Erro ao fazer login';
+      let suggestion = null;
+      let errorType = null;
+      
+      console.log('🔍 [AuthContext] Erro capturado:', error);
+      console.log('🔍 [AuthContext] error.data:', error.data);
+      
       if (error instanceof ApiError) {
+        // A mensagem principal vem de error.message
         errorMessage = error.message;
+        
+        // Os dados adicionais vêm de error.data
+        if (error.data) {
+          // Tentar pegar suggestion de diferentes formas
+          suggestion = error.data.suggestion || error.data.sugestao || null;
+          
+          // Tentar pegar error_type de diferentes formas
+          errorType = error.data.error_type || error.data.errorType || error.data.type || null;
+        }
       }
       
-      return { success: false, error: errorMessage };
+      const errorResponse = { 
+        success: false, 
+        error: errorMessage,
+        suggestion: suggestion,
+        errorType: errorType
+      };
+      
+      console.log('🔍 [AuthContext] Retornando erro de login:', errorResponse);
+      
+      return errorResponse;
     } finally {
       setIsLoading(false);
     }
@@ -92,14 +115,32 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true, user: response.user };
     } catch (error) {
-      console.error('Erro no registro:', error);
-      
       let errorMessage = 'Erro ao criar conta';
+      let suggestion = null;
+      let errorType = null;
+      
       if (error instanceof ApiError) {
+        // A mensagem principal vem de error.message
         errorMessage = error.message;
+        
+        // Os dados adicionais vêm de error.data
+        if (error.data) {
+          // Tentar pegar suggestion de diferentes formas
+          suggestion = error.data.suggestion || error.data.sugestao || null;
+          
+          // Tentar pegar error_type de diferentes formas
+          errorType = error.data.error_type || error.data.errorType || error.data.type || null;
+        }
       }
       
-      return { success: false, error: errorMessage };
+      const errorResponse = { 
+        success: false, 
+        error: errorMessage,
+        suggestion: suggestion,
+        errorType: errorType
+      };
+      
+      return errorResponse;
     } finally {
       setIsLoading(false);
     }
@@ -140,7 +181,6 @@ export const AuthProvider = ({ children }) => {
   const closeWelcome = () => {
     setShowWelcome(false);
     setIsNewRegistration(false);
-    // Removido localStorage para permitir que a mensagem apareça sempre após criar conta
   };
 
   const value = {

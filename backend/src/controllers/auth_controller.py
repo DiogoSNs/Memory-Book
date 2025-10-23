@@ -41,14 +41,26 @@ def register():
         
         # Validações básicas
         if len(name) < 2:
-            return jsonify({'error': 'Nome deve ter pelo menos 2 caracteres'}), 400
+            return jsonify({
+                'message': 'Nome deve ter pelo menos 2 caracteres',
+                'error_type': 'invalid_name',
+                'suggestion': 'Digite um nome com pelo menos 2 caracteres'
+            }), 400
         
         if len(password) < 6:
-            return jsonify({'error': 'Senha deve ter pelo menos 6 caracteres'}), 400
+            return jsonify({
+                'message': 'Senha deve ter pelo menos 6 caracteres',
+                'error_type': 'invalid_password',
+                'suggestion': 'Digite uma senha com pelo menos 6 caracteres'
+            }), 400
         
         # Verificar se o email já existe
         if user_repo.get_by_email(email):
-            return jsonify({'error': 'Email já está em uso'}), 400
+            return jsonify({
+                'message': 'Email já está em uso',
+                'error_type': 'email_already_exists',
+                'suggestion': 'Tente fazer login ou use outro email'
+            }), 400
         
         # Criar usuário
         user = user_repo.create(name=name, email=email, password=password)
@@ -190,11 +202,34 @@ def login():
         email = data['email']
         password = data['password']
         
-        # Autenticar usuário
-        user = user_repo.authenticate(email, password)
+        # Autenticar usuário com detalhes
+        user, auth_result = user_repo.authenticate_with_details(email, password)
         
         if not user:
-            return jsonify({'error': 'Credenciais inválidas'}), 401
+            if auth_result == "user_not_found":
+                return jsonify({
+                    'message': 'Usuário não encontrado',
+                    'suggestion': 'Verifique se o email está correto ou crie uma nova conta.',
+                    'error_type': 'user_not_found'
+                }), 401
+            elif auth_result == "invalid_password":
+                return jsonify({
+                    'message': 'Senha incorreta',
+                    'suggestion': 'Verifique sua senha ou crie uma nova conta se ainda não possui uma.',
+                    'error_type': 'invalid_password'
+                }), 401
+            elif auth_result == "user_inactive":
+                return jsonify({
+                    'message': 'Conta inativa',
+                    'suggestion': 'Entre em contato com o suporte para reativar sua conta.',
+                    'error_type': 'user_inactive'
+                }), 401
+            else:
+                return jsonify({
+                    'message': 'Email ou senha incorretos',
+                    'suggestion': 'Verifique suas credenciais ou crie uma conta se ainda não possui uma.',
+                    'error_type': 'unknown'
+                }), 401
         
         # Gerar token de acesso
         access_token = create_access_token(identity=str(user.id))
