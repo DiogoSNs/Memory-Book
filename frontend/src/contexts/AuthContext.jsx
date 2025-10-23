@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { api, ApiError } from '../utils/api.js';
 
 const AuthContext = createContext();
 
@@ -17,27 +18,26 @@ export const AuthProvider = ({ children }) => {
   const [showWelcome, setShowWelcome] = useState(false);
   const [isNewRegistration, setIsNewRegistration] = useState(false);
 
-  // Verificar se há usuário logado no localStorage ao inicializar
+  // Verificar se há usuário logado ao inicializar
   useEffect(() => {
-    const checkAuthStatus = () => {
+    const checkAuthStatus = async () => {
       try {
-        const storedUser = localStorage.getItem('user');
-        const token = localStorage.getItem('authToken');
-        
-        if (storedUser && token) {
-          const userData = JSON.parse(storedUser);
-          setUser(userData);
+        // Verificar se há token válido
+        if (api.isAuthenticated()) {
+          // Tentar obter dados do usuário atual
+          const userData = await api.getCurrentUser();
+          setUser(userData.user);
           setIsAuthenticated(true);
           
           // Nunca mostrar boas-vindas automaticamente ao carregar
-          // A tela de login deve ser sempre a primeira tela
           setShowWelcome(false);
         }
       } catch (error) {
         console.error('Erro ao verificar status de autenticação:', error);
-        // Limpar dados corrompidos
-        localStorage.removeItem('user');
-        localStorage.removeItem('authToken');
+        // Token inválido ou expirado, fazer logout
+        await api.logout();
+        setUser(null);
+        setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
       }
@@ -46,96 +46,94 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, []);
 
-  // Função de login (preparada para integração com backend)
+  // Função de login
   const login = async (email, password) => {
     try {
       setIsLoading(true);
       
-      // TODO: Substituir por chamada real para o backend
-      // Simulação temporária para desenvolvimento
-      const mockUser = {
-        id: Date.now(),
-        name: email.split('@')[0],
-        email: email,
-        avatar: null
-      };
+      // Fazer login via API
+      const response = await api.login({ email, password });
       
-      const mockToken = 'mock-jwt-token-' + Date.now();
-      
-      // Simular delay de rede
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Salvar no localStorage
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      localStorage.setItem('authToken', mockToken);
-      
-      setUser(mockUser);
+      setUser(response.user);
       setIsAuthenticated(true);
       
       // Não mostrar boas-vindas no login, apenas no registro
       setShowWelcome(false);
       
-      return { success: true, user: mockUser };
+      return { success: true, user: response.user };
     } catch (error) {
       console.error('Erro no login:', error);
-      return { success: false, error: 'Erro ao fazer login' };
+      
+      let errorMessage = 'Erro ao fazer login';
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+      }
+      
+      return { success: false, error: errorMessage };
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Função de registro (preparada para integração com backend)
+  // Função de registro
   const register = async (userData) => {
     try {
       setIsLoading(true);
       
-      // TODO: Substituir por chamada real para o backend
-      // Simulação temporária para desenvolvimento
-      const newUser = {
-        id: Date.now(),
-        name: userData.name,
-        email: userData.email,
-        avatar: null
-      };
+      // Fazer registro via API
+      const response = await api.register(userData);
       
-      const mockToken = 'mock-jwt-token-' + Date.now();
-      
-      // Simular delay de rede
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Salvar no localStorage
-      localStorage.setItem('user', JSON.stringify(newUser));
-      localStorage.setItem('authToken', mockToken);
-      
-      setUser(newUser);
+      setUser(response.user);
       setIsAuthenticated(true);
       
       // Marcar como novo registro e mostrar boas-vindas
       setIsNewRegistration(true);
       setShowWelcome(true);
       
-      return { success: true, user: newUser };
+      return { success: true, user: response.user };
     } catch (error) {
       console.error('Erro no registro:', error);
-      return { success: false, error: 'Erro ao criar conta' };
+      
+      let errorMessage = 'Erro ao criar conta';
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+      }
+      
+      return { success: false, error: errorMessage };
     } finally {
       setIsLoading(false);
     }
   };
 
   // Função de logout
-  const logout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('authToken');
-    setUser(null);
-    setIsAuthenticated(false);
+  const logout = async () => {
+    try {
+      await api.logout();
+    } catch (error) {
+      console.error('Erro no logout:', error);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+    }
   };
 
   // Função para atualizar dados do usuário
-  const updateUser = (userData) => {
-    const updatedUser = { ...user, ...userData };
-    setUser(updatedUser);
-    localStorage.setItem('user', JSON.stringify(updatedUser));
+  const updateUser = async (userData) => {
+    try {
+      const response = await api.updateUserProfile(user.id, userData);
+      const updatedUser = { ...user, ...response.user };
+      setUser(updatedUser);
+      return { success: true, user: updatedUser };
+    } catch (error) {
+      console.error('Erro ao atualizar usuário:', error);
+      
+      let errorMessage = 'Erro ao atualizar dados';
+      if (error instanceof ApiError) {
+        errorMessage = error.message;
+      }
+      
+      return { success: false, error: errorMessage };
+    }
   };
 
   // Função para fechar a tela de boas-vindas

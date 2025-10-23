@@ -4,7 +4,8 @@
 // ============================================
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { MemoryRepository } from '../models/MemoryRepository.js';
+import { api, ApiError } from '../utils/api.js';
+import { useAuth } from '../contexts/AuthContext.jsx';
 
 // Context para compartilhar estado das memórias
 const MemoryContext = createContext(null);
@@ -13,60 +14,95 @@ const MemoryContext = createContext(null);
 export function MemoryProvider({ children }) {
   const [memories, setMemories] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const repository = new MemoryRepository();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { isAuthenticated } = useAuth();
 
-  // Carrega memórias ao inicializar
+  // Carrega memórias ao inicializar (apenas se autenticado)
   useEffect(() => {
-    const loadedMemories = repository.loadAll();
-    setMemories(loadedMemories);
-    setIsLoaded(true);
-    console.log("✅ Memórias carregadas:", loadedMemories.length);
-  }, []);
-
-  // Salva memórias sempre que o estado muda
-  useEffect(() => {
-    if (isLoaded && memories.length >= 0) {
-      repository.saveAll(memories);
+    if (isAuthenticated) {
+      loadMemories();
+    } else {
+      setMemories([]);
+      setIsLoaded(false);
     }
-  }, [memories, isLoaded]);
+  }, [isAuthenticated]);
+
+  // Função para carregar memórias da API
+  const loadMemories = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await api.getMemories();
+      setMemories(response.memories || []);
+      setIsLoaded(true);
+      console.log("✅ Memórias carregadas:", response.memories?.length || 0);
+    } catch (error) {
+      console.error("Erro ao carregar memórias:", error);
+      setError(error instanceof ApiError ? error.message : 'Erro ao carregar memórias');
+      setMemories([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Adiciona nova memória
-  const addMemory = (memoryData) => {
+  const addMemory = async (memoryData) => {
     try {
-      const newMemory = repository.add(memoryData);
+      setIsLoading(true);
+      setError(null);
+      const response = await api.addMemory(memoryData);
+      const newMemory = response.memory;
       setMemories(prev => [...prev, newMemory]);
-      return newMemory;
+      return { success: true, memory: newMemory };
     } catch (error) {
       console.error("Erro ao adicionar memória:", error);
-      throw error;
+      const errorMessage = error instanceof ApiError ? error.message : 'Erro ao adicionar memória';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // Atualiza memória existente
-  const updateMemory = (id, updatedData) => {
+  const updateMemory = async (id, updatedData) => {
     try {
-      const updatedMemory = repository.update(id, updatedData);
+      setIsLoading(true);
+      setError(null);
+      const response = await api.updateMemory(id, updatedData);
+      const updatedMemory = response.memory;
       setMemories(prev => 
         prev.map(memory => 
           memory.id === id ? updatedMemory : memory
         )
       );
-      return updatedMemory;
+      return { success: true, memory: updatedMemory };
     } catch (error) {
       console.error("Erro ao atualizar memória:", error);
-      throw error;
+      const errorMessage = error instanceof ApiError ? error.message : 'Erro ao atualizar memória';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // Remove memória
-  const deleteMemory = (id) => {
+  const deleteMemory = async (id) => {
     try {
-      repository.delete(id);
+      setIsLoading(true);
+      setError(null);
+      await api.deleteMemory(id);
       setMemories(prev => prev.filter(memory => memory.id !== id));
-      return true;
+      return { success: true };
     } catch (error) {
       console.error("Erro ao deletar memória:", error);
-      throw error;
+      const errorMessage = error instanceof ApiError ? error.message : 'Erro ao deletar memória';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -80,6 +116,23 @@ export function MemoryProvider({ children }) {
     return memories.length;
   };
 
+  // Função para buscar memórias com filtros
+  const searchMemories = async (filters) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await api.searchMemories(filters);
+      return { success: true, memories: response.memories || [] };
+    } catch (error) {
+      console.error("Erro ao buscar memórias:", error);
+      const errorMessage = error instanceof ApiError ? error.message : 'Erro ao buscar memórias';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const value = {
     memories,
     addMemory,
@@ -87,7 +140,12 @@ export function MemoryProvider({ children }) {
     deleteMemory,
     findMemoryById,
     getMemoryCount,
-    isLoaded
+    searchMemories,
+    loadMemories,
+    isLoaded,
+    isLoading,
+    error,
+    clearError: () => setError(null)
   };
 
   return (
