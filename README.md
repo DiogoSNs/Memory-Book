@@ -1,339 +1,397 @@
-# 🗺️ Mapa de Memórias Afetivas
+# 🗺️ Memory-Book - Mapa de Memórias Afetivas
 
-Um projeto desenvolvido por Alberto Pontiery, Diogo Nascimento e Guilherme Franco na matéria de Engenharia de Software que transforma lembranças em pontos interativos no mapa.  
-A ideia é registrar momentos especiais (texto, fotos, áudios ou vídeos) e guardá-los em um espaço visual e afetivo. 💖  
+Um projeto desenvolvido por **Alberto Pontiery**, **Diogo Nascimento** e **Guilherme Franco** na matéria de Engenharia de Software que transforma lembranças em pontos interativos no mapa.  
+A ideia é registrar momentos especiais (texto, fotos, descrições e localizações) e guardá-los em um espaço visual e afetivo. 💖  
 
 ---
 
 ## 🌟 Sobre o Projeto
-O **Mapa de Memórias Afetivas** é um aplicativo web que permite:
-- 📍 Marcar lugares importantes no mapa.  
-- 📝 Adicionar descrições curtas das lembranças.  
-- 📷 Registrar fotos, 🎤 músicas ou 🎥 vídeos.  
-- 🗂️ Organizar memórias por tags, data ou humor.  
-- 🤝 Compartilhar com amigos, família ou casal.  
+O **Memory-Book** é uma aplicação web full-stack que permite:
+- 📍 Marcar lugares importantes no mapa interativo
+- 📝 Adicionar descrições detalhadas das lembranças
+- 📷 Registrar fotos e cores personalizadas para cada memória
+- 🎵 Integração com Spotify para adicionar trilha sonora às memórias
+- 🗂️ Organizar memórias por data e visualizá-las em lista
+- 👤 Sistema completo de autenticação e perfis de usuário
+- 🎨 Temas e gradientes personalizáveis
+- 📱 Interface responsiva para desktop e mobile
 
 Mais do que um CRUD, é um espaço digital poético para revisitar histórias.  
  
 ---
 
-## 📌 Funcionalidades (Backlog Inicial)
-- [x] Mapa interativo base (Leaflet)  
-- [x] Adicionar marcador manual  
-- [x] Autenticação de usuários (login/cadastro)  
-- [x] Salvar memórias no localStorage  
-- [x] Upload de fotos 
-- [x] Visualização de memórias salvas  
-- [x] Filtros por tags/data  
-- [x] Sistema de gradientes personalizáveis
-- [x] Interface responsiva e moderna
-- [ ] Versão colaborativa (compartilhar memórias)
-- [ ] Integração com Spotify para músicas  
+## 📌 Funcionalidades Implementadas
+- [x] **Mapa interativo** com React-Leaflet e OpenStreetMap
+- [x] **Sistema de autenticação completo** (registro, login, logout)
+- [x] **CRUD completo de memórias** (criar, visualizar, editar, excluir)
+- [x] **Upload e visualização de fotos**
+- [x] **Integração com Spotify** para adicionar músicas às memórias
+- [x] **Sistema de cores personalizáveis** para cada memória
+- [x] **Filtros e busca** por título, descrição e data
+- [x] **Temas e gradientes dinâmicos** (Aurora, Sunset, Ocean, Forest, Cosmic)
+- [x] **Interface responsiva** e moderna
+- [x] **Banco de dados relacional** com SQLite/PostgreSQL
+- [x] **API RESTful** completa com Flask
+- [x] **Sistema de notificações** (toasts)
+- [x] **Exportação de memórias** em PDF
+- [x] **Persistência de dados** no backend
 
 ---
 
-## 🎨 Diferenciais
-- Design minimalista e acolhedor.  
-- Cores diferentes para cada tipo de lembrança.  
-- Animações suaves ao abrir memórias.  
-- Opção de exportar sua linha do tempo.  
+## 🏗️ Arquitetura e Tecnologias
 
----
-
-# 🧩 Proposta de Arquitetura
-
-## Análise dos Requisitos do Projeto
-
-O **Memory Book** é um sistema web interativo que permite aos usuários registrar lembranças pessoais em pontos geográficos, com textos e mídias associadas.  
-A arquitetura precisa ser modular, escalável e preparada para futuras funcionalidades, como upload de mídias e autenticação de usuários.
-
-### Requisitos Funcionais (RF)
-
-| Código | Descrição |
-|:-------|:-----------|
-| **RF01** | Criar, visualizar, editar e excluir memórias geolocalizadas. |
-| **RF02** | Exibir memórias em um mapa interativo. |
-| **RF03** | Filtrar memórias por data, tag ou tipo de mídia. |
-| **RF04** | Compartilhar memórias via link ou QR Code. |
-| **RF05 (futuro)** | Adicionar mídias (fotos, vídeos, áudios). |
-
-### Requisitos Não Funcionais (RNF)
-
-| Código | Descrição |
-|:-------|:-----------|
-| **RNF01** | Interface responsiva e intuitiva (mobile e desktop). |
-| **RNF02** | Persistência de dados em banco relacional (PostgreSQL). |
-| **RNF03** | Tempo médio de resposta ≤ 3 segundos. |
-| **RNF04** | Arquitetura modular e de fácil manutenção. |
-| **RNF05 (futuro)** | Autenticação e controle de acesso seguro. |
-
-### Implicações Arquiteturais
-
-- O sistema deve manter **fronteiras claras entre frontend, backend e banco de dados**, evitando acoplamento.  
-- Deve permitir **crescimento incremental**, com adição de novos módulos (upload, login).  
-- Requer **API leve e responsiva** para comunicação em tempo real com o mapa.  
-- A estrutura precisa facilitar **testes unitários e manutenibilidade** do código.
-
----
-
-## Escolha do Padrão de Arquitetura Base
-
-### Padrão Arquitetural Adotado
-
-Arquitetura Cliente-Servidor em Camadas com o padrão MVC (Model-View-Controller)
-
-| Critério | Decisão | Benefício |
-|:----------|:--------|:----------|
-| **Organização e clareza** | Uso do padrão **MVC** no backend | Facilita manutenção e entendimento do código. |
-| **Escalabilidade** | Separação entre frontend e backend | Permite evolução independente de cada camada. |
-| **Desempenho** | API RESTful leve (Express + JSON) | Garante comunicação rápida e flexível. |
-| **Manutenibilidade** | Arquitetura em camadas (View, Controller, Model, DB) | Possibilita substituição ou melhoria de módulos sem impacto global. |
-| **Segurança futura** | Middleware de autenticação | Permite implementar login e permissões (JWT). |
-| **Experiência do usuário** | SPA responsiva (React + Leaflet) | Atualizações dinâmicas e fluídas sem recarregar a página. |
-
-> Essa abordagem combina a separação de responsabilidades do **MVC** com a distribuição lógica do **cliente-servidor**, o que garante escalabilidade e organização.
-
-### Justificativa da Escolha
-
-A arquitetura **Cliente-Servidor em Camadas com MVC** foi escolhida porque equilibra **simplicidade e extensibilidade**.  
-Ela permite o isolamento entre interface, regras de negócio e persistência de dados, o que torna o sistema mais **robusto, testável e escalável**.  
-
-Além disso, esse padrão é amplamente recomendado para aplicações **web distribuídas**, conforme **Sommerville (2019)** e **Pressman (2016)**, pois facilita a **manutenibilidade e modularidade**, reduzindo riscos durante a evolução do software.  
-
-> Em resumo, essa escolha garante uma base sólida para crescimento incremental, sem comprometer desempenho ou clareza estrutural.
----
-
-## Especificação Técnica e Estrutura
-### Estrutura de Diretórios
-
-```
-mapa-memorias/
-│
-├── frontend/ # Frontend React + Vite
-│ ├── src/ # Código fonte do frontend
-│ │ ├── components/ # Componentes reutilizáveis
-│ │ │ ├── ConfirmationModal.jsx
-│ │ │ ├── FormField.jsx
-│ │ │ ├── MemoryForm.jsx
-│ │ │ ├── MemoryListModal.jsx
-│ │ │ ├── MemoryMarker.jsx
-│ │ │ └── ... (outros componentes)
-│ │ ├── contexts/ # Context API para gerenciamento de estado
-│ │ │ ├── AuthContext.jsx # Autenticação
-│ │ │ ├── GradientContext.jsx # Gradientes
-│ │ │ └── ToastContext.jsx # Notificações
-│ │ ├── controllers/ # Controladores de estado
-│ │ │ └── MemoryController.jsx
-│ │ ├── models/ # Modelos de dados
-│ │ │ ├── Memory.js
-│ │ │ └── MemoryRepository.js
-│ │ ├── views/ # Páginas principais
-│ │ │ ├── MapView.jsx # Mapa principal
-│ │ │ ├── AppHeader.jsx
-│ │ │ └── ... (outras views)
-│ │ ├── utils/ # Utilitários
-│ │ └── assets/ # Imagens e recursos
-│ ├── public/ # Arquivos estáticos
-│ ├── package.json # Dependências do frontend
-│ ├── vite.config.js # Configuração do Vite
-│ └── node_modules/ # Dependências instaladas
-│
-├── backend/ # Backend (preparado para desenvolvimento futuro)
-│ └── README.md # Documentação do backend
-│
-└── README.md # Documentação principal do projeto
-```
-
-## Conexão da Proposta com o Projeto *Memory Book*
-### Visão Geral da Arquitetura
+### 🎯 Padrão Arquitetural
+**Cliente-Servidor em Camadas com MVC (Model-View-Controller)**
 
 ```
 ┌──────────────────────────────┐
-│ Apresentação                 │
-│ (Frontend - React + Leaflet) │
+│ Frontend (React + Vite)      │
 │ - Interface SPA              │
-│ - Exibição e criação de      │
-│   memórias no mapa           │
+│ - React-Leaflet para mapas   │
+│ - Context API para estado    │
 └───────────────▲──────────────┘
                 │
     Comunicação via API REST (JSON)
                 │
 ┌───────────────▼──────────────┐
-│ Lógica de Negócio            │
-│ (Backend - Node.js / Express)│
-│ - Controllers e validações   │
-│ - Regras de CRUD             │
-│ - Integração com banco       │
+│ Backend (Flask + Python)     │
+│ - Controllers MVC            │
+│ - Repository Pattern         │
+│ - JWT Authentication         │
 └───────────────▲──────────────┘
                 │
-┌───────────────▼──────────────┐
-│ Persistência de Dados        │
-│ (PostgreSQL + Sequelize)     │
-│ - Tabelas: Usuários,         │
-│   Memórias, Mídias, Tags     │
-│ - Extensão PostGIS (geo)     │
+┌───────────────▼──────────────┘
+│ Banco de Dados (SQLite)      │
+│ - SQLAlchemy ORM             │
+│ - Tabelas: Users, Memories,  │
+│   Themes                     │
 └──────────────────────────────┘
 ```
-### Relação com os Requisitos
 
-| Requisito | Solução Arquitetural |
-|:-----------|:---------------------|
-| RF01–RF03 | Implementados via rotas CRUD (Express) e renderização dinâmica (React + Leaflet). |
-| RF04 | Controlador gera links únicos ou QR Codes para compartilhamento. |
-| RF05 | Planejado via integração com serviços externos (AWS S3 / Firebase Storage). |
-| RNF01 | SPA responsiva garante compatibilidade entre dispositivos. |
-| RNF02 | PostgreSQL assegura integridade e persistência de dados. |
-| RNF03 | API leve com cache local e consultas otimizadas. |
-| RNF04 | Separação entre camadas reduz acoplamento e facilita manutenção. |
+### 🛠️ Stack Tecnológica
+
+#### Frontend
+- **React 19.1.1** - Biblioteca para interfaces
+- **Vite 7.1.7** - Build tool e dev server
+- **React-Leaflet 5.0.0** - Mapas interativos
+- **Leaflet 1.9.4** - Biblioteca de mapas
+- **Lucide React 0.546.0** - Ícones modernos
+- **jsPDF 3.0.3** - Geração de PDFs
+- **Context API** - Gerenciamento de estado global
+
+#### Backend
+- **Flask 3.0.0** - Framework web Python
+- **SQLAlchemy 3.1.1** - ORM para banco de dados
+- **Flask-JWT-Extended 4.6.0** - Autenticação JWT
+- **Flask-CORS 4.0.0** - Suporte a CORS
+- **Flask-Migrate 4.1.0** - Migrações de banco
+- **bcrypt 4.1.2** - Criptografia de senhas
+- **Marshmallow 3.20.2** - Serialização de dados
+
+#### Banco de Dados
+- **SQLite** (desenvolvimento)
+- **PostgreSQL** (produção - preparado)
 
 ---
 
-## 📷 Protótipo (Preview)
-
-
-![Protótipo 1](img/img1.jpg)
-![Protótipo 2](img/img2.png)
-![Protótipo 3](img/img3.jpg)
-
----
-
-## 🎯 Padrões de Projeto Implementados
+## 🧩 Padrões de Projeto Implementados
 
 ### 📡 Padrão Observer
 **Categoria:** Comportamental  
 **Aplicação:** Gerenciamento de estado global da aplicação  
-**Justificativa:** Permite que múltiplos componentes sejam notificados automaticamente quando o estado muda, mantendo a interface sempre sincronizada.
 
-**Exemplos de Implementação:**
-- **AuthContext**: Notifica todos os componentes sobre mudanças no estado de autenticação
-- **GradientContext**: Atualiza automaticamente a interface quando o gradiente é alterado
-- **ToastContext**: Gerencia notificações globais da aplicação
-- **MemoryController**: Observa mudanças nas memórias e atualiza a persistência
+**Implementações:**
+- **AuthContext**: Gerencia estado de autenticação
+- **GradientContext**: Controla temas e gradientes
+- **ToastContext**: Sistema de notificações globais
 
-### 🧩 Padrão Component/Composite
+### 🏭 Factory Method Pattern
+**Categoria:** Criacional  
+**Aplicação:** Criação de modelos de dados no backend  
+
+**Implementações:**
+- **BaseModel**: Factory para criação de instâncias de modelos
+- **User.create()**: Factory method para usuários
+- **Memory.create()**: Factory method para memórias
+
+### 🗃️ Repository Pattern
+**Categoria:** Estrutural  
+**Aplicação:** Abstração da camada de acesso a dados  
+
+**Implementações:**
+- **UserRepository**: Operações CRUD para usuários
+- **MemoryRepository**: Operações CRUD para memórias
+- **ThemeRepository**: Operações CRUD para temas
+
+### 🧩 Component/Composite Pattern
 **Categoria:** Estrutural  
 **Aplicação:** Estrutura hierárquica de componentes React  
-**Justificativa:** Facilita a reutilização, manutenibilidade e organização do código através de uma estrutura em árvore de componentes.
 
-**Exemplos de Implementação:**
-- **App** → **AppContent** → **MapView** → **MemoryMarker** (hierarquia principal)
-- **FormField**: Componente reutilizável usado em múltiplos formulários
-- **ConfirmationModal**: Modal reutilizável para confirmações
-- **Toast**: Componente de notificação modular
-
-**Benefícios Alcançados:**
-- ✅ Separação clara de responsabilidades
-- ✅ Reutilização de código
-- ✅ Facilidade de manutenção
-- ✅ Testabilidade individual dos componentes
+**Implementações:**
+- Hierarquia de componentes reutilizáveis
+- FormField, ConfirmationModal, Toast
+- Estrutura modular e escalável
 
 ---
 
-## 🧩 Plano de Gerenciamento de Qualidade
+## 📁 Estrutura do Projeto
 
-O presente plano define os processos e padrões adotados pela equipe para assegurar a **qualidade do produto e do processo** durante o desenvolvimento do projeto **Mapa de Memórias Afetivas**.
-
-### 👥 Papéis e Responsabilidades
-| Papel | Responsável | Atribuições |
-|-------|--------------|-------------|
-| Integração e Qualidade | Guilherme Franco | Garante a integração entre frontend e backend, valida a comunicação entre as APIs e verifica a consistência dos dados. |
-| Desenvolvedor Backend | Alberto Pontiery | Implementa API, banco de dados e rotas de comunicação. |
-| Desenvolvedor Frontend | Diogo Nascimento | Cria a interface interativa e integra o frontend à API. |
-| QA / Revisor | Rotativo entre os membros | Realiza testes, revisa código e valida requisitos. |
-
----
-
-### 🧱 Padrões de Desenvolvimento e Ferramentas
-- **Frontend:** React + Vite + Leaflet + Context API
-- **Gerenciamento de Estado:** Context API (AuthContext, GradientContext, ToastContext)
-- **Persistência:** localStorage (simulando backend)
-- **Mapas:** React-Leaflet + OpenStreetMap
-- **Estilização:** CSS3 + Gradientes dinâmicos
-- **Controle de Versão:** Git + GitHub (branch `frontend`)  
-- **Documentação:** README + comentários no código
-- **Padrões de Projeto:** Observer (Context API) + Component/Composite (estrutura de componentes)  
-
-Todos os membros seguem um padrão de código limpo, com boas práticas de nomeação, versionamento e comentários explicativos.  
-Ferramentas auxiliares como **Prettier** serão utilizadas para padronização.
-
----
-
-### 🔒 Padrões Não Funcionais
-- **Segurança:** evitar exposição de dados sensíveis e uso de autenticação segura.  
-- **Usabilidade:** interface intuitiva, responsiva e com feedback visual claro.   
-- **Confiabilidade:** persistência garantida em banco de dados relacional.  
-
----
-
-### ⚙️ Processos de Garantia da Qualidade
-- **Gestão de atividades:** via Trello, com colunas de “A Fazer”, “Em Progresso”, “Em Revisão” e “Concluído”.  
-- **Revisão de código:** outro membro deve revisar antes do merge na `main`.  
-- **Validação:** uso de testes unitários e funcionais no backend.  
-- **Controle de mudanças:** registro de alterações via GitHub (issues e pull requests).  
-- **Revisão de documentos:** feita antes de cada entrega parcial.  
-
----
-
-### 📊 Atividades e Métricas de Qualidade
-| Métrica | Descrição | Meta |
-|----------|------------|------|
-| Taxa de sucesso dos testes | Percentual de testes que passam | ≥ 90% |
-| Tempo médio de resposta | Tempo de retorno da API | ≤ 3s |
-| Bugs por entrega | Erros críticos detectados antes da entrega | ≤ 2 |
-| Frequência de commits | Média semanal por integrante | ≥ 3 |
-| Revisões de código | Pull requests revisadas antes do merge | 100% |
-
----
-
-### ✅ Critérios de Conclusão
-- Todas as funcionalidades mínimas do MVP implementadas e testadas.  
-- Documentação e plano de qualidade atualizados no GitHub.  
-- Trello atualizado com atividades e responsáveis definidos.  
-- Código funcional, comentado e validado entre os membros.  
+```
+Memory-Book/
+│
+├── frontend/                   # Frontend React + Vite
+│   ├── src/
+│   │   ├── components/         # Componentes reutilizáveis
+│   │   │   ├── LoginForm.jsx
+│   │   │   ├── RegisterForm.jsx
+│   │   │   ├── MemoryForm.jsx
+│   │   │   ├── MemoryListModal.jsx
+│   │   │   ├── MemoryMarker.jsx
+│   │   │   ├── ConfirmationModal.jsx
+│   │   │   └── FormField.jsx
+│   │   ├── contexts/           # Context API
+│   │   │   ├── AuthContext.jsx
+│   │   │   ├── GradientContext.jsx
+│   │   │   └── ToastContext.jsx
+│   │   ├── controllers/        # Controladores de estado
+│   │   │   └── MemoryController.jsx
+│   │   ├── models/             # Modelos de dados
+│   │   │   ├── Memory.js
+│   │   │   └── MemoryRepository.js
+│   │   ├── views/              # Páginas principais
+│   │   │   ├── MapView.jsx
+│   │   │   └── AppHeader.jsx
+│   │   ├── utils/              # Utilitários
+│   │   └── assets/             # Recursos estáticos
+│   ├── package.json
+│   └── vite.config.js
+│
+├── backend/                    # Backend Flask + Python
+│   ├── src/
+│   │   ├── models/             # Modelos SQLAlchemy
+│   │   │   ├── base_model.py
+│   │   │   ├── user.py
+│   │   │   ├── memory.py
+│   │   │   └── theme.py
+│   │   ├── repositories/       # Repository Pattern
+│   │   │   ├── base_repository.py
+│   │   │   ├── user_repository.py
+│   │   │   ├── memory_repository.py
+│   │   │   └── theme_repository.py
+│   │   ├── controllers/        # Controllers MVC
+│   │   │   ├── auth_controller.py
+│   │   │   ├── memory_controller.py
+│   │   │   └── theme_controller.py
+│   │   ├── config.py
+│   │   ├── app_factory.py
+│   │   └── database.py
+│   ├── app.py                  # Ponto de entrada
+│   ├── requirements.txt        # Dependências Python
+│   ├── reset_db.py            # Script de reset do banco
+│   ├── test_api.py            # Testes da API
+│   └── ENDPOINTS_DOCUMENTATION.md
+│
+└── README.md                   # Documentação principal
+```
 
 ---
 
-## 🛠️ Como Rodar o Projeto
+## 🚀 Como Rodar o Projeto
 
 ### Pré-requisitos
-- Node.js (versão 16 ou superior)
-- npm ou yarn
+- **Python 3.8+** (para o backend)
+- **Node.js 16+** (para o frontend)
+- **npm ou yarn** (gerenciador de pacotes)
 
-### Instalação e Execução
+### 🔧 Configuração do Backend
+
 ```bash
-# Clone o repositório
-git clone https://github.com/DiogoSNs/Memory-Book.git
+# Entre na pasta do backend
+cd backend
 
-# Entre na pasta do projeto
-cd Memory-Book
+# Crie um ambiente virtual Python
+python -m venv venv
 
-# Mude para o branch frontend
-git checkout frontend
+# Ative o ambiente virtual
+# Windows:
+venv\Scripts\activate
+# Linux/Mac:
+source venv/bin/activate
 
+# Instale as dependências
+pip install -r requirements.txt
+
+# Configure as variáveis de ambiente
+cp .env.example .env
+# Edite o arquivo .env conforme necessário
+
+# Execute o servidor backend
+python app.py
+```
+
+O backend estará rodando em `http://127.0.0.1:5000`
+
+### 🎨 Configuração do Frontend
+
+```bash
 # Entre na pasta do frontend
 cd frontend
 
 # Instale as dependências
 npm install
 
-# Rode o servidor de desenvolvimento
+# Execute o servidor de desenvolvimento
 npm run dev
-
-# Acesse no navegador
-# http://localhost:5173
 ```
 
-### 🎮 Como Usar
-1. **Cadastre-se** ou faça **login** na aplicação
-2. **Clique no mapa** para adicionar uma nova memória
-3. **Preencha os dados** da memória (título, descrição, tags, etc.)
-4. **Visualize suas memórias** clicando nos marcadores no mapa
-5. **Gerencie suas memórias** através do botão "Minhas Memórias"
-6. **Personalize a interface** alterando os gradientes no perfil
+O frontend estará rodando em `http://localhost:5173`
 
-### 🌈 Funcionalidades Especiais
-- **Gradientes Dinâmicos**: Aurora, Sunset, Ocean, Forest, Cosmic
-- **Autenticação Simulada**: Sistema completo de login/cadastro
-- **Persistência Local**: Dados salvos no localStorage
-- **Interface Responsiva**: Funciona em desktop e mobile
+### 🗄️ Reset do Banco de Dados
+
+```bash
+# Na pasta backend, execute:
+python reset_db.py
+```
+
+---
+
+## 🎮 Como Usar a Aplicação
+
+### 1. **Autenticação**
+- Acesse `http://localhost:5173`
+- **Cadastre-se** com nome, email e senha
+- **Faça login** com suas credenciais
+
+### 2. **Criando Memórias**
+- **Clique em qualquer lugar do mapa** para adicionar uma nova memória
+- Preencha os dados:
+  - **Título** da memória
+  - **Descrição** detalhada
+  - **Data** do acontecimento
+  - **Foto** (upload de imagem)
+  - **Cor** personalizada
+  - **URL do Spotify** (opcional)
+- **Salve** a memória
+
+### 3. **Visualizando Memórias**
+- **Clique nos marcadores** no mapa para ver detalhes
+- Use o botão **"Minhas Memórias"** para ver todas em lista
+- **Filtre** por título, descrição ou data
+- **Edite ou exclua** memórias existentes
+
+### 4. **Personalização**
+- Acesse o **perfil** no canto superior direito
+- Escolha entre diferentes **gradientes**:
+  - 🌅 Aurora (rosa/roxo)
+  - 🌇 Sunset (laranja/vermelho)
+  - 🌊 Ocean (azul/ciano)
+  - 🌲 Forest (verde)
+  - 🌌 Cosmic (roxo/azul escuro)
+
+### 5. **Funcionalidades Extras**
+- **Exportar memórias** em PDF
+- **Integração com Spotify** para trilha sonora
+- **Interface responsiva** para mobile
+- **Sistema de notificações** para feedback
+
+---
+
+## 📊 Funcionalidades Técnicas
+
+### 🔐 Autenticação e Segurança
+- **JWT (JSON Web Tokens)** para autenticação
+- **bcrypt** para hash de senhas
+- **CORS** configurado para comunicação frontend/backend
+- **Validação de dados** no frontend e backend
+
+### 🗄️ Banco de Dados
+- **Modelos relacionais** com SQLAlchemy
+- **Migrações automáticas** com Flask-Migrate
+- **Relacionamentos** entre usuários, memórias e temas
+- **Timestamps** automáticos (created_at, updated_at)
+
+### 🎨 Interface e UX
+- **Design responsivo** com CSS3
+- **Gradientes dinâmicos** personalizáveis
+- **Animações suaves** e transições
+- **Feedback visual** com toasts e loading states
+- **Ícones modernos** com Lucide React
+
+### 🗺️ Mapas e Geolocalização
+- **React-Leaflet** para mapas interativos
+- **OpenStreetMap** como provedor de tiles
+- **Marcadores personalizados** com cores
+- **Zoom e navegação** fluidos
+
+---
+
+## 🧪 Testes e Qualidade
+
+### 📋 Plano de Qualidade
+- **Revisão de código** entre membros da equipe
+- **Testes manuais** de todas as funcionalidades
+- **Validação de dados** no frontend e backend
+- **Tratamento de erros** robusto
+- **Documentação** completa da API
+
+### 🎯 Métricas de Qualidade
+| Métrica | Meta | Status |
+|---------|------|--------|
+| Tempo de resposta da API | ≤ 3s | ✅ |
+| Cobertura de funcionalidades | 100% | ✅ |
+| Interface responsiva | Mobile + Desktop | ✅ |
+| Documentação | Completa | ✅ |
+
+---
+
+## 👥 Equipe de Desenvolvimento
+
+| Membro | Papel Principal | Responsabilidades |
+|--------|----------------|-------------------|
+| **Alberto Pontiery** | Backend Developer | API Flask, banco de dados, autenticação |
+| **Diogo Nascimento** | Frontend Developer | Interface React, mapas, UX/UI |
+| **Guilherme Franco** | Full-Stack & QA | Integração, testes, qualidade |
+
+---
+
+## 📚 Documentação Adicional
+
+- **[Documentação da API](backend/ENDPOINTS_DOCUMENTATION.md)** - Endpoints detalhados
+- **[README do Backend](backend/README.md)** - Configuração específica do backend
+- **Comentários no código** - Documentação inline
+
+---
+
+## 🔮 Próximas Funcionalidades
+
+- [ ] **Compartilhamento de memórias** entre usuários
+- [ ] **Modo colaborativo** para casais/famílias
+- [ ] **Backup na nuvem** (AWS S3/Firebase)
+- [ ] **Notificações push** para datas especiais
+- [ ] **Integração com redes sociais**
+- [ ] **Modo offline** com sincronização
+- [ ] **Análise de sentimentos** nas descrições
+- [ ] **Timeline** visual das memórias
+
+---
+
+## 📄 Licença
+
+Este projeto foi desenvolvido para fins acadêmicos na disciplina de Engenharia de Software.
+
+---
+
+## 🤝 Contribuição
+
+Para contribuir com o projeto:
+1. Faça um fork do repositório
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/nova-funcionalidade`)
+5. Abra um Pull Request
+
+---
+
+**Desenvolvido com ❤️ por Alberto, Diogo e Guilherme**  
+*Engenharia de Software - 2024*
 
