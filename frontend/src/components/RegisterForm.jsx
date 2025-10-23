@@ -121,9 +121,16 @@ const RegisterForm = ({ onSwitchToLogin }) => {
           suggestion: errorSuggestion,
           errorType: errorType
         });
+        
+        // Exibir toast de erro
+        showToast(errorMessage, 'error', 4500);
       }
     } catch (error) {
-      setErrors({ general: error.message || 'Erro ao criar conta' });
+      const fallbackMessage = error.message || 'Erro ao criar conta';
+      setErrors({ general: fallbackMessage });
+      
+      // Exibir toast de erro
+      showToast(fallbackMessage, 'error', 4500);
     } finally {
       setIsLoading(false);
     }

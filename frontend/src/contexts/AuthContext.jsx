@@ -70,16 +70,49 @@ export const AuthProvider = ({ children }) => {
       console.log('🔍 [AuthContext] error.data:', error.data);
       
       if (error instanceof ApiError) {
-        // A mensagem principal vem de error.message
-        errorMessage = error.message;
+        // Mensagem principal
+        errorMessage = error.message || 'Erro ao fazer login';
         
-        // Os dados adicionais vêm de error.data
+        // Dados adicionais
         if (error.data) {
-          // Tentar pegar suggestion de diferentes formas
           suggestion = error.data.suggestion || error.data.sugestao || null;
-          
-          // Tentar pegar error_type de diferentes formas
           errorType = error.data.error_type || error.data.errorType || error.data.type || null;
+          
+          // Fallback quando backend usa campo 'error'
+          if (!errorMessage && error.data.error) {
+            errorMessage = error.data.error;
+          }
+        }
+        
+        // Mapeamento de mensagens padrão por status
+        if (error.status === 0) {
+          errorMessage = 'Falha de conexão com o servidor';
+          suggestion = 'Verifique sua internet ou se o backend está rodando.';
+          errorType = 'network_error';
+        } else if (error.status === 500) {
+          errorMessage = errorMessage || 'Erro interno do servidor';
+          suggestion = suggestion || 'Tente novamente mais tarde.';
+          errorType = errorType || 'server_error';
+        } else if (error.status === 403) {
+          errorMessage = errorMessage || 'Conta inativa';
+          suggestion = suggestion || 'Entre em contato com o suporte para reativar sua conta.';
+          errorType = errorType || 'user_inactive';
+        } else if (error.status === 404 && !errorType) {
+          errorMessage = errorMessage || 'Usuário não encontrado';
+          suggestion = suggestion || 'Verifique o email ou crie uma conta.';
+          errorType = 'user_not_found';
+        } else if (error.status === 401 && !errorType) {
+          errorMessage = errorMessage || 'Credenciais inválidas';
+          suggestion = suggestion || 'Verifique email e senha e tente novamente.';
+          errorType = 'invalid_credentials';
+        }
+        
+        // Inferir tipo pelo texto
+        if (!errorType && /senha incorreta/i.test(errorMessage)) {
+          errorType = 'invalid_password';
+        }
+        if (!errorType && /usuário não encontrado/i.test(errorMessage)) {
+          errorType = 'user_not_found';
         }
       }
       
@@ -120,16 +153,33 @@ export const AuthProvider = ({ children }) => {
       let errorType = null;
       
       if (error instanceof ApiError) {
-        // A mensagem principal vem de error.message
-        errorMessage = error.message;
+        errorMessage = error.message || 'Erro ao criar conta';
         
-        // Os dados adicionais vêm de error.data
         if (error.data) {
-          // Tentar pegar suggestion de diferentes formas
           suggestion = error.data.suggestion || error.data.sugestao || null;
-          
-          // Tentar pegar error_type de diferentes formas
           errorType = error.data.error_type || error.data.errorType || error.data.type || null;
+          
+          if (!errorMessage && error.data.error) {
+            errorMessage = error.data.error;
+          }
+        }
+        
+        if (error.status === 0) {
+          errorMessage = 'Falha de conexão com o servidor';
+          suggestion = 'Verifique sua internet ou se o backend está rodando.';
+          errorType = 'network_error';
+        } else if (error.status === 500) {
+          errorMessage = errorMessage || 'Erro interno do servidor';
+          suggestion = suggestion || 'Tente novamente mais tarde.';
+          errorType = errorType || 'server_error';
+        } else if (error.status === 400 && !errorType) {
+          errorMessage = errorMessage || 'Dados inválidos';
+          suggestion = suggestion || 'Verifique os campos e tente novamente.';
+          errorType = 'invalid_data';
+        }
+        
+        if (!errorType && /email já está em uso/i.test(errorMessage)) {
+          errorType = 'email_already_exists';
         }
       }
       

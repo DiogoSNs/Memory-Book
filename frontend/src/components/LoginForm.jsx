@@ -88,14 +88,21 @@ const LoginForm = ({ onSwitchToRegister }) => {
           suggestion: errorSuggestion,
           errorType: errorType
         });
+        
+        // Exibir toast de erro
+        showToast(errorMessage, 'error', 4500);
       }
       // Se success === true, o AuthContext já gerencia o redirecionamento
     } catch (error) {
       console.error('Erro não tratado no login:', error);
+      const fallbackMessage = 'Erro inesperado ao tentar fazer login';
       setErrors({
-        general: 'Erro inesperado ao tentar fazer login',
+        general: fallbackMessage,
         suggestion: 'Por favor, tente novamente em alguns instantes'
       });
+      
+      // Exibir toast de erro
+      showToast(fallbackMessage, 'error', 4500);
     } finally {
       setIsLoading(false);
     }

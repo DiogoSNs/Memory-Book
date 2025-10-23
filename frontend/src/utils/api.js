@@ -82,8 +82,9 @@ class ApiFacade {
       const data = await response.json();
 
       if (!response.ok) {
+        const errorMsg = (data && (data.message || data.error || data.detail)) || 'Erro na requisição';
         throw new ApiError(
-          data.message || 'Erro na requisição',
+          errorMsg,
           response.status,
           data
         );
