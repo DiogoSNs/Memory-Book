@@ -12,6 +12,7 @@ import backgroundNebula from '../assets/backgroundNebula.jpg';
 import backgroundMint from '../assets/backgroundMint.jpg';
 import backgroundAurora from '../assets/backgroundAurora.jpg';
 import backgroundSunset from '../assets/backgroundSunset.jpg';
+import backgroundForest from '../assets/backgroundForest.jpg';
 
 const GradientContext = createContext();
 
@@ -47,7 +48,7 @@ export const GRADIENTS = {
     gradient: 'linear-gradient(135deg, #059669 0%, #065f46 100%)',
     shadow: 'rgba(5, 150, 105, 0.3)',
     shadowHover: 'rgba(5, 150, 105, 0.4)',
-    backgroundImage: backgroundMint,
+    backgroundImage: backgroundForest,
   },
   cosmic: {
     name: 'Cosmic',

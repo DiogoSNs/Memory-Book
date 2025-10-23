@@ -11,6 +11,7 @@ import { useMemories } from '../controllers/MemoryController.jsx';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
+import { useMapTheme } from '../contexts/MapThemeContext.jsx';
 import { MemoryMarker } from '../components/MemoryMarker.jsx';
 import { MapClickHandler } from '../components/MapClickHandler.jsx';
 import { MemoryForm } from '../components/MemoryForm.jsx';
@@ -22,32 +23,11 @@ export function MapView() {
   const { showWelcome, isAuthenticated } = useAuth();
   const { showToast } = useToast();
   const { getCurrentGradientData } = useGradient();
+  const { currentMapTheme, mapThemes, toggleMapTheme, getCurrentMapThemeData } = useMapTheme();
   const gradientData = getCurrentGradientData();
   
   // Estado para responsividade
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  
-  // Definindo diferentes temas de mapa
-  const mapThemes = {
-    light: {
-      name: 'Claro',
-      icon: 'Sun',
-      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    },
-    dark: {
-      name: 'Escuro',
-      icon: 'Moon',
-      url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-    },
-    satellite: {
-      name: 'Satélite',
-      icon: 'Satellite',
-      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-    }
-  };
 
   // Estados do componente
   const [isAddingMemory, setIsAddingMemory] = useState(false);
@@ -55,10 +35,6 @@ export function MapView() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [showMemoryList, setShowMemoryList] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [mapTheme, setMapTheme] = useState(() => {
-    // Garantir que o tema inicial seja válido
-    return Object.keys(mapThemes).includes('light') ? 'light' : Object.keys(mapThemes)[0];
-  });
   const mapRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
   const [userLocationMarker, setUserLocationMarker] = useState(null);
@@ -146,18 +122,7 @@ export function MapView() {
   };
 
   const handleThemeToggle = () => {
-    const themes = Object.keys(mapThemes);
-    const currentIndex = themes.indexOf(mapTheme);
-    const nextIndex = (currentIndex + 1) % themes.length;
-    const nextTheme = themes[nextIndex];
-    
-    // Verificação de segurança
-    if (nextTheme && mapThemes[nextTheme]) {
-      setMapTheme(nextTheme);
-    } else {
-      // Fallback para o primeiro tema disponível
-      setMapTheme(themes[0] || 'light');
-    }
+    toggleMapTheme();
   };
 
   const handleLocationClick = () => {
@@ -271,9 +236,9 @@ export function MapView() {
           ref={mapRef}
         >
           <TileLayer
-            key={mapTheme} // Força re-render quando o tema muda
-            attribution={mapThemes[mapTheme]?.attribution || '&copy; OpenStreetMap'}
-            url={mapThemes[mapTheme]?.url || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'}
+            key={currentMapTheme} // Força re-render quando o tema muda
+            attribution={getCurrentMapThemeData().attribution}
+            url={getCurrentMapThemeData().url}
             bounds={[[-90, -180], [90, 180]]}
             noWrap={true}
             keepBuffer={2}
@@ -529,8 +494,8 @@ export function MapView() {
         isOpen={showProfile}
         onClose={() => setShowProfile(false)}
         onThemeToggle={handleThemeToggle}
-        currentTheme={mapThemes[mapTheme].name}
-        currentThemeIcon={mapThemes[mapTheme].icon}
+        currentTheme={getCurrentMapThemeData().name}
+        currentThemeIcon={getCurrentMapThemeData().icon}
         memories={memories}
       />
     </div>

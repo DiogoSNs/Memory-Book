@@ -92,7 +92,8 @@ def get_user_preferences():
         return jsonify({
             'preferences': {
                 'selected_gradient': user.selected_gradient,
-                'theme_preference': user.theme_preference
+                'theme_preference': user.theme_preference,
+                'map_theme': user.map_theme
             }
         }), 200
         
@@ -111,6 +112,7 @@ def update_user_preferences():
     Body:
         selected_gradient (str, optional): Gradiente selecionado (aurora, sunset, ocean, forest, cosmic)
         theme_preference (str, optional): Preferência de tema (light, dark, auto)
+        map_theme (str, optional): Tema do mapa (light, dark, satellite)
         
     Returns:
         JSON: Preferências atualizadas
@@ -140,17 +142,26 @@ def update_user_preferences():
                 return jsonify({'error': f'Tema inválido. Opções: {", ".join(valid_themes)}'}), 400
             user.theme_preference = data['theme_preference']
         
+        # Validar map_theme se fornecido
+        valid_map_themes = ['light', 'dark', 'satellite']
+        if 'map_theme' in data:
+            if data['map_theme'] not in valid_map_themes:
+                return jsonify({'error': f'Tema do mapa inválido. Opções: {", ".join(valid_map_themes)}'}), 400
+            user.map_theme = data['map_theme']
+        
         # Salvar alterações
         user_repo.update(user, 
             selected_gradient=user.selected_gradient,
-            theme_preference=user.theme_preference
+            theme_preference=user.theme_preference,
+            map_theme=user.map_theme
         )
         
         return jsonify({
             'message': 'Preferências atualizadas com sucesso',
             'preferences': {
                 'selected_gradient': user.selected_gradient,
-                'theme_preference': user.theme_preference
+                'theme_preference': user.theme_preference,
+                'map_theme': user.map_theme
             }
         }), 200
         

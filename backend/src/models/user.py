@@ -21,6 +21,7 @@ class User(BaseModel):
     # Preferências de tema/gradiente
     selected_gradient = db.Column(db.String(50), default='aurora', nullable=False)  # aurora, sunset, ocean, forest, cosmic
     theme_preference = db.Column(db.String(20), default='auto', nullable=False)  # light, dark, auto
+    map_theme = db.Column(db.String(20), default='light', nullable=False)  # light, dark, satellite
     
     # Relacionamentos
     memories = db.relationship('Memory', backref='user', lazy=True, cascade='all, delete-orphan')

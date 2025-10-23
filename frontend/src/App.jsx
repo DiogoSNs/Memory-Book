@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext.jsx';
 import { MemoryProvider } from './controllers/MemoryController.jsx';
 import { ToastProvider, useToast } from './contexts/ToastContext.jsx';
 import { GradientProvider, useGradient } from './contexts/GradientContext.jsx';
+import { MapThemeProvider } from './contexts/MapThemeContext.jsx';
 import { AppHeader } from './views/AppHeader.jsx';
 import { MapView } from './views/MapView.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx';
@@ -77,7 +78,9 @@ function App() {
     <AuthProvider>
       <ToastProvider>
         <GradientProvider>
-          <AppContent />
+          <MapThemeProvider>
+            <AppContent />
+          </MapThemeProvider>
         </GradientProvider>
       </ToastProvider>
     </AuthProvider>
