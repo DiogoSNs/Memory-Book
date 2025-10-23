@@ -279,6 +279,23 @@ class ApiFacade {
   static async getUserStats() {
     return await this.#makeRequest('/users/stats');
   }
+
+  /**
+   * Obtém preferências do usuário
+   */
+  static async getUserPreferences() {
+    return await this.#makeRequest('/auth/preferences');
+  }
+
+  /**
+   * Atualiza preferências do usuário
+   */
+  static async updateUserPreferences(preferences) {
+    return await this.#makeRequest('/auth/preferences', {
+      method: 'PUT',
+      body: JSON.stringify(preferences),
+    });
+  }
 }
 
 // ============================================
@@ -316,4 +333,8 @@ export const api = {
   // Utilitários
   healthCheck: () => ApiFacade.healthCheck(),
   getUserStats: () => ApiFacade.getUserStats(),
+
+  // Preferências
+  getUserPreferences: () => ApiFacade.getUserPreferences(),
+  updateUserPreferences: (preferences) => ApiFacade.updateUserPreferences(preferences),
 };

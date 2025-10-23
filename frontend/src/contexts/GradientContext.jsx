@@ -4,6 +4,8 @@
 // ============================================
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { api } from '../utils/api';
+import { useAuth } from './AuthContext';
 
 // Importação dos backgrounds como URLs estáticas
 import backgroundNebula from '../assets/backgroundNebula.jpg';
@@ -15,22 +17,6 @@ const GradientContext = createContext();
 
 // Definição dos gradientes disponíveis
 export const GRADIENTS = {
-  purplePink: {
-    name: 'Nebula',
-    description: 'Gradiente roxo escuro transitando para rosa vibrante',
-    gradient: 'linear-gradient(135deg, #4c1d95 0%, #ec4899 100%)',
-    shadow: 'rgba(76, 29, 149, 0.3)',
-    shadowHover: 'rgba(76, 29, 149, 0.4)',
-    backgroundImage: backgroundNebula,
-  },
-  blueGreen: {
-    name: 'Mint',
-    description: 'Gradiente azul oceano transitando para verde esmeralda',
-    gradient: 'linear-gradient(135deg, #0ea5e9 0%, #10b981 100%)',
-    shadow: 'rgba(14, 165, 233, 0.3)',
-    shadowHover: 'rgba(14, 165, 233, 0.4)',
-    backgroundImage: backgroundMint,
-  },
   aurora: {
     name: 'Aurora',
     description: 'Aurora boreal suave e etérea',
@@ -47,27 +33,92 @@ export const GRADIENTS = {
     shadowHover: 'rgba(245, 158, 11, 0.4)',
     backgroundImage: backgroundSunset,
   },
+  ocean: {
+    name: 'Ocean',
+    description: 'Gradiente azul oceano transitando para verde esmeralda',
+    gradient: 'linear-gradient(135deg, #0ea5e9 0%, #10b981 100%)',
+    shadow: 'rgba(14, 165, 233, 0.3)',
+    shadowHover: 'rgba(14, 165, 233, 0.4)',
+    backgroundImage: backgroundMint,
+  },
+  forest: {
+    name: 'Forest',
+    description: 'Gradiente verde floresta',
+    gradient: 'linear-gradient(135deg, #059669 0%, #065f46 100%)',
+    shadow: 'rgba(5, 150, 105, 0.3)',
+    shadowHover: 'rgba(5, 150, 105, 0.4)',
+    backgroundImage: backgroundMint,
+  },
+  cosmic: {
+    name: 'Cosmic',
+    description: 'Gradiente roxo escuro transitando para rosa vibrante',
+    gradient: 'linear-gradient(135deg, #4c1d95 0%, #ec4899 100%)',
+    shadow: 'rgba(76, 29, 149, 0.3)',
+    shadowHover: 'rgba(76, 29, 149, 0.4)',
+    backgroundImage: backgroundNebula,
+  },
 };
 
 export const GradientProvider = ({ children }) => {
-  const [currentGradient, setCurrentGradient] = useState('purplePink');
-
-  // Carregar gradiente salvo do localStorage
-  useEffect(() => {
+  // Inicializar com o gradiente salvo no localStorage ou 'aurora' como padrão
+  const [currentGradient, setCurrentGradient] = useState(() => {
     const savedGradient = localStorage.getItem('selectedGradient');
-    if (savedGradient && GRADIENTS[savedGradient]) {
-      setCurrentGradient(savedGradient);
-    }
-  }, []);
+    return (savedGradient && GRADIENTS[savedGradient]) ? savedGradient : 'aurora';
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const { user, isAuthenticated } = useAuth();
 
-  // Salvar gradiente no localStorage quando mudar
+  // Carregar preferências do usuário da API
+  useEffect(() => {
+    const loadUserPreferences = async () => {
+      // Se não estiver autenticado, manter o gradiente atual do localStorage
+      if (!isAuthenticated || !user) {
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const response = await api.getUserPreferences();
+        if (response.preferences && response.preferences.selected_gradient) {
+          const gradient = response.preferences.selected_gradient;
+          if (GRADIENTS[gradient]) {
+            setCurrentGradient(gradient);
+            // Sincronizar com localStorage
+            localStorage.setItem('selectedGradient', gradient);
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao carregar preferências:', error);
+        // Manter o gradiente atual se a API falhar
+        // Não alterar o estado atual para preservar a experiência do usuário
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUserPreferences();
+  }, [isAuthenticated, user]);
+
+  // Efeito para sempre manter o localStorage sincronizado com o gradiente atual
   useEffect(() => {
     localStorage.setItem('selectedGradient', currentGradient);
   }, [currentGradient]);
 
-  const changeGradient = (gradientKey) => {
-    if (GRADIENTS[gradientKey]) {
-      setCurrentGradient(gradientKey);
+  const changeGradient = async (gradientKey) => {
+    if (!GRADIENTS[gradientKey]) return;
+
+    setCurrentGradient(gradientKey);
+
+    // Se estiver autenticado, salvar na API
+    if (isAuthenticated && user) {
+      try {
+        await api.updateUserPreferences({
+          selected_gradient: gradientKey
+        });
+      } catch (error) {
+        console.error('Erro ao salvar preferências:', error);
+        // Não reverter a mudança local, apenas logar o erro
+      }
     }
   };
 
@@ -80,6 +131,7 @@ export const GradientProvider = ({ children }) => {
     changeGradient,
     getCurrentGradientData,
     availableGradients: GRADIENTS,
+    isLoading,
   };
 
   return (

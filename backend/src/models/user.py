@@ -18,6 +18,10 @@ class User(BaseModel):
     password_hash = db.Column(db.String(128), nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     
+    # Preferências de tema/gradiente
+    selected_gradient = db.Column(db.String(50), default='aurora', nullable=False)  # aurora, sunset, ocean, forest, cosmic
+    theme_preference = db.Column(db.String(20), default='auto', nullable=False)  # light, dark, auto
+    
     # Relacionamentos
     memories = db.relationship('Memory', backref='user', lazy=True, cascade='all, delete-orphan')
     theme = db.relationship('Theme', backref='user', uselist=False, cascade='all, delete-orphan')

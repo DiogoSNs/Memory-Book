@@ -70,6 +70,93 @@ def register():
     except Exception as e:
         return jsonify({'error': 'Erro interno do servidor'}), 500
 
+@auth_bp.route('/preferences', methods=['GET'])
+@jwt_required()
+def get_user_preferences():
+    """
+    Endpoint para obter preferências do usuário
+    
+    Headers:
+        Authorization: Bearer <token>
+        
+    Returns:
+        JSON: Preferências de tema/gradiente do usuário
+    """
+    try:
+        user_id = int(get_jwt_identity())
+        user = user_repo.get_by_id(user_id)
+        
+        if not user or not user.is_active:
+            return jsonify({'error': 'Usuário não encontrado'}), 404
+        
+        return jsonify({
+            'preferences': {
+                'selected_gradient': user.selected_gradient,
+                'theme_preference': user.theme_preference
+            }
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': 'Erro interno do servidor'}), 500
+
+@auth_bp.route('/preferences', methods=['PUT'])
+@jwt_required()
+def update_user_preferences():
+    """
+    Endpoint para atualizar preferências do usuário
+    
+    Headers:
+        Authorization: Bearer <token>
+        
+    Body:
+        selected_gradient (str, optional): Gradiente selecionado (aurora, sunset, ocean, forest, cosmic)
+        theme_preference (str, optional): Preferência de tema (light, dark, auto)
+        
+    Returns:
+        JSON: Preferências atualizadas
+    """
+    try:
+        user_id = int(get_jwt_identity())
+        user = user_repo.get_by_id(user_id)
+        
+        if not user or not user.is_active:
+            return jsonify({'error': 'Usuário não encontrado'}), 404
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Dados não fornecidos'}), 400
+        
+        # Validar gradiente se fornecido
+        valid_gradients = ['aurora', 'sunset', 'ocean', 'forest', 'cosmic']
+        if 'selected_gradient' in data:
+            if data['selected_gradient'] not in valid_gradients:
+                return jsonify({'error': f'Gradiente inválido. Opções: {", ".join(valid_gradients)}'}), 400
+            user.selected_gradient = data['selected_gradient']
+        
+        # Validar tema se fornecido
+        valid_themes = ['light', 'dark', 'auto']
+        if 'theme_preference' in data:
+            if data['theme_preference'] not in valid_themes:
+                return jsonify({'error': f'Tema inválido. Opções: {", ".join(valid_themes)}'}), 400
+            user.theme_preference = data['theme_preference']
+        
+        # Salvar alterações
+        user_repo.update(user, 
+            selected_gradient=user.selected_gradient,
+            theme_preference=user.theme_preference
+        )
+        
+        return jsonify({
+            'message': 'Preferências atualizadas com sucesso',
+            'preferences': {
+                'selected_gradient': user.selected_gradient,
+                'theme_preference': user.theme_preference
+            }
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': 'Erro interno do servidor'}), 500
+
 @auth_bp.route('/login', methods=['POST'])
 def login():
     """
@@ -161,6 +248,20 @@ def refresh_token():
         return jsonify({
             'access_token': new_token
         }), 200
+        
+    except Exception as e:
+        return jsonify({'error': 'Erro interno do servidor'}), 500
+
+@auth_bp.route('/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    """
+    Endpoint para logout do usuário
+    """
+    try:
+        # Como estamos usando JWT stateless, o logout é apenas uma confirmação
+        # O token será removido no frontend
+        return jsonify({'message': 'Logout realizado com sucesso'}), 200
         
     except Exception as e:
         return jsonify({'error': 'Erro interno do servidor'}), 500

@@ -128,12 +128,14 @@ export function MemoryListModal({ isOpen, onClose }) {
 
     if (!validatePhotoLimit(editForm.photos.length, files.length)) {
       showToast("Você pode adicionar no máximo 6 fotos por memória!", "error");
+      e.target.value = ''; // Reset input
       return;
     }
 
     const oversizedFiles = files.filter(file => !validateFileSize(file));
     if (oversizedFiles.length > 0) {
       showToast(`${oversizedFiles.length} foto(s) excedem o limite de 3MB! (Limite reduzido para melhor performance)`, "error");
+      e.target.value = ''; // Reset input
       return;
     }
 
@@ -150,6 +152,9 @@ export function MemoryListModal({ isOpen, onClose }) {
         break;
       }
     }
+    
+    // Reset input para permitir selecionar os mesmos arquivos novamente
+    e.target.value = '';
   };
 
   const removePhoto = (index) => {
@@ -567,10 +572,11 @@ export function MemoryListModal({ isOpen, onClose }) {
                               multiple
                               onChange={handlePhotoUpload}
                               style={{ display: "none" }}
-                              id={`photo-upload-${memory.id}`}
+                              id={`photo-upload-edit-${memory.id}`}
+                              key={`photo-upload-edit-${memory.id}`}
                             />
                             <label
-                              htmlFor={`photo-upload-${memory.id}`}
+                              htmlFor={`photo-upload-edit-${memory.id}`}
                               style={{
                                 display: "flex",
                                 alignItems: "center",
