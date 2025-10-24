@@ -9,8 +9,23 @@ from src.app_factory import db
 
 class BaseRepository(ABC):
     """
-    Repositório base que implementa o padrão Repository
-    Fornece interface comum para acesso aos dados
+    REPOSITORY PATTERN - Classe Base Abstrata
+    
+    Implementa o padrão Repository fornecendo:
+    1. Interface comum para operações de acesso a dados (CRUD)
+    2. Abstração da camada de persistência
+    3. Separação entre lógica de negócio e acesso a dados
+    4. Base para implementações específicas de cada modelo
+    
+    Benefícios do padrão Repository:
+    - Testabilidade: Facilita criação de mocks para testes
+    - Flexibilidade: Permite trocar implementação de persistência
+    - Reutilização: Operações CRUD padronizadas
+    - Manutenibilidade: Centraliza lógica de acesso a dados
+    - Separação de responsabilidades: Controllers não conhecem detalhes do banco
+    
+    Estrutura do padrão:
+    Controller -> Repository -> Model -> Database
     """
     
     def __init__(self, model_class):
@@ -18,7 +33,7 @@ class BaseRepository(ABC):
         Inicializa o repositório com a classe do modelo
         
         Args:
-            model_class: Classe do modelo SQLAlchemy
+            model_class: Classe do modelo SQLAlchemy que este repositório gerencia
         """
         self.model_class = model_class
     

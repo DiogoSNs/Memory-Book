@@ -1,3 +1,33 @@
+// ============================================
+// MAIN COMPONENT - App.jsx
+// Componente raiz da aplicação Memory Book
+// ============================================
+
+/**
+ * Componente principal da aplicação Memory Book.
+ * 
+ * Responsabilidades:
+ * - Configurar providers de contexto para toda a aplicação
+ * - Gerenciar estado global de autenticação, temas e notificações
+ * - Implementar roteamento e proteção de rotas privadas
+ * - Controlar exibição da tela de boas-vindas
+ * - Detectar responsividade (mobile/desktop)
+ * - Coordenar componentes principais (Header, Map, Welcome)
+ * 
+ * Dependências:
+ * - React: Biblioteca principal para componentes
+ * - ./contexts/*: Contextos para gerenciamento de estado global
+ * - ./controllers/MemoryController: Controller para memórias
+ * - ./views/*: Componentes de visualização principais
+ * - ./components/*: Componentes reutilizáveis
+ * 
+ * Padrões de Projeto:
+ * - Provider Pattern: Múltiplos providers para contextos
+ * - Observer Pattern: Contextos observam mudanças de estado
+ * - Component/Composite Pattern: Composição hierárquica de componentes
+ * - MVC Pattern: Separação entre views, controllers e models
+ */
+
 import React from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx';
 import { MemoryProvider } from './controllers/MemoryController.jsx';

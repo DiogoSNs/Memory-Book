@@ -3,6 +3,35 @@
 // Marcador de memória no mapa
 // ============================================
 
+/**
+ * Componente de marcador interativo para exibição de memórias no mapa.
+ * 
+ * Responsabilidades:
+ * - Renderizar marcador personalizado no mapa Leaflet
+ * - Exibir popup com detalhes da memória ao clicar
+ * - Gerenciar estado de visibilidade do popup
+ * - Fornecer opção de exclusão com confirmação
+ * - Integrar com sistema de portais para modais
+ * - Aplicar ícone customizado para marcadores
+ * 
+ * Dependências:
+ * - React (useState) para gerenciamento de estado local
+ * - ReactDOM para renderização de portais
+ * - React Leaflet (Marker) para integração com mapa
+ * - Leaflet para configuração de ícones
+ * - Lucide React para ícones da interface
+ * - MemoryController para operações de exclusão
+ * - MemoryPopupContent para conteúdo do popup
+ * - ConfirmationModal para confirmação de exclusão
+ * 
+ * Padrões de Projeto:
+ * - Component: Encapsula lógica de marcador no mapa
+ * - Observer: Reage a cliques e mudanças de estado
+ * - Decorator: Adiciona funcionalidade ao marcador base do Leaflet
+ * - Portal: Renderiza modais fora da hierarquia do componente
+ * - State: Gerencia visibilidade de popup e modal de confirmação
+ */
+
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Marker } from "react-leaflet";

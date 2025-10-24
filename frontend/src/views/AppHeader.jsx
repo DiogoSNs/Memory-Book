@@ -3,6 +3,33 @@
 // Cabeçalho da aplicação
 // ============================================
 
+/**
+ * Componente de cabeçalho principal da aplicação Memory Book.
+ * 
+ * Responsabilidades:
+ * - Exibir título e branding da aplicação
+ * - Mostrar contador de memórias do usuário
+ * - Detectar e adaptar para dispositivos móveis
+ * - Aplicar temas visuais dinâmicos
+ * - Integrar com contextos de autenticação e memórias
+ * - Fornecer feedback visual do estado da aplicação
+ * - Renderizar interface responsiva e acessível
+ * 
+ * Dependências:
+ * - React (useState, useEffect) para gerenciamento de estado
+ * - Lucide React para ícones decorativos
+ * - MemoryController para contagem de memórias
+ * - AuthContext para estado de autenticação
+ * - GradientContext para temas visuais
+ * 
+ * Padrões de Projeto:
+ * - View: Componente de apresentação da arquitetura MVC
+ * - Observer: Reage a mudanças nos contextos da aplicação
+ * - Strategy: Diferentes estratégias de layout para mobile/desktop
+ * - Template Method: Define estrutura fixa de cabeçalho
+ * - Facade: Simplifica acesso a múltiplos contextos
+ */
+
 import React, { useState, useEffect } from "react";
 import { MapPin, Heart } from "lucide-react";
 import { useMemories } from '../controllers/MemoryController.jsx';

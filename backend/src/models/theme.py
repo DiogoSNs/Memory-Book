@@ -1,7 +1,29 @@
 # ============================================
-# MODEL - Theme
-# Modelo de tema/gradiente do usuário
+# MODEL - theme.py
+# Modelo de dados para temas e gradientes personalizados dos usuários
 # ============================================
+
+"""
+Modelo Theme para gerenciar temas visuais personalizados dos usuários.
+
+Responsabilidades:
+- Definir estrutura de dados para temas/gradientes dos usuários
+- Armazenar configurações de gradientes CSS personalizados
+- Gerenciar estado ativo/inativo dos temas
+- Implementar Factory Method para criação de temas
+- Fornecer gradiente padrão para novos usuários
+- Manter relacionamento um-para-um com usuários
+
+Dependências:
+- src.app_factory.db: Instância do SQLAlchemy
+- .base_model.BaseModel: Classe base com funcionalidades comuns
+
+Padrões de Projeto:
+- Factory Method Pattern: Método create() especializado
+- Active Record Pattern: Modelo com lógica de negócio
+- Template Method Pattern: Herda comportamentos do BaseModel
+- Default Object Pattern: Gradiente padrão para novos usuários
+"""
 
 from src.app_factory import db
 from .base_model import BaseModel

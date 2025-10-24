@@ -1,7 +1,31 @@
 // ============================================
-// CONTEXT - GradientContext
-// Gerenciamento global de gradientes da aplicação
+// CONTEXT - GradientContext.jsx
+// Gerenciamento global de temas e gradientes
 // ============================================
+
+/**
+ * Contexto para gerenciamento de temas e gradientes da aplicação.
+ * 
+ * Responsabilidades:
+ * - Gerenciar estado global de gradientes/temas disponíveis
+ * - Sincronizar tema do usuário com backend
+ * - Fornecer gradientes predefinidos (Aurora, Sunset, Ocean, Forest, Nebula)
+ * - Aplicar tema personalizado do usuário logado
+ * - Gerenciar imagens de background para cada tema
+ * - Fornecer métodos para alteração de tema
+ * 
+ * Dependências:
+ * - React: Biblioteca principal (createContext, useContext, useState, useEffect)
+ * - ../utils/api: Cliente API para comunicação com backend
+ * - ./AuthContext: Contexto de autenticação para dados do usuário
+ * - ../assets/*: Imagens de background para cada tema
+ * 
+ * Padrões de Projeto:
+ * - Context Pattern: Compartilhamento de estado global de temas
+ * - Observer Pattern: Observa mudanças no usuário autenticado
+ * - Strategy Pattern: Diferentes estratégias de tema (gradientes)
+ * - Singleton Pattern: Instância única de configuração de temas
+ */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../utils/api';

@@ -1,14 +1,37 @@
 # ============================================
-# FACTORY PATTERN - Application Factory
-# Padrão Factory para criação da aplicação Flask
+# FACTORY PATTERN - app_factory.py
+# Factory para criação e configuração da aplicação Flask
 # ============================================
+
+"""
+Factory Pattern para criação da aplicação Flask Memory Book.
+
+Responsabilidades:
+- Implementar Factory Method para criação da aplicação Flask
+- Configurar extensões (SQLAlchemy, JWT, CORS)
+- Registrar blueprints dos controllers
+- Inicializar banco de dados
+- Centralizar configuração da aplicação
+
+Dependências:
+- flask: Framework web principal
+- flask_sqlalchemy: ORM para banco de dados
+- flask_cors: Configuração de CORS
+- flask_jwt_extended: Autenticação JWT
+- src.controllers: Blueprints dos controllers
+
+Padrões de Projeto:
+- Factory Pattern: create_app() como Factory Method
+- Singleton Pattern: Instâncias globais das extensões (db, jwt)
+- Blueprint Pattern: Organização modular dos controllers
+"""
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
-# Instâncias globais das extensões
+# Instâncias globais das extensões (Singleton Pattern)
 db = SQLAlchemy()
 jwt = JWTManager()
 

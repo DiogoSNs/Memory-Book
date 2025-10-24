@@ -3,6 +3,27 @@
 // Modal de confirmação personalizado
 // ============================================
 
+/**
+ * Modal de confirmação reutilizável para ações críticas da aplicação.
+ * 
+ * Responsabilidades:
+ * - Exibir modal de confirmação com título e mensagem personalizáveis
+ * - Gerenciar estado de visibilidade do modal
+ * - Fornecer callbacks para ações de confirmação e cancelamento
+ * - Aplicar overlay escuro para foco na ação
+ * - Renderizar interface responsiva e acessível
+ * 
+ * Dependências:
+ * - React para criação do componente funcional
+ * - Props para configuração dinâmica do modal
+ * 
+ * Padrões de Projeto:
+ * - Component: Encapsula lógica de renderização do modal
+ * - Strategy: Permite diferentes textos e ações via props
+ * - Template Method: Define estrutura fixa com pontos de variação
+ * - Portal (implícito): Renderiza sobre outros elementos da UI
+ */
+
 import React from "react";
 
 export function ConfirmationModal({ isOpen, onClose, onConfirm, title, message, confirmButtonText = "Excluir" }) {

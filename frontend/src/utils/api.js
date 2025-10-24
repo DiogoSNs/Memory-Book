@@ -50,8 +50,37 @@ class ApiError extends Error {
 }
 
 /**
- * Classe principal da API Facade
- * Implementa o padrão Facade para simplificar o acesso à API
+ * FACADE PATTERN - Classe Principal ApiFacade
+ * 
+ * Implementa o padrão Facade fornecendo uma interface simplificada para:
+ * 
+ * SUBSISTEMAS COMPLEXOS ABSTRAÍDOS:
+ * 1. Fetch API nativa do JavaScript
+ * 2. Gerenciamento de tokens JWT (TokenManager)
+ * 3. Tratamento de erros HTTP (ApiError)
+ * 4. Configuração de headers e autenticação
+ * 5. Parsing de respostas JSON
+ * 6. Validação de status HTTP
+ * 
+ * BENEFÍCIOS DO PADRÃO FACADE:
+ * - Simplicidade: Interface única para operações complexas
+ * - Abstração: Oculta detalhes de implementação dos subsistemas
+ * - Reutilização: Métodos padronizados para todas as requisições
+ * - Manutenibilidade: Mudanças centralizadas em um local
+ * - Consistência: Tratamento uniforme de erros e autenticação
+ * 
+ * ESTRUTURA DO PADRÃO:
+ * Cliente -> ApiFacade -> [TokenManager, ApiError, Fetch API]
+ * 
+ * EXEMPLO DE USO:
+ * // Sem Facade (complexo):
+ * const token = localStorage.getItem('authToken');
+ * const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+ * if (!response.ok) throw new Error('Erro');
+ * const data = await response.json();
+ * 
+ * // Com Facade (simples):
+ * const data = await ApiFacade.get('/users');
  */
 class ApiFacade {
   /**

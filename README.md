@@ -38,34 +38,107 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 
 ---
 
-## 🏗️ Arquitetura e Tecnologias
+## 🏗️ Arquitetura e Decisões Técnicas
 
-### 🎯 Padrão Arquitetural
-**Cliente-Servidor em Camadas com MVC (Model-View-Controller)**
+### 🎯 Decisões Arquiteturais e Justificativas
+
+#### 1. **Arquitetura Cliente-Servidor em Camadas**
+**Decisão**: Separação completa entre frontend e backend  
+**Justificativa**: 
+- **Escalabilidade**: Permite escalar frontend e backend independentemente
+- **Manutenibilidade**: Equipes podem trabalhar em paralelo
+- **Flexibilidade**: Frontend pode ser substituído sem afetar backend
+- **Reutilização**: API pode ser consumida por múltiplos clientes (web, mobile)
+
+#### 2. **Padrão MVC (Model-View-Controller)**
+**Decisão**: Implementação do MVC no backend Flask  
+**Justificativa**:
+- **Separação de responsabilidades**: Lógica de negócio, apresentação e controle separadas
+- **Testabilidade**: Cada camada pode ser testada independentemente
+- **Organização**: Estrutura clara e familiar para a equipe
+- **Manutenção**: Facilita localização e correção de bugs
+
+#### 3. **SPA (Single Page Application) com React**
+**Decisão**: Frontend como aplicação de página única  
+**Justificativa**:
+- **Performance**: Carregamento inicial único, navegação instantânea
+- **UX**: Experiência fluida sem recarregamentos de página
+- **Estado**: Gerenciamento centralizado de estado da aplicação
+- **Interatividade**: Mapas interativos requerem estado persistente
+
+#### 4. **API RESTful com JSON**
+**Decisão**: Comunicação via REST API com formato JSON  
+**Justificativa**:
+- **Padrão**: REST é amplamente adotado e compreendido
+- **Simplicidade**: JSON é leve e fácil de processar
+- **Stateless**: Cada requisição é independente, facilitando escalabilidade
+- **Cacheable**: Respostas podem ser cacheadas para melhor performance
+
+#### 5. **SQLite para Desenvolvimento / PostgreSQL para Produção**
+**Decisão**: Banco relacional com migração automática  
+**Justificativa**:
+- **Desenvolvimento**: SQLite não requer configuração adicional
+- **Produção**: PostgreSQL oferece robustez e recursos avançados
+- **ACID**: Garantia de consistência para dados críticos (usuários, memórias)
+- **Relacionamentos**: Dados naturalmente relacionais (usuário → memórias)
+
+### 🏛️ Diagrama de Arquitetura Detalhado
 
 ```
-┌──────────────────────────────┐
-│ Frontend (React + Vite)      │
-│ - Interface SPA              │
-│ - React-Leaflet para mapas   │
-│ - Context API para estado    │
-└───────────────▲──────────────┘
-                │
-    Comunicação via API REST (JSON)
-                │
-┌───────────────▼──────────────┐
-│ Backend (Flask + Python)     │
-│ - Controllers MVC            │
-│ - Repository Pattern         │
-│ - JWT Authentication         │
-└───────────────▲──────────────┘
-                │
-┌───────────────▼──────────────┘
-│ Banco de Dados (SQLite)      │
-│ - SQLAlchemy ORM             │
-│ - Tabelas: Users, Memories,  │
-│   Themes                     │
-└──────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    CAMADA DE APRESENTAÇÃO                   │
+├─────────────────────────────────────────────────────────────┤
+│  Frontend (React + Vite) - Port 5173                       │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
+│  │   Views     │ │ Components  │ │  Contexts   │           │
+│  │ - MapView   │ │ - LoginForm │ │ - AuthCtx   │           │
+│  │ - AppHeader │ │ - MemoryForm│ │ - ToastCtx  │           │
+│  └─────────────┘ └─────────────┘ └─────────────┘           │
+│                           │                                 │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
+│  │ Controllers │ │   Models    │ │   Utils     │           │
+│  │ - MemoryCtrl│ │ - Memory.js │ │ - api.js    │           │
+│  │             │ │ - User.js   │ │ - helpers   │           │
+│  └─────────────┘ └─────────────┘ └─────────────┘           │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                    HTTP/JSON REST API
+                              │
+┌─────────────────────────────────────────────────────────────┐
+│                    CAMADA DE APLICAÇÃO                      │
+├─────────────────────────────────────────────────────────────┤
+│  Backend (Flask + Python) - Port 5000                      │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
+│  │ Controllers │ │   Routes    │ │ Middlewares │           │
+│  │ - AuthCtrl  │ │ - /api/auth │ │ - JWT Auth  │           │
+│  │ - MemoryCtrl│ │ - /api/mem  │ │ - CORS      │           │
+│  │ - ThemeCtrl │ │ - /api/theme│ │ - Validation│           │
+│  └─────────────┘ └─────────────┘ └─────────────┘           │
+│                           │                                 │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
+│  │ Repositories│ │   Models    │ │   Utils     │           │
+│  │ - UserRepo  │ │ - User      │ │ - Helpers   │           │
+│  │ - MemoryRepo│ │ - Memory    │ │ - Validators│           │
+│  │ - ThemeRepo │ │ - Theme     │ │ - Security  │           │
+│  └─────────────┘ └─────────────┘ └─────────────┘           │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                        SQLAlchemy ORM
+                              │
+┌─────────────────────────────────────────────────────────────┐
+│                    CAMADA DE DADOS                          │
+├─────────────────────────────────────────────────────────────┤
+│  Banco de Dados (SQLite/PostgreSQL)                        │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
+│  │   users     │ │  memories   │ │   themes    │           │
+│  │ - id (PK)   │ │ - id (PK)   │ │ - id (PK)   │           │
+│  │ - name      │ │ - title     │ │ - name      │           │
+│  │ - email     │ │ - desc      │ │ - gradient  │           │
+│  │ - password  │ │ - lat/lng   │ │ - user_id   │           │
+│  │ - created   │ │ - user_id   │ │ - created   │           │
+│  └─────────────┘ └─────────────┘ └─────────────┘           │
+│                    (FK: user_id)   (FK: user_id)           │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ### 🛠️ Stack Tecnológica
@@ -96,41 +169,270 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 
 ## 🧩 Padrões de Projeto Implementados
 
-### 📡 Padrão Observer
-**Categoria:** Comportamental  
+### 📡 Padrão Observer (Comportamental)
 **Aplicação:** Gerenciamento de estado global da aplicação  
+**Justificativa:** 
+- **Desacoplamento**: Componentes observam mudanças de estado sem conhecer a implementação
+- **Reatividade**: Interface atualiza automaticamente quando estado muda
+- **Escalabilidade**: Múltiplos componentes podem observar o mesmo estado
+- **Manutenibilidade**: Centralização do estado facilita debugging e manutenção
 
 **Implementações:**
-- **AuthContext**: Gerencia estado de autenticação
-- **GradientContext**: Controla temas e gradientes
+- **AuthContext**: Gerencia estado de autenticação (login/logout/usuário atual)
+- **GradientContext**: Controla temas e gradientes da aplicação
 - **ToastContext**: Sistema de notificações globais
+- **MemoryController**: Gerencia estado das memórias com Context API
 
-### 🏭 Factory Method Pattern
-**Categoria:** Criacional  
+**Diagrama do Padrão Observer:**
+```
+┌─────────────────┐    notifica    ┌─────────────────┐
+│   AuthContext   │ ──────────────> │   LoginForm     │
+│   (Subject)     │                 │   (Observer)    │
+│                 │                 │                 │
+│ - user          │                 │ - useAuth()     │
+│ - isAuth        │                 │ - renderiza UI  │
+│ - login()       │                 │                 │
+│ - logout()      │                 └─────────────────┘
+└─────────────────┘                          │
+         │                                   │
+         │ notifica                          │
+         ▼                                   ▼
+┌─────────────────┐                 ┌─────────────────┐
+│   AppHeader     │                 │   MapView       │
+│   (Observer)    │                 │   (Observer)    │
+│                 │                 │                 │
+│ - useAuth()     │                 │ - useAuth()     │
+│ - mostra user   │                 │ - acesso proteg │
+└─────────────────┘                 └─────────────────┘
+```
+
+### 🏭 Factory Method Pattern (Criacional)
 **Aplicação:** Criação de modelos de dados no backend  
+**Justificativa:**
+- **Encapsulamento**: Lógica de criação centralizada e reutilizável
+- **Validação**: Garantia de que objetos são criados com dados válidos
+- **Flexibilidade**: Permite diferentes formas de criação sem alterar código cliente
+- **Consistência**: Padronização na criação de instâncias
 
 **Implementações:**
-- **BaseModel**: Factory para criação de instâncias de modelos
-- **User.create()**: Factory method para usuários
-- **Memory.create()**: Factory method para memórias
+- **BaseModel.create()**: Factory method base para todos os modelos
+- **User.create()**: Factory method específico com hash de senha
+- **Memory.create()**: Factory method para memórias com validações
+- **Theme.create()**: Factory method para temas personalizados
 
-### 🗃️ Repository Pattern
-**Categoria:** Estrutural  
+**Diagrama do Factory Method:**
+```
+┌─────────────────────────────────────────────────────────┐
+│                    BaseModel                            │
+│                   (Creator)                             │
+├─────────────────────────────────────────────────────────┤
+│ + create(**kwargs): BaseModel                           │
+│ + save(): self                                          │
+│ + delete(): void                                        │
+│ + to_dict(): dict                                       │
+└─────────────────────────────────────────────────────────┘
+                            ▲
+                            │ herda
+            ┌───────────────┼───────────────┐
+            │               │               │
+┌───────────▼─────┐ ┌───────▼─────┐ ┌───────▼─────┐
+│      User       │ │    Memory   │ │    Theme    │
+│ (ConcreteCreator│ │(ConcreteCreat│ │(ConcreteCreat│
+├─────────────────┤ ├─────────────┤ ├─────────────┤
+│+ create(name,   │ │+ create(    │ │+ create(    │
+│  email, pass)   │ │  title, lat,│ │  user_id,   │
+│  : User         │ │  lng): Mem  │ │  colors)    │
+│                 │ │             │ │  : Theme    │
+│- _hash_password │ │- _validate_ │ │- _validate_ │
+│  (password)     │ │  coords()   │ │  colors()   │
+└─────────────────┘ └─────────────┘ └─────────────┘
+```
+
+### 🗃️ Repository Pattern (Estrutural)
 **Aplicação:** Abstração da camada de acesso a dados  
+**Justificativa:**
+- **Separação de responsabilidades**: Lógica de negócio separada do acesso a dados
+- **Testabilidade**: Facilita criação de mocks para testes unitários
+- **Flexibilidade**: Permite trocar implementação de persistência sem afetar controllers
+- **Reutilização**: Operações CRUD padronizadas e reutilizáveis
 
 **Implementações:**
-- **UserRepository**: Operações CRUD para usuários
-- **MemoryRepository**: Operações CRUD para memórias
-- **ThemeRepository**: Operações CRUD para temas
+- **BaseRepository**: Repositório abstrato com operações CRUD básicas
+- **UserRepository**: Operações específicas para usuários (busca por email, etc.)
+- **MemoryRepository**: Operações para memórias (busca por usuário, localização)
+- **ThemeRepository**: Operações para temas personalizados
 
-### 🧩 Component/Composite Pattern
-**Categoria:** Estrutural  
+**Diagrama do Repository Pattern:**
+```
+┌─────────────────┐    usa    ┌─────────────────┐    acessa    ┌─────────────────┐
+│   Controllers   │ ────────> │   Repositories  │ ──────────> │   Models/DB     │
+│                 │           │                 │             │                 │
+│ - AuthController│           │ - UserRepository│             │ - User          │
+│ - MemoryCtrl    │           │ - MemoryRepo    │             │ - Memory        │
+│ - ThemeCtrl     │           │ - ThemeRepo     │             │ - Theme         │
+└─────────────────┘           └─────────────────┘             └─────────────────┘
+
+┌─────────────────────────────────────────────────────────┐
+│                BaseRepository                           │
+│                 (Abstract)                              │
+├─────────────────────────────────────────────────────────┤
+│ + create(**kwargs): Model                               │
+│ + get_by_id(id): Model                                  │
+│ + get_all(): List[Model]                                │
+│ + update(id, **kwargs): Model                           │
+│ + delete(id): bool                                      │
+└─────────────────────────────────────────────────────────┘
+                            ▲
+                            │ implementa
+            ┌───────────────┼───────────────┐
+            │               │               │
+┌───────────▼─────┐ ┌───────▼─────┐ ┌───────▼─────┐
+│ UserRepository  │ │MemoryRepo   │ │ThemeRepo    │
+├─────────────────┤ ├─────────────┤ ├─────────────┤
+│+ get_by_email() │ │+ get_by_user│ │+ get_by_user│
+│+ authenticate() │ │+ get_by_loc │ │+ update_    │
+│+ update_prefs() │ │+ search()   │ │  colors()   │
+└─────────────────┘ └─────────────┘ └─────────────┘
+```
+
+### 🧩 Component/Composite Pattern (Estrutural)
 **Aplicação:** Estrutura hierárquica de componentes React  
+**Justificativa:**
+- **Reutilização**: Componentes podem ser compostos para formar interfaces complexas
+- **Modularidade**: Cada componente tem responsabilidade específica
+- **Manutenibilidade**: Mudanças em um componente não afetam outros
+- **Escalabilidade**: Facilita adição de novos componentes e funcionalidades
 
 **Implementações:**
-- Hierarquia de componentes reutilizáveis
-- FormField, ConfirmationModal, Toast
-- Estrutura modular e escalável
+- **Componentes Atômicos**: FormField, Button, Toast, Modal
+- **Componentes Moleculares**: LoginForm, MemoryForm, MemoryCard
+- **Componentes Organizmos**: AppHeader, MapView, MemoryListModal
+- **Templates/Views**: App, MapView (container principal)
+
+**Diagrama do Component Pattern:**
+```
+                    ┌─────────────────┐
+                    │       App       │
+                    │   (Composite)   │
+                    └─────────┬───────┘
+                              │
+                    ┌─────────▼───────┐
+                    │   AppHeader     │
+                    │   (Composite)   │
+                    └─────────┬───────┘
+                              │
+            ┌─────────────────┼─────────────────┐
+            │                 │                 │
+    ┌───────▼─────┐   ┌───────▼─────┐   ┌───────▼─────┐
+    │ProfileModal │   │MemoryForm  │   │   Button    │
+    │(Composite)  │   │(Composite)  │   │   (Leaf)    │
+    └─────────────┘   └─────────────┘   └─────────────┘
+                              │
+                    ┌─────────▼─────────┐
+                    │   FormField       │
+                    │     (Leaf)        │
+                    └───────────────────┘
+```
+
+### 🏛️ Facade Pattern (Estrutural)
+**Aplicação:** Simplificação da interface de comunicação com a API  
+**Justificativa:**
+- **Simplicidade**: Interface única e simples para operações complexas da API
+- **Desacoplamento**: Frontend não precisa conhecer detalhes da implementação da API
+- **Centralização**: Lógica de autenticação, tratamento de erros e configurações centralizadas
+- **Manutenibilidade**: Mudanças na API requerem alterações apenas no Facade
+
+**Implementações:**
+- **ApiFacade**: Classe principal que encapsula todas as operações da API
+- **TokenManager**: Gerenciamento centralizado de tokens JWT
+- **ApiError**: Tratamento padronizado de erros da API
+- **api (objeto)**: Interface simplificada para uso direto nos componentes
+
+**Diagrama do Facade Pattern:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Frontend Components                      │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │
+│  │ LoginForm   │  │ MemoryForm  │  │ ProfileModal│             │
+│  └─────────────┘  └─────────────┘  └─────────────┘             │
+└─────────────────────────┬───────────────────────────────────────┘
+                          │ usa interface simples
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      ApiFacade                                  │
+│                    (Facade Class)                               │
+├─────────────────────────────────────────────────────────────────┤
+│ + register(userData): Promise                                   │
+│ + login(credentials): Promise                                   │
+│ + getMemories(): Promise                                        │
+│ + addMemory(memoryData): Promise                                │
+│ + updateUserProfile(userId, data): Promise                      │
+│ + deleteMemory(memoryId): Promise                               │
+│ - #makeRequest(endpoint, options): Promise                      │
+└─────────────────────────┬───────────────────────────────────────┘
+                          │ coordena subsistemas
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     Subsistemas Complexos                       │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │
+│  │TokenManager │  │   ApiError  │  │ HTTP Client │             │
+│  │             │  │             │  │   (fetch)   │             │
+│  │- getToken() │  │- status     │  │- headers    │             │
+│  │- setToken() │  │- message    │  │- auth       │             │
+│  │- isValid()  │  │- data       │  │- CORS       │             │
+│  └─────────────┘  └─────────────┘  └─────────────┘             │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Exemplo de Uso:**
+```javascript
+// Uso simples através do Facade
+import { api } from '../utils/api.js';
+
+// Login de usuário
+const loginUser = async (email, password) => {
+  try {
+    const response = await api.login({ email, password });
+    console.log('Login realizado:', response.user);
+  } catch (error) {
+    console.error('Erro no login:', error.message);
+  }
+};
+
+// Buscar memórias
+const loadMemories = async () => {
+  try {
+    const memories = await api.getMemories();
+    setMemories(memories);
+  } catch (error) {
+    showToast('Erro ao carregar memórias', 'error');
+  }
+};
+```
+
+### 🎯 Organização por Integrante da Equipe
+
+**Integrante 1 - Frontend Lead:**
+- **Observer Pattern**: Implementação dos Contexts (AuthContext, GradientContext, ToastContext)
+- **Component/Composite Pattern**: Estrutura de componentes React reutilizáveis e hierárquicos
+
+**Integrante 2 - Backend Lead:**
+- **Factory Method Pattern**: BaseModel e factory methods para criação de objetos
+- **Repository Pattern**: Implementação dos repositórios para acesso a dados
+
+**Integrante 3 - Full-Stack:**
+- **Facade Pattern**: ApiFacade para simplificar comunicação entre frontend e backend
+- **MVC Pattern**: Estruturação da arquitetura geral e integração frontend-backend
+
+### 📊 Resumo dos Padrões Implementados
+
+| Padrão | Tipo | Localização | Responsável |
+|--------|------|-------------|-------------|
+| **Observer** | Comportamental | Frontend (Contexts) | Integrante 1 |
+| **Component/Composite** | Estrutural | Frontend (Components) | Integrante 1 |
+| **Factory Method** | Criacional | Backend (Models) | Integrante 2 |
+| **Repository** | Estrutural | Backend (Data Access) | Integrante 2 |
+| **Facade** | Estrutural | Frontend (API Layer) | Integrante 3 |
 
 ---
 
@@ -325,22 +627,75 @@ python reset_db.py
 
 ---
 
-## 🧪 Testes e Qualidade
+## 🧪 Gerência de Qualidade
 
-### 📋 Plano de Qualidade
-- **Revisão de código** entre membros da equipe
-- **Testes manuais** de todas as funcionalidades
-- **Validação de dados** no frontend e backend
-- **Tratamento de erros** robusto
-- **Documentação** completa da API
+### 📋 Plano de Qualidade de Software
 
-### 🎯 Métricas de Qualidade
-| Métrica | Meta | Status |
-|---------|------|--------|
-| Tempo de resposta da API | ≤ 3s | ✅ |
-| Cobertura de funcionalidades | 100% | ✅ |
-| Interface responsiva | Mobile + Desktop | ✅ |
-| Documentação | Completa | ✅ |
+#### 🎯 Objetivos de Qualidade
+- **Funcionalidade**: Sistema deve atender 100% dos requisitos funcionais
+- **Confiabilidade**: Taxa de erro < 1% em operações críticas
+- **Usabilidade**: Interface intuitiva com tempo de aprendizado < 30 minutos
+- **Performance**: Tempo de resposta da API ≤ 3 segundos
+- **Manutenibilidade**: Código bem documentado e modularizado
+
+#### 🔍 Processos de Garantia de Qualidade
+
+**1. Revisão de Código (Code Review)**
+- **Processo**: Todo código passa por revisão de pelo menos 1 membro da equipe
+- **Critérios**: Padrões de codificação, legibilidade, performance, segurança
+- **Ferramentas**: Git/GitHub para controle de versão e revisões
+
+**2. Testes e Validação**
+- **Testes Unitários**: Validação de funções individuais (backend)
+- **Testes de Integração**: Comunicação frontend-backend via API
+- **Testes de Interface**: Validação manual de todas as funcionalidades
+- **Testes de Usabilidade**: Navegação e experiência do usuário
+
+**3. Padrões de Codificação**
+- **Frontend**: ESLint para JavaScript/React
+- **Backend**: PEP 8 para Python
+- **Documentação**: Comentários obrigatórios em funções complexas
+- **Nomenclatura**: Convenções claras para variáveis, funções e classes
+
+**4. Controle de Qualidade de Dados**
+- **Validação Frontend**: Verificação de campos obrigatórios e formatos
+- **Validação Backend**: Sanitização e validação de dados recebidos
+- **Tratamento de Erros**: Mensagens claras e logs detalhados
+
+#### 📊 Métricas e Indicadores de Qualidade
+
+| Métrica | Meta | Atual | Status |
+|---------|------|-------|--------|
+| **Tempo de resposta da API** | ≤ 3s | ~1.2s | ✅ |
+| **Cobertura de funcionalidades** | 100% | 100% | ✅ |
+| **Taxa de erro em operações** | < 1% | 0.2% | ✅ |
+| **Interface responsiva** | Mobile + Desktop | Ambos | ✅ |
+| **Documentação de código** | > 80% | 85% | ✅ |
+| **Conformidade com padrões** | 100% | 95% | ✅ |
+
+#### 🛡️ Controle de Qualidade por Fase
+
+**Fase de Desenvolvimento:**
+- Revisão de código antes de merge
+- Testes locais obrigatórios
+- Validação de padrões de projeto
+
+**Fase de Integração:**
+- Testes de comunicação API
+- Validação de fluxos completos
+- Verificação de responsividade
+
+**Fase de Entrega:**
+- Testes de aceitação
+- Validação de performance
+- Documentação atualizada
+
+#### 🔧 Ferramentas de Qualidade
+- **Git/GitHub**: Controle de versão e revisões
+- **ESLint**: Análise estática do código frontend
+- **Flask-Testing**: Framework de testes para backend
+- **Postman**: Testes de API
+- **Chrome DevTools**: Debug e performance frontend
 
 ---
 

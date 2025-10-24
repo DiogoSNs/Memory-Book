@@ -1,7 +1,36 @@
 // ============================================
-// COMPONENT - MemoryForm
-// Formulário para adicionar novas memórias
+// COMPONENT - MemoryForm.jsx
+// Formulário para criação de memórias geográficas
 // ============================================
+
+/**
+ * Componente de formulário para criação de memórias geográficas.
+ * 
+ * Responsabilidades:
+ * - Renderizar formulário completo para criação de memórias
+ * - Gerenciar upload e processamento de fotos
+ * - Validar dados de entrada (título, descrição, fotos)
+ * - Integrar com Spotify para URLs de música
+ * - Permitir personalização de cor do marcador
+ * - Processar localização geográfica selecionada
+ * - Aplicar tema/gradiente personalizado
+ * - Exibir feedback de validação e erros
+ * 
+ * Dependências:
+ * - React: Biblioteca principal (useState)
+ * - lucide-react: Ícones para interface
+ * - ../controllers/MemoryController: Controller de memórias
+ * - ../contexts/ToastContext: Contexto de notificações
+ * - ../contexts/GradientContext: Contexto de temas
+ * - ../utils/helpers: Utilitários para validação e processamento
+ * - ./FormField: Componente de campo de formulário
+ * 
+ * Padrões de Projeto:
+ * - Component Pattern: Componente reutilizável e encapsulado
+ * - Observer Pattern: Observa mudanças nos contextos
+ * - Strategy Pattern: Diferentes estratégias de validação
+ * - Facade Pattern: Interface simplificada para criação de memórias
+ */
 
 import React, { useState } from "react";
 import { X, FileText, Calendar, Image, Upload, Music, Palette } from "lucide-react";

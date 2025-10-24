@@ -3,6 +3,38 @@
 // Modal para listar e editar memórias
 // ============================================
 
+/**
+ * Modal complexo para gerenciamento completo de memórias geográficas.
+ * 
+ * Responsabilidades:
+ * - Listar todas as memórias do usuário com paginação
+ * - Permitir edição inline de memórias existentes
+ * - Gerenciar upload e validação de fotos
+ * - Filtrar memórias por critérios diversos
+ * - Confirmar exclusão de memórias via modal
+ * - Integrar com Spotify para URLs de música
+ * - Aplicar temas visuais dinâmicos
+ * - Fornecer feedback visual durante operações
+ * 
+ * Dependências:
+ * - React (useState, useMemo, useEffect) para gerenciamento de estado
+ * - ReactDOM para renderização em portal
+ * - Lucide React para ícones da interface
+ * - MemoryController para operações CRUD
+ * - ToastContext para notificações
+ * - GradientContext para temas visuais
+ * - Utilitários de validação e processamento
+ * - FormField e ConfirmationModal como subcomponentes
+ * 
+ * Padrões de Projeto:
+ * - Component: Encapsula funcionalidade complexa de gerenciamento
+ * - Observer: Reage a mudanças nos contextos de memórias e temas
+ * - Strategy: Diferentes estratégias de filtro e validação
+ * - Facade: Simplifica interações complexas com múltiplos serviços
+ * - Portal: Renderiza modal sobre outros elementos
+ * - State: Gerencia múltiplos estados de edição e filtros
+ */
+
 import React, { useState, useMemo, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { X, List, FileText, Calendar, Image, Upload, Music, Save, Edit3, Trash2, Filter, ChevronLeft, ChevronRight } from "lucide-react";

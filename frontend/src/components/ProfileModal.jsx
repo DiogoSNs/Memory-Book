@@ -1,3 +1,39 @@
+// ============================================
+// COMPONENT - ProfileModal
+// Modal de perfil e configurações do usuário
+// ============================================
+
+/**
+ * Modal completo de perfil do usuário com configurações e funcionalidades avançadas.
+ * 
+ * Responsabilidades:
+ * - Exibir informações do perfil do usuário
+ * - Gerenciar configurações de tema e aparência
+ * - Permitir seleção de gradientes personalizados
+ * - Gerar e exportar relatórios PDF das memórias
+ * - Fornecer opção de logout com confirmação
+ * - Aplicar configurações de WebGL para compatibilidade
+ * - Renderizar interface responsiva e acessível
+ * - Integrar com múltiplos contextos da aplicação
+ * 
+ * Dependências:
+ * - React (useState) para gerenciamento de estado local
+ * - Lucide React para ícones da interface
+ * - jsPDF para geração de relatórios em PDF
+ * - AuthContext para informações e ações do usuário
+ * - ToastContext para feedback de operações
+ * - GradientContext para gerenciamento de temas
+ * - ConfirmationModal para confirmação de logout
+ * 
+ * Padrões de Projeto:
+ * - Component: Encapsula funcionalidade complexa de perfil
+ * - Observer: Reage a mudanças nos contextos da aplicação
+ * - Strategy: Diferentes estratégias de tema e exportação
+ * - Facade: Simplifica interações com múltiplos serviços
+ * - Factory: Cria documentos PDF dinamicamente
+ * - State: Gerencia estados de modal e configurações
+ */
+
 import React, { useState } from "react";
 import { X, User, Moon, Sun, LogOut, Share2, Settings, Satellite, Palette } from "lucide-react";
 import jsPDF from "jspdf";

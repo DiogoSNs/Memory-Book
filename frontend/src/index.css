@@ -1,18 +1,49 @@
+/* ============================================
+   STYLESHEET - index.css
+   Estilos globais e reset da aplicação
+   ============================================ */
+
+/**
+ * Folha de estilos global da aplicação Memory Book.
+ * 
+ * Responsabilidades:
+ * - Aplicar reset CSS universal
+ * - Definir estilos base para HTML e body
+ * - Configurar animações globais
+ * - Corrigir z-index de componentes Leaflet
+ * - Estabelecer tipografia padrão
+ * - Prevenir overflow horizontal
+ * 
+ * Dependências:
+ * - CSS3 para animações e box-sizing
+ * - System fonts para tipografia
+ * - Leaflet para correções de z-index
+ * 
+ * Padrões de Projeto:
+ * - Reset: Normalização de estilos entre navegadores
+ * - Global: Estilos aplicados globalmente
+ * - Override: Correções específicas para bibliotecas
+ * - Animation: Animações reutilizáveis
+ */
+
+/* Reset CSS universal */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Estilos base para elementos HTML e body */
 html, body {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  font-family: system-ui, -apple-system, sans-serif;
+  overflow-x: hidden; /* Previne scroll horizontal */
+  font-family: system-ui, -apple-system, sans-serif; /* Tipografia do sistema */
 }
 
+/* Animação de rotação global reutilizável */
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -22,11 +53,13 @@ html, body {
   }
 }
 
-/* Fix for Leaflet popup z-index to appear above map controls */
+/* Correções de z-index para componentes Leaflet */
+/* Garante que popups apareçam acima dos controles do mapa */
 .leaflet-popup-pane {
   z-index: 10001 !important;
 }
 
+/* Garante que tooltips apareçam acima dos controles do mapa */
 .leaflet-tooltip-pane {
   z-index: 10001 !important;
 }

@@ -1,3 +1,39 @@
+// ============================================
+// COMPONENT - RegisterForm
+// Formulário de registro de novos usuários
+// ============================================
+
+/**
+ * Formulário completo para registro de novos usuários na aplicação.
+ * 
+ * Responsabilidades:
+ * - Coletar dados de registro (nome, email, senha, confirmação)
+ * - Validar campos em tempo real e no envio
+ * - Gerenciar visibilidade de senhas com toggle
+ * - Detectar e otimizar para dispositivos móveis
+ * - Fornecer feedback visual durante carregamento
+ * - Exibir erros de validação de forma clara
+ * - Integrar com sistema de autenticação
+ * - Aplicar temas visuais dinâmicos
+ * - Permitir navegação para tela de login
+ * 
+ * Dependências:
+ * - React (useState, useEffect) para gerenciamento de estado
+ * - Lucide React para ícones da interface
+ * - AuthContext para operações de registro
+ * - ToastContext para notificações de feedback
+ * - GradientContext para temas visuais
+ * - Props para callback de navegação
+ * 
+ * Padrões de Projeto:
+ * - Component: Encapsula lógica de formulário de registro
+ * - Observer: Reage a mudanças de estado e contextos
+ * - Strategy: Diferentes estratégias de validação
+ * - State: Gerencia múltiplos estados de formulário
+ * - Template Method: Define estrutura de validação
+ * - Facade: Simplifica interação com autenticação
+ */
+
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, MapPin } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -257,7 +293,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} action="#" method="post">
             {/* Name Field */}
             <div style={{ marginBottom: "20px" }}>
               <label style={{
@@ -285,8 +321,10 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 <input
                   type="text"
                   name="name"
+                  id="register-name"
                   value={formData.name}
                   onChange={handleChange}
+                  autoComplete="name"
                   style={{
                     width: "100%",
                     padding: isMobile ? "10px 10px 10px 40px" : "12px 12px 12px 44px",
@@ -349,8 +387,10 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 <input
                   type="email"
                   name="email"
+                  id="register-email"
                   value={formData.email}
                   onChange={handleChange}
+                  autoComplete="email"
                   style={{
                     width: "100%",
                     padding: isMobile ? "10px 10px 10px 40px" : "12px 12px 12px 44px",
@@ -413,8 +453,10 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
+                  id="register-password"
                   value={formData.password}
                   onChange={handleChange}
+                  autoComplete="new-password"
                   style={{
                     width: "100%",
                     padding: isMobile ? "10px 40px 10px 40px" : "12px 44px 12px 44px",
@@ -503,8 +545,10 @@ const RegisterForm = ({ onSwitchToLogin }) => {
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
+                  id="register-confirm-password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
+                  autoComplete="new-password"
                   style={{
                     width: "100%",
                     padding: isMobile ? "10px 40px 10px 40px" : "12px 44px 12px 44px",

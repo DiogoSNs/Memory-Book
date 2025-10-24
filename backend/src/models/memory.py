@@ -1,7 +1,28 @@
 # ============================================
-# MODEL - Memory
-# Modelo de memória da aplicação
+# MODEL - memory.py
+# Modelo de dados para memórias geográficas dos usuários
 # ============================================
+
+"""
+Modelo Memory para representar memórias geográficas na aplicação Memory Book.
+
+Responsabilidades:
+- Definir estrutura de dados para memórias dos usuários
+- Armazenar informações geográficas (latitude, longitude)
+- Gerenciar metadados (título, descrição, data, fotos)
+- Implementar Factory Method para criação de memórias
+- Gerar cores aleatórias para marcadores no mapa
+- Manter relacionamento com usuários
+
+Dependências:
+- src.app_factory.db: Instância do SQLAlchemy
+- .base_model.BaseModel: Classe base com funcionalidades comuns
+
+Padrões de Projeto:
+- Factory Method Pattern: Método create() especializado
+- Active Record Pattern: Modelo com lógica de negócio
+- Template Method Pattern: Herda comportamentos do BaseModel
+"""
 
 from src.app_factory import db
 from .base_model import BaseModel

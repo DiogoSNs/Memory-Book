@@ -3,6 +3,35 @@
 // Conteúdo do popup das memórias
 // ============================================
 
+/**
+ * Componente de conteúdo rico para exibição detalhada de memórias em popup.
+ * 
+ * Responsabilidades:
+ * - Exibir informações completas da memória (título, descrição, data)
+ * - Gerenciar galeria de fotos com navegação e zoom
+ * - Integrar player do Spotify quando disponível
+ * - Detectar e otimizar para dispositivos móveis
+ * - Fornecer controles de navegação por gestos touch
+ * - Implementar auto-hide de controles em tela cheia
+ * - Renderizar modal de imagem em tela cheia
+ * - Fornecer opção de exclusão da memória
+ * 
+ * Dependências:
+ * - React (useState) para gerenciamento de estado complexo
+ * - ReactDOM para renderização de portais
+ * - Lucide React para ícones de navegação e ações
+ * - Utilitários para extração de ID do Spotify
+ * - Props para dados da memória e callbacks
+ * 
+ * Padrões de Projeto:
+ * - Component: Encapsula lógica de exibição de conteúdo
+ * - State: Gerencia múltiplos estados de UI e interação
+ * - Observer: Reage a eventos de touch e mouse
+ * - Strategy: Diferentes estratégias para mobile e desktop
+ * - Portal: Renderiza modal de imagem em tela cheia
+ * - Template Method: Define estrutura de navegação de fotos
+ */
+
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Trash2, ChevronLeft, ChevronRight, X } from "lucide-react";

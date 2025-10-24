@@ -1,12 +1,31 @@
 # ============================================
-# CONFIGURATION - Application Settings
-# Configurações da aplicação Flask
+# CONFIGURATION - config.py
+# Sistema de configurações por ambiente da aplicação Flask
 # ============================================
+
+"""
+Sistema de configuração centralizado para a aplicação Memory Book.
+
+Responsabilidades:
+- Definir configurações base comuns a todos os ambientes
+- Especializar configurações para desenvolvimento e produção
+- Carregar variáveis de ambiente do arquivo .env
+- Configurar JWT, banco de dados, CORS e uploads
+- Fornecer mapeamento de configurações por ambiente
+
+Dependências:
+- os: Acesso às variáveis de ambiente do sistema
+- dotenv: Carregamento de variáveis do arquivo .env
+
+Padrões de Projeto:
+- Strategy Pattern: Diferentes estratégias de configuração por ambiente
+- Template Method: Classe base Config com especializações
+"""
 
 import os
 from dotenv import load_dotenv
 
-# Carregar variáveis de ambiente
+# Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
 
 class Config:

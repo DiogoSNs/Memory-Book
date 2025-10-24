@@ -3,6 +3,31 @@
 // Barra de controles para adicionar memórias
 // ============================================
 
+/**
+ * Barra de controles para gerenciar o modo de adição de memórias no mapa.
+ * 
+ * Responsabilidades:
+ * - Fornecer botão para iniciar modo de adição de memórias
+ * - Exibir instruções quando em modo de adição
+ * - Permitir cancelamento do modo de adição
+ * - Aplicar temas visuais dinâmicos
+ * - Renderizar interface responsiva e intuitiva
+ * - Integrar com sistema de gradientes
+ * 
+ * Dependências:
+ * - React para criação do componente funcional
+ * - Lucide React para ícones de ação
+ * - GradientContext para temas visuais
+ * - Props para estado e callbacks de adição
+ * 
+ * Padrões de Projeto:
+ * - View: Componente de apresentação da arquitetura MVC
+ * - Observer: Reage a mudanças de tema via contexto
+ * - Strategy: Diferentes estratégias de exibição baseadas no estado
+ * - Command: Encapsula ações de iniciar/cancelar adição
+ * - State: Reflete estado atual do modo de adição
+ */
+
 import React from "react";
 import { Plus, MapPin, X } from "lucide-react";
 import { useGradient } from '../contexts/GradientContext.jsx';

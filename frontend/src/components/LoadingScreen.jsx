@@ -1,3 +1,29 @@
+// ============================================
+// COMPONENT - LoadingScreen.jsx
+// Tela de carregamento com animações
+// ============================================
+
+/**
+ * Componente de tela de carregamento com animações visuais.
+ * 
+ * Responsabilidades:
+ * - Exibir tela de carregamento durante operações assíncronas
+ * - Animar texto de carregamento com pontos progressivos
+ * - Detectar e adaptar para dispositivos móveis
+ * - Renderizar animações de partículas flutuantes
+ * - Cobrir toda a tela com overlay de loading
+ * - Fornecer feedback visual durante esperas
+ * 
+ * Dependências:
+ * - React: Biblioteca principal (useState, useEffect)
+ * 
+ * Padrões de Projeto:
+ * - Component Pattern: Componente reutilizável e encapsulado
+ * - Observer Pattern: Observa mudanças no tamanho da tela
+ * - State Pattern: Gerencia estados de animação e responsividade
+ * - Template Method Pattern: Estrutura consistente de loading
+ */
+
 import React, { useState, useEffect } from 'react';
 
 const LoadingScreen = () => {

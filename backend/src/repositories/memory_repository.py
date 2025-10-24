@@ -1,7 +1,30 @@
 # ============================================
-# MEMORY REPOSITORY - Repository Pattern
-# Repositório específico para memórias
+# REPOSITORY - memory_repository.py
+# Repositório especializado para operações com memórias geográficas
 # ============================================
+
+"""
+Repositório especializado para gerenciar operações de dados de memórias.
+
+Responsabilidades:
+- Implementar operações CRUD específicas para memórias
+- Buscar memórias por usuário, localização e filtros
+- Validar dados de memórias antes da persistência
+- Gerenciar relacionamentos entre memórias e usuários
+- Fornecer métodos de busca geográfica e temporal
+- Abstrair complexidade de consultas SQL
+
+Dependências:
+- .base_repository.BaseRepository: Classe base com operações CRUD
+- src.models.memory.Memory: Modelo de dados de memórias
+- src.database.db: Instância do banco de dados
+- typing: Tipagem para melhor documentação
+
+Padrões de Projeto:
+- Repository Pattern: Abstração da camada de persistência
+- Template Method Pattern: Herda comportamentos do BaseRepository
+- Facade Pattern: Interface simplificada para operações complexas
+"""
 
 from typing import List, Optional
 from .base_repository import BaseRepository

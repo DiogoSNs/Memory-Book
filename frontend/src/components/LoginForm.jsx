@@ -1,3 +1,35 @@
+// ============================================
+// COMPONENT - LoginForm.jsx
+// Formulário de autenticação de usuários
+// ============================================
+
+/**
+ * Componente de formulário para autenticação de usuários.
+ * 
+ * Responsabilidades:
+ * - Renderizar interface de login responsiva
+ * - Validar dados de entrada (email e senha)
+ * - Gerenciar estados de loading e erros
+ * - Integrar com contexto de autenticação
+ * - Exibir/ocultar senha com toggle visual
+ * - Aplicar tema/gradiente personalizado
+ * - Fornecer navegação para tela de registro
+ * - Exibir notificações de sucesso/erro
+ * 
+ * Dependências:
+ * - React: Biblioteca principal (useState, useEffect)
+ * - lucide-react: Ícones para interface
+ * - ../contexts/AuthContext: Contexto de autenticação
+ * - ../contexts/ToastContext: Contexto de notificações
+ * - ../contexts/GradientContext: Contexto de temas
+ * 
+ * Padrões de Projeto:
+ * - Component Pattern: Componente reutilizável e encapsulado
+ * - Observer Pattern: Observa mudanças nos contextos
+ * - State Pattern: Gerencia múltiplos estados do formulário
+ * - Strategy Pattern: Diferentes estratégias de validação
+ */
+
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Mail, Lock, MapPin } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -232,7 +264,7 @@ const LoginForm = ({ onSwitchToRegister }) => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} action="#" method="post">
             {/* Email Field */}
             <div style={{ marginBottom: "20px" }}>
               <label style={{
@@ -260,11 +292,13 @@ const LoginForm = ({ onSwitchToRegister }) => {
                 <input
                   type="email"
                   name="email"
+                  id="login-email"
                   value={formData.email}
                   onChange={handleChange}
+                  autoComplete="username"
                   style={{
                     width: "100%",
-                    padding: isMobile ? "10px 10px 10px 40px" : "12px 12px 12px 44px",
+                    padding: isMobile ? "10px 40px 10px 40px" : "12px 44px 12px 44px",
                     border: errors.email ? "2px solid #dc2626" : "2px solid #e5e7eb",
                     borderRadius: "8px",
                     fontSize: isMobile ? "14px" : "16px",
@@ -324,8 +358,10 @@ const LoginForm = ({ onSwitchToRegister }) => {
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
+                  id="login-password"
                   value={formData.password}
                   onChange={handleChange}
+                  autoComplete="current-password"
                   style={{
                     width: "100%",
                     padding: isMobile ? "10px 40px 10px 40px" : "12px 44px 12px 44px",

@@ -1,7 +1,31 @@
 // ============================================
-// CONTROLLER - MemoryController
-// Gerencia o estado e operações das memórias usando Context API
+// CONTROLLER - MemoryController.jsx
+// Controller para gerenciamento de memórias geográficas
 // ============================================
+
+/**
+ * Controller para gerenciamento de memórias geográficas da aplicação.
+ * 
+ * Responsabilidades:
+ * - Gerenciar estado global das memórias do usuário
+ * - Implementar operações CRUD para memórias (Create, Read, Update, Delete)
+ * - Sincronizar dados com API backend
+ * - Gerenciar estados de loading e erro
+ * - Fornecer interface unificada para componentes acessarem memórias
+ * - Controlar carregamento automático baseado em autenticação
+ * 
+ * Dependências:
+ * - React: Biblioteca principal (createContext, useContext, useState, useEffect)
+ * - ../utils/api: Cliente API e tratamento de erros
+ * - ../contexts/AuthContext: Contexto de autenticação
+ * 
+ * Padrões de Projeto:
+ * - MVC Pattern: Atua como Controller na arquitetura MVC
+ * - Context Pattern: Compartilhamento de estado via Context API
+ * - Observer Pattern: Observa mudanças na autenticação
+ * - Repository Pattern: Interface para acesso a dados de memórias
+ * - Facade Pattern: Simplifica acesso às operações de memória
+ */
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { api, ApiError } from '../utils/api.js';

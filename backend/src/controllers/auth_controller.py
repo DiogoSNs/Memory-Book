@@ -1,17 +1,42 @@
 # ============================================
-# CONTROLLER - Authentication
-# Controller para autenticação de usuários
+# CONTROLLER - auth_controller.py
+# Controller para autenticação e autorização de usuários
 # ============================================
+
+"""
+Controller de autenticação para gerenciar registro, login e autorização.
+
+Responsabilidades:
+- Gerenciar endpoints de registro e login de usuários
+- Validar dados de entrada (nome, email, senha)
+- Criar e gerenciar tokens JWT para autenticação
+- Integrar com repositórios para persistência de dados
+- Criar tema padrão para novos usuários
+- Tratar erros de autenticação e validação
+- Fornecer respostas padronizadas da API
+
+Dependências:
+- flask: Framework web e utilitários (Blueprint, request, jsonify)
+- flask_jwt_extended: Gerenciamento de tokens JWT
+- src.repositories.user_repository: Operações de dados de usuários
+- src.repositories.theme_repository: Operações de dados de temas
+
+Padrões de Projeto:
+- MVC Pattern: Controller na arquitetura Model-View-Controller
+- Repository Pattern: Usa repositórios para acesso a dados
+- Blueprint Pattern: Organização modular de rotas Flask
+- Facade Pattern: Interface simplificada para operações complexas
+"""
 
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from src.repositories.user_repository import UserRepository
 from src.repositories.theme_repository import ThemeRepository
 
-# Blueprint para rotas de autenticação
+# Blueprint para rotas de autenticação (Blueprint Pattern)
 auth_bp = Blueprint('auth', __name__)
 
-# Instâncias dos repositórios
+# Instâncias dos repositórios (Repository Pattern)
 user_repo = UserRepository()
 theme_repo = ThemeRepository()
 
@@ -208,13 +233,13 @@ def login():
         if not user:
             if auth_result == "user_not_found":
                 return jsonify({
-                    'message': 'Usuário não encontrado',
+                    'message': 'Opa! não encontramos uma conta com esse e-mail.',
                     'suggestion': 'Verifique se o email está correto ou crie uma nova conta.',
                     'error_type': 'user_not_found'
                 }), 401
             elif auth_result == "invalid_password":
                 return jsonify({
-                    'message': 'Senha incorreta',
+                    'message': 'Ops! Parece que sua senha está errada.',
                     'suggestion': 'Verifique sua senha ou crie uma nova conta se ainda não possui uma.',
                     'error_type': 'invalid_password'
                 }), 401

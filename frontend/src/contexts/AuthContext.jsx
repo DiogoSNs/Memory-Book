@@ -1,8 +1,20 @@
+// ============================================
+// PADRÃO OBSERVER - AuthContext
+// Implementa o padrão Observer usando React Context API
+// ============================================
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api, ApiError } from '../utils/api.js';
 
+// Context que atua como SUBJECT no padrão Observer
+// Mantém o estado de autenticação e notifica todos os observers (componentes)
 const AuthContext = createContext();
 
+/**
+ * Hook customizado que atua como OBSERVER
+ * Permite que componentes se inscrevam para receber notificações
+ * sobre mudanças no estado de autenticação
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -11,12 +23,25 @@ export const useAuth = () => {
   return context;
 };
 
+/**
+ * AuthProvider - SUBJECT no padrão Observer
+ * 
+ * Responsabilidades:
+ * 1. Manter o estado global de autenticação (Subject State)
+ * 2. Notificar automaticamente todos os observers quando o estado muda
+ * 3. Fornecer métodos para modificar o estado (login, logout, register)
+ * 
+ * Padrão Observer em ação:
+ * - Quando setUser() é chamado, todos os componentes que usam useAuth() são re-renderizados
+ * - React Context API gerencia automaticamente a notificação dos observers
+ */
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(false);
-  const [isNewRegistration, setIsNewRegistration] = useState(false);
+  // Estado do Subject - quando muda, notifica todos os observers
+  const [user, setUser] = useState(null);                    // Dados do usuário logado
+  const [isLoading, setIsLoading] = useState(true);          // Estado de carregamento
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Status de autenticação
+  const [showWelcome, setShowWelcome] = useState(false);     // Controle de tela de boas-vindas
+  const [isNewRegistration, setIsNewRegistration] = useState(false); // Flag de novo registro
 
   // Verificar se há usuário logado ao inicializar
   useEffect(() => {

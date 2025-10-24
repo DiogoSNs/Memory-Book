@@ -1,3 +1,32 @@
+// ============================================
+// COMPONENT - WelcomeScreen.jsx
+// Tela de boas-vindas modal da aplicação
+// ============================================
+
+/**
+ * Componente de tela de boas-vindas modal para novos usuários.
+ * 
+ * Responsabilidades:
+ * - Exibir tutorial interativo para novos usuários
+ * - Apresentar funcionalidades principais da aplicação
+ * - Renderizar modal usando React Portal
+ * - Aplicar tema/gradiente personalizado do usuário
+ * - Fornecer navegação através das etapas do tutorial
+ * - Permitir fechamento do modal
+ * 
+ * Dependências:
+ * - React: Biblioteca principal para componentes
+ * - ReactDOM: Para renderização via portal
+ * - lucide-react: Ícones para interface
+ * - ../contexts/GradientContext: Contexto de temas/gradientes
+ * 
+ * Padrões de Projeto:
+ * - Portal Pattern: Renderização fora da hierarquia DOM
+ * - Observer Pattern: Observa mudanças no contexto de gradiente
+ * - Component Pattern: Componente reutilizável e encapsulado
+ * - State Pattern: Gerencia estados de navegação do tutorial
+ */
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { MapPin, Camera, Heart, Share2, X } from 'lucide-react';

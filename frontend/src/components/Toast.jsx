@@ -1,3 +1,31 @@
+// ============================================
+// COMPONENT - Toast.jsx
+// Componente de notificação toast
+// ============================================
+
+/**
+ * Componente de notificação toast para feedback ao usuário.
+ * 
+ * Responsabilidades:
+ * - Exibir notificações temporárias para o usuário
+ * - Suportar diferentes tipos (success, error, info)
+ * - Gerenciar auto-fechamento baseado em duração
+ * - Adaptar layout para dispositivos móveis
+ * - Fornecer ícones visuais apropriados para cada tipo
+ * - Permitir fechamento manual pelo usuário
+ * - Aplicar animações de entrada e saída
+ * 
+ * Dependências:
+ * - React: Biblioteca principal (useState, useEffect)
+ * - lucide-react: Ícones para diferentes tipos de notificação
+ * 
+ * Padrões de Projeto:
+ * - Component Pattern: Componente reutilizável e encapsulado
+ * - Strategy Pattern: Diferentes estratégias visuais por tipo
+ * - Observer Pattern: Observa mudanças no tamanho da tela
+ * - Template Method Pattern: Estrutura consistente de notificação
+ */
+
 import React, { useState, useEffect } from "react";
 import { X, AlertCircle, CheckCircle, Info } from "lucide-react";
 

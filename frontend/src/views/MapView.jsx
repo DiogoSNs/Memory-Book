@@ -3,6 +3,43 @@
 // Componente principal do mapa
 // ============================================
 
+/**
+ * Componente principal que gerencia a visualização e interação com o mapa interativo.
+ * 
+ * Responsabilidades:
+ * - Renderizar mapa interativo usando Leaflet
+ * - Gerenciar marcadores de memórias no mapa
+ * - Controlar modo de adição de novas memórias
+ * - Integrar formulário de criação de memórias
+ * - Exibir modal de lista de memórias
+ * - Gerenciar modal de perfil do usuário
+ * - Aplicar temas visuais ao mapa
+ * - Detectar e otimizar para dispositivos móveis
+ * - Fornecer controles de navegação e localização
+ * - Sincronizar com múltiplos contextos da aplicação
+ * 
+ * Dependências:
+ * - React (useState, useEffect, useRef) para gerenciamento complexo
+ * - React Leaflet para componentes de mapa
+ * - Lucide React para ícones da interface
+ * - Leaflet para configurações avançadas de mapa
+ * - MemoryController para operações CRUD
+ * - AuthContext para autenticação e perfil
+ * - ToastContext para notificações
+ * - GradientContext para temas visuais
+ * - MapThemeContext para temas específicos do mapa
+ * - Múltiplos componentes especializados
+ * 
+ * Padrões de Projeto:
+ * - View: Componente principal de visualização MVC
+ * - Observer: Reage a mudanças em múltiplos contextos
+ * - Composite: Compõe múltiplos componentes especializados
+ * - Strategy: Diferentes estratégias para mobile/desktop
+ * - Facade: Simplifica interações complexas com mapa
+ * - State: Gerencia múltiplos estados de UI e interação
+ * - Mediator: Coordena comunicação entre componentes
+ */
+
 import React, { useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { List, Plus, User, Navigation, Crosshair } from "lucide-react";

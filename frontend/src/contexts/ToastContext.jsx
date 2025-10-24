@@ -1,7 +1,28 @@
 // ============================================
-// CONTEXT - Toast
-// Contexto para sistema de notificações
+// CONTEXT - ToastContext.jsx
+// Contexto para sistema de notificações toast
 // ============================================
+
+/**
+ * Contexto para gerenciamento de notificações toast da aplicação.
+ * 
+ * Responsabilidades:
+ * - Gerenciar estado global de notificações toast
+ * - Fornecer métodos para exibir e remover toasts
+ * - Controlar posicionamento e z-index dos toasts
+ * - Renderizar container de toasts na aplicação
+ * - Gerar IDs únicos para cada toast
+ * 
+ * Dependências:
+ * - React: Biblioteca principal (createContext, useContext, useState)
+ * - ../components/Toast: Componente individual de toast
+ * 
+ * Padrões de Projeto:
+ * - Context Pattern: Compartilhamento de estado global
+ * - Observer Pattern: Componentes observam mudanças no estado de toasts
+ * - Provider Pattern: Fornece funcionalidades de toast para toda a aplicação
+ * - Factory Pattern: Criação de toasts com IDs únicos
+ */
 
 import React, { createContext, useContext, useState } from 'react';
 import { Toast } from '../components/Toast.jsx';
