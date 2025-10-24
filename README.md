@@ -44,9 +44,9 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 
 #### Objetivos de Qualidade
 - **Funcionalidade**: Sistema deve atender 100% dos requisitos funcionais
-- **Confiabilidade**: Taxa de erro < 1% em operações críticas
+- **Confiabilidade**: Taxa de erro < 5% em operações críticas
 - **Usabilidade**: Interface intuitiva com tempo de aprendizado < 30 minutos
-- **Performance**: Tempo de resposta da API ≤ 3 segundos
+- **Performance**: Tempo de resposta da API ≤ 5 segundos
 - **Manutenibilidade**: Código bem documentado
 
 #### Processos de Garantia de Qualidade
