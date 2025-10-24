@@ -42,14 +42,14 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 
 ### 📋 Plano de Qualidade de Software
 
-#### 🎯 Objetivos de Qualidade
+#### Objetivos de Qualidade
 - **Funcionalidade**: Sistema deve atender 100% dos requisitos funcionais
 - **Confiabilidade**: Taxa de erro < 1% em operações críticas
 - **Usabilidade**: Interface intuitiva com tempo de aprendizado < 30 minutos
 - **Performance**: Tempo de resposta da API ≤ 3 segundos
 - **Manutenibilidade**: Código bem documentado
 
-#### 🔍 Processos de Garantia de Qualidade
+#### Processos de Garantia de Qualidade
 
 **1. Revisão de Código (Code Review)**
 - **Processo**: Todo código passa por revisão de pelo menos 1 membro da equipe
