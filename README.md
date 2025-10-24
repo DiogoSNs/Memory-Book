@@ -1,7 +1,7 @@
 # 🗺️ Memory Book - Mapa de Memórias Afetivas
 
 Um projeto desenvolvido por **Alberto Pontiery**, **Diogo Nascimento** e **Guilherme Pança** na matéria de Engenharia de Software que transforma lembranças em pontos interativos no mapa.  
-A ideia é registrar momentos especiais (texto, fotos, descrições e localizações) e guardá-los em um espaço visual e afetivo. 💖  
+A ideia é registrar momentos especiais (texto, fotos, descrições e localizações) e guardá-los em um espaço visual e afetivo.  
 
 ---
 
@@ -12,7 +12,7 @@ O **Memory-Book** é uma aplicação web full-stack que permite:
 - 📷 Registrar fotos e cores personalizadas para cada memória
 - 🎵 Integração com Spotify para adicionar trilha sonora às memórias
 - 🗂️ Organizar memórias por data e visualizá-las em lista
-- 👤 Sistema completo de autenticação e perfis de usuário
+- 👤 Sistema de autenticação e perfis de usuário
 - 🎨 Temas e gradientes personalizáveis
 - 📱 Interface responsiva para desktop e mobile
 
@@ -22,16 +22,16 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 
 ## 📌 Funcionalidades Implementadas
 - [x] **Mapa interativo** com React-Leaflet e OpenStreetMap
-- [x] **Sistema de autenticação completo** (registro, login, logout)
-- [x] **CRUD completo de memórias** (criar, visualizar, editar, excluir)
+- [x] **Sistema de autenticação** (registro, login, logout)
+- [x] **CRUD de memórias** (criar, visualizar, editar, excluir)
 - [x] **Upload e visualização de fotos**
-- [x] **Integração com Spotify** para adicionar músicas às memórias
+- [x] **Integração com Spotify via link** para adicionar músicas às memórias
 - [x] **Sistema de cores personalizáveis** para cada memória
 - [x] **Filtros e busca** por data
 - [x] **Temas e gradientes dinâmicos** (Aurora, Sunset, Ocean, Forest, Cosmic)
-- [x] **Interface responsiva** e moderna
-- [x] **Banco de dados relacional** com SQLite
-- [x] **API RESTful** completa com Flask
+- [x] **Interface responsiva** desktop/mobile
+- [x] **Banco de dados relacional** com SQLite e SQLAlchemy
+- [x] **API RESTful** Flask
 - [x] **Sistema de notificações** (toasts)
 - [x] **Exportação de memórias** em PDF
 - [x] **Persistência de dados** no backend
@@ -44,39 +44,32 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 
 #### Objetivos de Qualidade
 - **Funcionalidade**: Sistema deve atender 100% dos requisitos funcionais
-- **Confiabilidade**: Taxa de erro < 5% em operações críticas
 - **Usabilidade**: Interface intuitiva com tempo de aprendizado < 30 minutos
-- **Performance**: Tempo de resposta da API ≤ 5 segundos
-- **Manutenibilidade**: Código bem documentado
+- **Manutenibilidade**: Códigos com cabeçalhos explicativos e comentários descritivos.
 
 #### Processos de Garantia de Qualidade
 
-**1. Revisão de Código (Code Review)**
+**1. Revisão de Código**
 - **Processo**: Todo código passa por revisão de pelo menos 1 membro da equipe
-- **Critérios**: Padrões de codificação, legibilidade, performance, segurança
-- **Ferramentas**: Git/GitHub para controle de versão e revisões
+- **Ferramentas**: Git/GitHub para controle de versão e revisões utilizando branches para compartimentar as interações de cada integrante.
 
 **2. Testes e Validação**
-- **Testes Unitários**: Validação de funções individuais (backend)
-- **Testes de Integração**: Comunicação frontend-backend via API
-- **Testes de Interface**: Validação manual de todas as funcionalidades
-- **Testes de Usabilidade**: Navegação e experiência do usuário
+- **Testes de Interface**: Validação manual feita por todos os integrantes para verificar as funcionalidades do programa, como (login, registro, criação de memória, exclusão, alteração de temas... etc)
+- **Testes de Usabilidade**: Navegação e experiência do usuário com demonstrações para terceiros.
 
 **3. Controle de Qualidade de Dados**
-- **Validação Frontend**: Verificação de campos obrigatórios e formatos
-- **Validação Backend**: Validação de dados recebidos
-- **Tratamento de Erros**: Mensagens claras e logs detalhados
+- **Validação Frontend**: Verificação de campos obrigatórios.
+- **Validação Backend**: Validação de dados recebidos.
+- **Tratamento de Erros**: Avisos de erros na UI.
 
 #### 📊 Métricas e Indicadores de Qualidade
 
-| Métrica | Meta | Status atual |
-|---------|------|-------|
-| **Tempo de resposta da API** | ≤ 5s | ✅ |
-| **Cobertura de funcionalidades** | 100% | ✅ |
-| **Taxa de erro em operações** | < 5% | ✅ |
-| **Interface responsiva** | Mobile + Desktop | ✅ |
-| **Documentação de código** | > 80% | ✅ |
-| **Conformidade com padrões** | 100% | ✅ |
+| Métrica | Status |
+|---------|-------|
+| **Interface responsiva** | ✅ |
+| **Documentação de código** | ✅ |
+| **Conformidade com padrões de arquitetura e projetos** | ✅ |
+| **Manutenibilidade** | ✅ |
 
 ---
 
@@ -114,16 +107,14 @@ A arquitetura precisa ser modular, escalável e preparada para futuras funcional
 |:-------|:-----------|
 | **RNF01** | Interface responsiva e intuitiva (mobile e desktop). |
 | **RNF02** | Persistência de dados em banco relacional. |
-| **RNF03** | Tempo médio de resposta ≤ 5 segundos. |
-| **RNF04** | Arquitetura de fácil manutenção. |
-| **RNF05** | Autenticação e controle de acesso. |
+| **RNF03** | Código de fácil manutenção. |
+| **RNF04** | Autenticação e controle de acesso. |
 
 ### Implicações Arquiteturais
 
-- O sistema deve manter **fronteiras claras entre frontend e backend**, evitando acoplamento.  
-- Deve permitir **crescimento incremental**, com adição de novos módulos (upload, login).  
+- O sistema deve manter **fronteiras claras entre frontend e backend**.   
 - Requer **API leve e responsiva** para comunicação em tempo real com o mapa.  
-- A estrutura precisa facilitar **testes unitários e manutenibilidade** do código.
+- A estrutura precisa facilitar **manutenibilidade** do código.
 
 ---
 
@@ -135,11 +126,9 @@ Arquitetura Cliente-Servidor em Camadas com o padrão MVC (Model-View-Controller
 
 | Critério | Decisão | Benefício |
 |:----------|:--------|:----------|
-| **Organização e clareza** | Uso do padrão **MVC** no backend | Facilita manutenção e entendimento do código. |
 | **Escalabilidade** | Separação entre frontend e backend | Permite evolução independente de cada camada. |
-| **Desempenho** | API RESTful leve (Express + JSON) | Garante comunicação rápida e flexível. |
-| **Manutenibilidade** | Arquitetura em camadas | Possibilita substituição ou melhoria de módulos sem impacto global. |
-| **Segurança futura** | Middleware de autenticação | Permite implementar login e permissões (JWT). |
+| **Desempenho** | API RESTful leve | Garante comunicação rápida e flexível. |
+| **Manutenibilidade** | Arquitetura em camadas | Possibilita substituição ou melhoria sem impacto global. |
 | **Experiência do usuário** | SPA responsiva (React + Leaflet) | Atualizações dinâmicas e fluídas sem recarregar a página. |
 
 > Essa abordagem combina a separação de responsabilidades do **MVC** com a distribuição lógica do **cliente-servidor**, o que garante escalabilidade e organização.
@@ -445,17 +434,6 @@ Além disso, esse padrão é amplamente recomendado para aplicações **web dist
 **Guilherme Pança - Full-Stack:**
 - **Facade Pattern**: ApiFacade para simplificar comunicação entre frontend e backend
 
-### 📊 Resumo dos Padrões Implementados
-
-| Padrão | Tipo | Localização | Responsável |
-|--------|------|-------------|-------------|
-| **Observer** | Comportamental | Frontend (Contexts) | Diogo Nascimento |
-| **Component/Composite** | Estrutural | Frontend (Components) | Diogo Nascimento |
-| **Factory Method** | Criacional | Backend (Models) | Alberto Pontiery |
-| **Repository** | Estrutural | Backend (Data Access) | Alberto Pontiery |
-| **Facade** | Estrutural | Frontend (API Layer) | Guilherme Pança |
-
----
 ---
 
 ## 📁 Estrutura do Projeto
@@ -520,30 +498,6 @@ Memory-Book/
 
 ---
 
-### 🛠️ Stack Tecnológica
-
-#### Frontend
-- **React 19.1.1** - Biblioteca para interfaces
-- **Vite 7.1.7** - Build tool e dev server
-- **React-Leaflet 5.0.0** - Mapas interativos
-- **Leaflet 1.9.4** - Biblioteca de mapas
-- **Lucide React 0.546.0** - Ícones modernos
-- **jsPDF 3.0.3** - Geração de PDFs
-- **Context API** - Gerenciamento de estado global
-
-#### Backend
-- **Flask 3.0.0** - Framework web Python
-- **SQLAlchemy 3.1.1** - ORM para banco de dados
-- **Flask-JWT-Extended 4.6.0** - Autenticação JWT
-- **Flask-CORS 4.0.0** - Suporte a CORS
-- **Flask-Migrate 4.1.0** - Migrações de banco
-- **bcrypt 4.1.2** - Criptografia de senhas
-- **Marshmallow 3.20.2** - Serialização de dados
-
-#### Banco de Dados
-- **SQLite** - Armazenar dados do usuário
-
----
 
 ## 🚀 Como Rodar o Projeto
 
@@ -643,35 +597,6 @@ python reset_db.py
 - **Integração com Spotify** para trilha sonora
 - **Interface responsiva** para mobile
 - **Sistema de notificações** para feedback
-
----
-
-## 📊 Funcionalidades Técnicas
-
-### 🔐 Autenticação e Segurança
-- **JWT (JSON Web Tokens)** para autenticação
-- **bcrypt** para hash de senhas
-- **CORS** configurado para comunicação frontend/backend
-- **Validação de dados** no frontend e backend
-
-### 🗄️ Banco de Dados
-- **Modelos relacionais** com SQLAlchemy
-- **Migrações automáticas** com Flask-Migrate
-- **Relacionamentos** entre usuários, memórias e temas
-- **Timestamps** automáticos (created_at, updated_at)
-
-### 🎨 Interface e UX
-- **Design responsivo** com CSS3
-- **Gradientes dinâmicos** personalizáveis
-- **Animações suaves** e transições
-- **Feedback visual** com toasts e loading states
-- **Ícones modernos** com Lucide React
-
-### 🗺️ Mapas e Geolocalização
-- **React-Leaflet** para mapas interativos
-- **OpenStreetMap** como provedor de tiles
-- **Marcadores personalizados** com cores
-- **Zoom e navegação** fluidos
 
 ---
 
