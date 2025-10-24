@@ -1,6 +1,6 @@
-# 🗺️ Memory-Book - Mapa de Memórias Afetivas
+# 🗺️ Memory Book - Mapa de Memórias Afetivas
 
-Um projeto desenvolvido por **Alberto Pontiery**, **Diogo Nascimento** e **Guilherme Franco** na matéria de Engenharia de Software que transforma lembranças em pontos interativos no mapa.  
+Um projeto desenvolvido por **Alberto Pontiery**, **Diogo Nascimento** e **Guilherme Pança** na matéria de Engenharia de Software que transforma lembranças em pontos interativos no mapa.  
 A ideia é registrar momentos especiais (texto, fotos, descrições e localizações) e guardá-los em um espaço visual e afetivo. 💖  
 
 ---
@@ -27,10 +27,10 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 - [x] **Upload e visualização de fotos**
 - [x] **Integração com Spotify** para adicionar músicas às memórias
 - [x] **Sistema de cores personalizáveis** para cada memória
-- [x] **Filtros e busca** por título, descrição e data
+- [x] **Filtros e busca** por data
 - [x] **Temas e gradientes dinâmicos** (Aurora, Sunset, Ocean, Forest, Cosmic)
 - [x] **Interface responsiva** e moderna
-- [x] **Banco de dados relacional** com SQLite/PostgreSQL
+- [x] **Banco de dados relacional** com SQLite
 - [x] **API RESTful** completa com Flask
 - [x] **Sistema de notificações** (toasts)
 - [x] **Exportação de memórias** em PDF
@@ -38,49 +38,121 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 
 ---
 
+## 🧪 Gerência de Qualidade
+
+### 📋 Plano de Qualidade de Software
+
+#### 🎯 Objetivos de Qualidade
+- **Funcionalidade**: Sistema deve atender 100% dos requisitos funcionais
+- **Confiabilidade**: Taxa de erro < 1% em operações críticas
+- **Usabilidade**: Interface intuitiva com tempo de aprendizado < 30 minutos
+- **Performance**: Tempo de resposta da API ≤ 3 segundos
+- **Manutenibilidade**: Código bem documentado
+
+#### 🔍 Processos de Garantia de Qualidade
+
+**1. Revisão de Código (Code Review)**
+- **Processo**: Todo código passa por revisão de pelo menos 1 membro da equipe
+- **Critérios**: Padrões de codificação, legibilidade, performance, segurança
+- **Ferramentas**: Git/GitHub para controle de versão e revisões
+
+**2. Testes e Validação**
+- **Testes Unitários**: Validação de funções individuais (backend)
+- **Testes de Integração**: Comunicação frontend-backend via API
+- **Testes de Interface**: Validação manual de todas as funcionalidades
+- **Testes de Usabilidade**: Navegação e experiência do usuário
+
+**3. Controle de Qualidade de Dados**
+- **Validação Frontend**: Verificação de campos obrigatórios e formatos
+- **Validação Backend**: Validação de dados recebidos
+- **Tratamento de Erros**: Mensagens claras e logs detalhados
+
+#### 📊 Métricas e Indicadores de Qualidade
+
+| Métrica | Meta | Status atual |
+|---------|------|-------|
+| **Tempo de resposta da API** | ≤ 5s | ✅ |
+| **Cobertura de funcionalidades** | 100% | ✅ |
+| **Taxa de erro em operações** | < 5% | ✅ |
+| **Interface responsiva** | Mobile + Desktop | ✅ |
+| **Documentação de código** | > 80% | ✅ |
+| **Conformidade com padrões** | 100% | ✅ |
+
+---
+
+## 👥 Equipe de Desenvolvimento
+
+| Membro | Papel Principal | Responsabilidades |
+|--------|----------------|-------------------|
+| **Alberto Pontiery** | Backend Developer | API Flask, banco de dados, autenticação |
+| **Diogo Nascimento** | Frontend Developer | Interface React, mapas, UX/UI |
+| **Guilherme Franco** | Full-Stack & QA | Integração, testes, qualidade |
+
+---
+
+
 ## 🏗️ Arquitetura e Decisões Técnicas
 
-### 🎯 Decisões Arquiteturais e Justificativas
+## Análise dos Requisitos do Projeto
 
-#### 1. **Arquitetura Cliente-Servidor em Camadas**
-**Decisão**: Separação completa entre frontend e backend  
-**Justificativa**: 
-- **Escalabilidade**: Permite escalar frontend e backend independentemente
-- **Manutenibilidade**: Equipes podem trabalhar em paralelo
-- **Flexibilidade**: Frontend pode ser substituído sem afetar backend
-- **Reutilização**: API pode ser consumida por múltiplos clientes (web, mobile)
+O **Memory Book** é um sistema web interativo que permite aos usuários registrar lembranças pessoais em pontos geográficos, com textos e mídias associadas.  
+A arquitetura precisa ser modular, escalável e preparada para futuras funcionalidades, como upload de mídias e autenticação de usuários.
 
-#### 2. **Padrão MVC (Model-View-Controller)**
-**Decisão**: Implementação do MVC no backend Flask  
-**Justificativa**:
-- **Separação de responsabilidades**: Lógica de negócio, apresentação e controle separadas
-- **Testabilidade**: Cada camada pode ser testada independentemente
-- **Organização**: Estrutura clara e familiar para a equipe
-- **Manutenção**: Facilita localização e correção de bugs
+### Requisitos Funcionais (RF)
 
-#### 3. **SPA (Single Page Application) com React**
-**Decisão**: Frontend como aplicação de página única  
-**Justificativa**:
-- **Performance**: Carregamento inicial único, navegação instantânea
-- **UX**: Experiência fluida sem recarregamentos de página
-- **Estado**: Gerenciamento centralizado de estado da aplicação
-- **Interatividade**: Mapas interativos requerem estado persistente
+| Código | Descrição |
+|:-------|:-----------|
+| **RF01** | Criar, visualizar, editar e excluir memórias geolocalizadas. |
+| **RF02** | Exibir memórias em um mapa interativo. |
+| **RF03** | Filtrar memórias por data. |
+| **RF04** | Compartilhar memórias. |
+| **RF05** | Adicionar fotos. |
 
-#### 4. **API RESTful com JSON**
-**Decisão**: Comunicação via REST API com formato JSON  
-**Justificativa**:
-- **Padrão**: REST é amplamente adotado e compreendido
-- **Simplicidade**: JSON é leve e fácil de processar
-- **Stateless**: Cada requisição é independente, facilitando escalabilidade
-- **Cacheable**: Respostas podem ser cacheadas para melhor performance
+### Requisitos Não Funcionais (RNF)
 
-#### 5. **SQLite para Desenvolvimento / PostgreSQL para Produção**
-**Decisão**: Banco relacional com migração automática  
-**Justificativa**:
-- **Desenvolvimento**: SQLite não requer configuração adicional
-- **Produção**: PostgreSQL oferece robustez e recursos avançados
-- **ACID**: Garantia de consistência para dados críticos (usuários, memórias)
-- **Relacionamentos**: Dados naturalmente relacionais (usuário → memórias)
+| Código | Descrição |
+|:-------|:-----------|
+| **RNF01** | Interface responsiva e intuitiva (mobile e desktop). |
+| **RNF02** | Persistência de dados em banco relacional. |
+| **RNF03** | Tempo médio de resposta ≤ 5 segundos. |
+| **RNF04** | Arquitetura de fácil manutenção. |
+| **RNF05** | Autenticação e controle de acesso. |
+
+### Implicações Arquiteturais
+
+- O sistema deve manter **fronteiras claras entre frontend e backend**, evitando acoplamento.  
+- Deve permitir **crescimento incremental**, com adição de novos módulos (upload, login).  
+- Requer **API leve e responsiva** para comunicação em tempo real com o mapa.  
+- A estrutura precisa facilitar **testes unitários e manutenibilidade** do código.
+
+---
+
+## Escolha do Padrão de Arquitetura Base
+
+### Padrão Arquitetural Adotado
+
+Arquitetura Cliente-Servidor em Camadas com o padrão MVC (Model-View-Controller)
+
+| Critério | Decisão | Benefício |
+|:----------|:--------|:----------|
+| **Organização e clareza** | Uso do padrão **MVC** no backend | Facilita manutenção e entendimento do código. |
+| **Escalabilidade** | Separação entre frontend e backend | Permite evolução independente de cada camada. |
+| **Desempenho** | API RESTful leve (Express + JSON) | Garante comunicação rápida e flexível. |
+| **Manutenibilidade** | Arquitetura em camadas | Possibilita substituição ou melhoria de módulos sem impacto global. |
+| **Segurança futura** | Middleware de autenticação | Permite implementar login e permissões (JWT). |
+| **Experiência do usuário** | SPA responsiva (React + Leaflet) | Atualizações dinâmicas e fluídas sem recarregar a página. |
+
+> Essa abordagem combina a separação de responsabilidades do **MVC** com a distribuição lógica do **cliente-servidor**, o que garante escalabilidade e organização.
+
+### Justificativa da Escolha
+
+A arquitetura **Cliente-Servidor em Camadas com MVC** foi escolhida porque equilibra **simplicidade e extensibilidade**.  
+Ela permite o isolamento entre interface, regras de negócio e persistência de dados, o que torna o sistema mais **robusto, testável e escalável**.  
+
+Além disso, esse padrão é amplamente recomendado para aplicações **web distribuídas**, conforme **Sommerville (2019)** e **Pressman (2016)**, pois facilita a **manutenibilidade e modularidade**, reduzindo riscos durante a evolução do software.  
+
+> Em resumo, essa escolha garante uma base sólida para crescimento incremental, sem comprometer desempenho ou clareza estrutural.
+---
 
 ### 🏛️ Diagrama de Arquitetura Detalhado
 
@@ -88,18 +160,18 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 ┌─────────────────────────────────────────────────────────────┐
 │                    CAMADA DE APRESENTAÇÃO                   │
 ├─────────────────────────────────────────────────────────────┤
-│  Frontend (React + Vite) - Port 5173                       │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
-│  │   Views     │ │ Components  │ │  Contexts   │           │
-│  │ - MapView   │ │ - LoginForm │ │ - AuthCtx   │           │
-│  │ - AppHeader │ │ - MemoryForm│ │ - ToastCtx  │           │
-│  └─────────────┘ └─────────────┘ └─────────────┘           │
+│  Frontend (React + Vite) - Port 5173                        │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐            │
+│  │   Views     │ │ Components  │ │  Contexts   │            │
+│  │ - MapView   │ │ - LoginForm │ │ - AuthCtx   │            │
+│  │ - AppHeader │ │ - MemoryForm│ │ - ToastCtx  │            │
+│  └─────────────┘ └─────────────┘ └─────────────┘            │
 │                           │                                 │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
-│  │ Controllers │ │   Models    │ │   Utils     │           │
-│  │ - MemoryCtrl│ │ - Memory.js │ │ - api.js    │           │
-│  │             │ │ - User.js   │ │ - helpers   │           │
-│  └─────────────┘ └─────────────┘ └─────────────┘           │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐            │
+│  │ Controllers │ │   Models    │ │   Utils     │            │
+│  │ - MemoryCtrl│ │ - Memory.js │ │ - api.js    │            │
+│  │             │ │ - User.js   │ │ - helpers   │            │
+│  └─────────────┘ └─────────────┘ └─────────────┘            │
 └─────────────────────────────────────────────────────────────┘
                               │
                     HTTP/JSON REST API
@@ -107,20 +179,20 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 ┌─────────────────────────────────────────────────────────────┐
 │                    CAMADA DE APLICAÇÃO                      │
 ├─────────────────────────────────────────────────────────────┤
-│  Backend (Flask + Python) - Port 5000                      │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
-│  │ Controllers │ │   Routes    │ │ Middlewares │           │
-│  │ - AuthCtrl  │ │ - /api/auth │ │ - JWT Auth  │           │
-│  │ - MemoryCtrl│ │ - /api/mem  │ │ - CORS      │           │
-│  │ - ThemeCtrl │ │ - /api/theme│ │ - Validation│           │
-│  └─────────────┘ └─────────────┘ └─────────────┘           │
+│  Backend (Flask + Python) - Port 5000                       │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐            │
+│  │ Controllers │ │   Routes    │ │ Middlewares │            │
+│  │ - AuthCtrl  │ │ - /api/auth │ │ - JWT Auth  │            │
+│  │ - MemoryCtrl│ │ - /api/mem  │ │ - CORS      │            │
+│  │ - ThemeCtrl │ │ - /api/theme│ │ - Validation│            │
+│  └─────────────┘ └─────────────┘ └─────────────┘            │
 │                           │                                 │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
-│  │ Repositories│ │   Models    │ │   Utils     │           │
-│  │ - UserRepo  │ │ - User      │ │ - Helpers   │           │
-│  │ - MemoryRepo│ │ - Memory    │ │ - Validators│           │
-│  │ - ThemeRepo │ │ - Theme     │ │ - Security  │           │
-│  └─────────────┘ └─────────────┘ └─────────────┘           │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐            │
+│  │ Repositories│ │   Models    │ │   Utils     │            │
+│  │ - UserRepo  │ │ - User      │ │ - Helpers   │            │
+│  │ - MemoryRepo│ │ - Memory    │ │ - Validators│            │
+│  │ - ThemeRepo │ │ - Theme     │ │ - Security  │            │
+│  └─────────────┘ └─────────────┘ └─────────────┘            │
 └─────────────────────────────────────────────────────────────┘
                               │
                         SQLAlchemy ORM
@@ -128,48 +200,22 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 ┌─────────────────────────────────────────────────────────────┐
 │                    CAMADA DE DADOS                          │
 ├─────────────────────────────────────────────────────────────┤
-│  Banco de Dados (SQLite/PostgreSQL)                        │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
-│  │   users     │ │  memories   │ │   themes    │           │
-│  │ - id (PK)   │ │ - id (PK)   │ │ - id (PK)   │           │
-│  │ - name      │ │ - title     │ │ - name      │           │
-│  │ - email     │ │ - desc      │ │ - gradient  │           │
-│  │ - password  │ │ - lat/lng   │ │ - user_id   │           │
-│  │ - created   │ │ - user_id   │ │ - created   │           │
-│  └─────────────┘ └─────────────┘ └─────────────┘           │
-│                    (FK: user_id)   (FK: user_id)           │
+│  Banco de Dados (SQLite/PostgreSQL)                         │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐            │
+│  │   users     │ │  memories   │ │   themes    │            │
+│  │ - id (PK)   │ │ - id (PK)   │ │ - id (PK)   │            │
+│  │ - name      │ │ - title     │ │ - name      │            │
+│  │ - email     │ │ - desc      │ │ - gradient  │            │
+│  │ - password  │ │ - lat/lng   │ │ - user_id   │            │
+│  │ - created   │ │ - user_id   │ │ - created   │            │
+│  └─────────────┘ └─────────────┘ └─────────────┘            │
+│                    (FK: user_id)   (FK: user_id)            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### 🛠️ Stack Tecnológica
-
-#### Frontend
-- **React 19.1.1** - Biblioteca para interfaces
-- **Vite 7.1.7** - Build tool e dev server
-- **React-Leaflet 5.0.0** - Mapas interativos
-- **Leaflet 1.9.4** - Biblioteca de mapas
-- **Lucide React 0.546.0** - Ícones modernos
-- **jsPDF 3.0.3** - Geração de PDFs
-- **Context API** - Gerenciamento de estado global
-
-#### Backend
-- **Flask 3.0.0** - Framework web Python
-- **SQLAlchemy 3.1.1** - ORM para banco de dados
-- **Flask-JWT-Extended 4.6.0** - Autenticação JWT
-- **Flask-CORS 4.0.0** - Suporte a CORS
-- **Flask-Migrate 4.1.0** - Migrações de banco
-- **bcrypt 4.1.2** - Criptografia de senhas
-- **Marshmallow 3.20.2** - Serialização de dados
-
-#### Banco de Dados
-- **SQLite** (desenvolvimento)
-- **PostgreSQL** (produção - preparado)
-
----
-
 ## 🧩 Padrões de Projeto Implementados
 
-### 📡 Padrão Observer (Comportamental)
+### 📡 Padrão Observer (Comportamental) - Frontend
 **Aplicação:** Gerenciamento de estado global da aplicação  
 **Justificativa:** 
 - **Desacoplamento**: Componentes observam mudanças de estado sem conhecer a implementação
@@ -185,7 +231,7 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 
 **Diagrama do Padrão Observer:**
 ```
-┌─────────────────┐    notifica    ┌─────────────────┐
+┌─────────────────┐    notifica     ┌─────────────────┐
 │   AuthContext   │ ──────────────> │   LoginForm     │
 │   (Subject)     │                 │   (Observer)    │
 │                 │                 │                 │
@@ -206,7 +252,46 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 └─────────────────┘                 └─────────────────┘
 ```
 
-### 🏭 Factory Method Pattern (Criacional)
+### 🧩 Component/Composite Pattern (Estrutural) - Frontend
+**Aplicação:** Estrutura hierárquica de componentes React  
+**Justificativa:**
+- **Reutilização**: Componentes podem ser compostos para formar interfaces complexas
+- **Modularidade**: Cada componente tem responsabilidade específica
+- **Manutenibilidade**: Mudanças em um componente não afetam outros
+- **Escalabilidade**: Facilita adição de novos componentes e funcionalidades
+
+**Implementações:**
+- **Componentes Atômicos**: FormField, Button, Toast, Modal
+- **Componentes Moleculares**: LoginForm, MemoryForm, MemoryCard
+- **Componentes Organizmos**: AppHeader, MapView, MemoryListModal
+- **Templates/Views**: App, MapView (container principal)
+
+**Diagrama do Component Pattern:**
+```
+                    ┌─────────────────┐
+                    │       App       │
+                    │   (Composite)   │
+                    └─────────┬───────┘
+                              │
+                    ┌─────────▼───────┐
+                    │   AppHeader     │
+                    │   (Composite)   │
+                    └─────────┬───────┘
+                              │
+            ┌─────────────────┼─────────────────┐
+            │                 │                 │
+    ┌───────▼─────┐   ┌───────▼─────┐   ┌───────▼─────┐
+    │ProfileModal │   │MemoryForm   │   │   Button    │
+    │(Composite)  │   │(Composite)  │   │   (Leaf)    │
+    └─────────────┘   └─────────────┘   └─────────────┘
+                              │
+                    ┌─────────▼─────────┐
+                    │   FormField       │
+                    │     (Leaf)        │
+                    └───────────────────┘
+```
+
+### 🏭 Factory Method Pattern (Criacional) - Backend
 **Aplicação:** Criação de modelos de dados no backend  
 **Justificativa:**
 - **Encapsulamento**: Lógica de criação centralizada e reutilizável
@@ -233,22 +318,22 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 └─────────────────────────────────────────────────────────┘
                             ▲
                             │ herda
-            ┌───────────────┼───────────────┐
-            │               │               │
-┌───────────▼─────┐ ┌───────▼─────┐ ┌───────▼─────┐
-│      User       │ │    Memory   │ │    Theme    │
+            ┌───────────────┼────────────────┐
+            │               │                │
+┌───────────▼─────┐ ┌───────▼──────┐ ┌───────▼──────┐
+│      User       │ │    Memory    │ │    Theme     │
 │ (ConcreteCreator│ │(ConcreteCreat│ │(ConcreteCreat│
-├─────────────────┤ ├─────────────┤ ├─────────────┤
-│+ create(name,   │ │+ create(    │ │+ create(    │
-│  email, pass)   │ │  title, lat,│ │  user_id,   │
-│  : User         │ │  lng): Mem  │ │  colors)    │
-│                 │ │             │ │  : Theme    │
-│- _hash_password │ │- _validate_ │ │- _validate_ │
-│  (password)     │ │  coords()   │ │  colors()   │
-└─────────────────┘ └─────────────┘ └─────────────┘
+├─────────────────┤ ├──────────────┤ ├──────────────┤
+│+ create(name,   │ │+ create(     │ │+ create(     │
+│  email, pass)   │ │  title, lat, │ │  user_id,    │
+│  : User         │ │  lng): Mem   │ │  colors)     │
+│                 │ │              │ │  : Theme     │
+│- _hash_password │ │- _validate_  │ │- _validate_  │
+│  (password)     │ │  coords()    │ │  colors()    │
+└─────────────────┘ └──────────────┘ └──────────────┘
 ```
 
-### 🗃️ Repository Pattern (Estrutural)
+### 🗃️ Repository Pattern (Estrutural) - Backend
 **Aplicação:** Abstração da camada de acesso a dados  
 **Justificativa:**
 - **Separação de responsabilidades**: Lógica de negócio separada do acesso a dados
@@ -264,7 +349,7 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 
 **Diagrama do Repository Pattern:**
 ```
-┌─────────────────┐    usa    ┌─────────────────┐    acessa    ┌─────────────────┐
+┌─────────────────┐    usa    ┌─────────────────┐    acessa   ┌─────────────────┐
 │   Controllers   │ ────────> │   Repositories  │ ──────────> │   Models/DB     │
 │                 │           │                 │             │                 │
 │ - AuthController│           │ - UserRepository│             │ - User          │
@@ -295,45 +380,6 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 └─────────────────┘ └─────────────┘ └─────────────┘
 ```
 
-### 🧩 Component/Composite Pattern (Estrutural)
-**Aplicação:** Estrutura hierárquica de componentes React  
-**Justificativa:**
-- **Reutilização**: Componentes podem ser compostos para formar interfaces complexas
-- **Modularidade**: Cada componente tem responsabilidade específica
-- **Manutenibilidade**: Mudanças em um componente não afetam outros
-- **Escalabilidade**: Facilita adição de novos componentes e funcionalidades
-
-**Implementações:**
-- **Componentes Atômicos**: FormField, Button, Toast, Modal
-- **Componentes Moleculares**: LoginForm, MemoryForm, MemoryCard
-- **Componentes Organizmos**: AppHeader, MapView, MemoryListModal
-- **Templates/Views**: App, MapView (container principal)
-
-**Diagrama do Component Pattern:**
-```
-                    ┌─────────────────┐
-                    │       App       │
-                    │   (Composite)   │
-                    └─────────┬───────┘
-                              │
-                    ┌─────────▼───────┐
-                    │   AppHeader     │
-                    │   (Composite)   │
-                    └─────────┬───────┘
-                              │
-            ┌─────────────────┼─────────────────┐
-            │                 │                 │
-    ┌───────▼─────┐   ┌───────▼─────┐   ┌───────▼─────┐
-    │ProfileModal │   │MemoryForm  │   │   Button    │
-    │(Composite)  │   │(Composite)  │   │   (Leaf)    │
-    └─────────────┘   └─────────────┘   └─────────────┘
-                              │
-                    ┌─────────▼─────────┐
-                    │   FormField       │
-                    │     (Leaf)        │
-                    └───────────────────┘
-```
-
 ### 🏛️ Facade Pattern (Estrutural)
 **Aplicação:** Simplificação da interface de comunicação com a API  
 **Justificativa:**
@@ -348,13 +394,13 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
 - **ApiError**: Tratamento padronizado de erros da API
 - **api (objeto)**: Interface simplificada para uso direto nos componentes
 
-**Diagrama do Facade Pattern:**
+**Diagrama do Facade Pattern:** - Integração
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        Frontend Components                      │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │
-│  │ LoginForm   │  │ MemoryForm  │  │ ProfileModal│             │
-│  └─────────────┘  └─────────────┘  └─────────────┘             │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │
+│  │ LoginForm   │  │ MemoryForm  │  │ ProfileModal│              │
+│  └─────────────┘  └─────────────┘  └─────────────┘              │
 └─────────────────────────┬───────────────────────────────────────┘
                           │ usa interface simples
                           ▼
@@ -374,66 +420,42 @@ Mais do que um CRUD, é um espaço digital poético para revisitar histórias.
                           ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                     Subsistemas Complexos                       │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │
-│  │TokenManager │  │   ApiError  │  │ HTTP Client │             │
-│  │             │  │             │  │   (fetch)   │             │
-│  │- getToken() │  │- status     │  │- headers    │             │
-│  │- setToken() │  │- message    │  │- auth       │             │
-│  │- isValid()  │  │- data       │  │- CORS       │             │
-│  └─────────────┘  └─────────────┘  └─────────────┘             │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │
+│  │TokenManager │  │   ApiError  │  │ HTTP Client │              │
+│  │             │  │             │  │   (fetch)   │              │
+│  │- getToken() │  │- status     │  │- headers    │              │
+│  │- setToken() │  │- message    │  │- auth       │              │
+│  │- isValid()  │  │- data       │  │- CORS       │              │
+│  └─────────────┘  └─────────────┘  └─────────────┘              │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Exemplo de Uso:**
-```javascript
-// Uso simples através do Facade
-import { api } from '../utils/api.js';
 
-// Login de usuário
-const loginUser = async (email, password) => {
-  try {
-    const response = await api.login({ email, password });
-    console.log('Login realizado:', response.user);
-  } catch (error) {
-    console.error('Erro no login:', error.message);
-  }
-};
-
-// Buscar memórias
-const loadMemories = async () => {
-  try {
-    const memories = await api.getMemories();
-    setMemories(memories);
-  } catch (error) {
-    showToast('Erro ao carregar memórias', 'error');
-  }
-};
-```
 
 ### 🎯 Organização por Integrante da Equipe
 
-**Integrante 1 - Frontend Lead:**
+**Diogo Nascimento - Frontend Lead:**
 - **Observer Pattern**: Implementação dos Contexts (AuthContext, GradientContext, ToastContext)
-- **Component/Composite Pattern**: Estrutura de componentes React reutilizáveis e hierárquicos
+- **Component Pattern**: Estrutura de componentes React reutilizáveis
 
-**Integrante 2 - Backend Lead:**
+**Alberto Pontiery - Backend Lead:**
 - **Factory Method Pattern**: BaseModel e factory methods para criação de objetos
 - **Repository Pattern**: Implementação dos repositórios para acesso a dados
 
-**Integrante 3 - Full-Stack:**
+**Guilherme Pança - Full-Stack:**
 - **Facade Pattern**: ApiFacade para simplificar comunicação entre frontend e backend
-- **MVC Pattern**: Estruturação da arquitetura geral e integração frontend-backend
 
 ### 📊 Resumo dos Padrões Implementados
 
 | Padrão | Tipo | Localização | Responsável |
 |--------|------|-------------|-------------|
-| **Observer** | Comportamental | Frontend (Contexts) | Integrante 1 |
-| **Component/Composite** | Estrutural | Frontend (Components) | Integrante 1 |
-| **Factory Method** | Criacional | Backend (Models) | Integrante 2 |
-| **Repository** | Estrutural | Backend (Data Access) | Integrante 2 |
-| **Facade** | Estrutural | Frontend (API Layer) | Integrante 3 |
+| **Observer** | Comportamental | Frontend (Contexts) | Diogo Nascimento |
+| **Component/Composite** | Estrutural | Frontend (Components) | Diogo Nascimento |
+| **Factory Method** | Criacional | Backend (Models) | Alberto Pontiery |
+| **Repository** | Estrutural | Backend (Data Access) | Alberto Pontiery |
+| **Facade** | Estrutural | Frontend (API Layer) | Guilherme Pança |
 
+---
 ---
 
 ## 📁 Estrutura do Projeto
@@ -498,12 +520,38 @@ Memory-Book/
 
 ---
 
+### 🛠️ Stack Tecnológica
+
+#### Frontend
+- **React 19.1.1** - Biblioteca para interfaces
+- **Vite 7.1.7** - Build tool e dev server
+- **React-Leaflet 5.0.0** - Mapas interativos
+- **Leaflet 1.9.4** - Biblioteca de mapas
+- **Lucide React 0.546.0** - Ícones modernos
+- **jsPDF 3.0.3** - Geração de PDFs
+- **Context API** - Gerenciamento de estado global
+
+#### Backend
+- **Flask 3.0.0** - Framework web Python
+- **SQLAlchemy 3.1.1** - ORM para banco de dados
+- **Flask-JWT-Extended 4.6.0** - Autenticação JWT
+- **Flask-CORS 4.0.0** - Suporte a CORS
+- **Flask-Migrate 4.1.0** - Migrações de banco
+- **bcrypt 4.1.2** - Criptografia de senhas
+- **Marshmallow 3.20.2** - Serialização de dados
+
+#### Banco de Dados
+- **SQLite** - Armazenar dados do usuário
+
+---
+
 ## 🚀 Como Rodar o Projeto
 
 ### Pré-requisitos
 - **Python 3.8+** (para o backend)
 - **Node.js 16+** (para o frontend)
 - **npm ou yarn** (gerenciador de pacotes)
+
 
 ### 🔧 Configuração do Backend
 
@@ -627,106 +675,11 @@ python reset_db.py
 
 ---
 
-## 🧪 Gerência de Qualidade
-
-### 📋 Plano de Qualidade de Software
-
-#### 🎯 Objetivos de Qualidade
-- **Funcionalidade**: Sistema deve atender 100% dos requisitos funcionais
-- **Confiabilidade**: Taxa de erro < 1% em operações críticas
-- **Usabilidade**: Interface intuitiva com tempo de aprendizado < 30 minutos
-- **Performance**: Tempo de resposta da API ≤ 3 segundos
-- **Manutenibilidade**: Código bem documentado e modularizado
-
-#### 🔍 Processos de Garantia de Qualidade
-
-**1. Revisão de Código (Code Review)**
-- **Processo**: Todo código passa por revisão de pelo menos 1 membro da equipe
-- **Critérios**: Padrões de codificação, legibilidade, performance, segurança
-- **Ferramentas**: Git/GitHub para controle de versão e revisões
-
-**2. Testes e Validação**
-- **Testes Unitários**: Validação de funções individuais (backend)
-- **Testes de Integração**: Comunicação frontend-backend via API
-- **Testes de Interface**: Validação manual de todas as funcionalidades
-- **Testes de Usabilidade**: Navegação e experiência do usuário
-
-**3. Padrões de Codificação**
-- **Frontend**: ESLint para JavaScript/React
-- **Backend**: PEP 8 para Python
-- **Documentação**: Comentários obrigatórios em funções complexas
-- **Nomenclatura**: Convenções claras para variáveis, funções e classes
-
-**4. Controle de Qualidade de Dados**
-- **Validação Frontend**: Verificação de campos obrigatórios e formatos
-- **Validação Backend**: Sanitização e validação de dados recebidos
-- **Tratamento de Erros**: Mensagens claras e logs detalhados
-
-#### 📊 Métricas e Indicadores de Qualidade
-
-| Métrica | Meta | Atual | Status |
-|---------|------|-------|--------|
-| **Tempo de resposta da API** | ≤ 3s | ~1.2s | ✅ |
-| **Cobertura de funcionalidades** | 100% | 100% | ✅ |
-| **Taxa de erro em operações** | < 1% | 0.2% | ✅ |
-| **Interface responsiva** | Mobile + Desktop | Ambos | ✅ |
-| **Documentação de código** | > 80% | 85% | ✅ |
-| **Conformidade com padrões** | 100% | 95% | ✅ |
-
-#### 🛡️ Controle de Qualidade por Fase
-
-**Fase de Desenvolvimento:**
-- Revisão de código antes de merge
-- Testes locais obrigatórios
-- Validação de padrões de projeto
-
-**Fase de Integração:**
-- Testes de comunicação API
-- Validação de fluxos completos
-- Verificação de responsividade
-
-**Fase de Entrega:**
-- Testes de aceitação
-- Validação de performance
-- Documentação atualizada
-
-#### 🔧 Ferramentas de Qualidade
-- **Git/GitHub**: Controle de versão e revisões
-- **ESLint**: Análise estática do código frontend
-- **Flask-Testing**: Framework de testes para backend
-- **Postman**: Testes de API
-- **Chrome DevTools**: Debug e performance frontend
-
----
-
-## 👥 Equipe de Desenvolvimento
-
-| Membro | Papel Principal | Responsabilidades |
-|--------|----------------|-------------------|
-| **Alberto Pontiery** | Backend Developer | API Flask, banco de dados, autenticação |
-| **Diogo Nascimento** | Frontend Developer | Interface React, mapas, UX/UI |
-| **Guilherme Franco** | Full-Stack & QA | Integração, testes, qualidade |
-
----
-
 ## 📚 Documentação Adicional
 
 - **[Documentação da API](backend/ENDPOINTS_DOCUMENTATION.md)** - Endpoints detalhados
 - **[README do Backend](backend/README.md)** - Configuração específica do backend
 - **Comentários no código** - Documentação inline
-
----
-
-## 🔮 Próximas Funcionalidades
-
-- [ ] **Compartilhamento de memórias** entre usuários
-- [ ] **Modo colaborativo** para casais/famílias
-- [ ] **Backup na nuvem** (AWS S3/Firebase)
-- [ ] **Notificações push** para datas especiais
-- [ ] **Integração com redes sociais**
-- [ ] **Modo offline** com sincronização
-- [ ] **Análise de sentimentos** nas descrições
-- [ ] **Timeline** visual das memórias
 
 ---
 
@@ -747,6 +700,6 @@ Para contribuir com o projeto:
 
 ---
 
-**Desenvolvido com ❤️ por Alberto, Diogo e Guilherme**  
-*Engenharia de Software - 2024*
+**Desenvolvido por Alberto, Diogo e Guilherme**  
+*Engenharia de Software - 2025*
 
