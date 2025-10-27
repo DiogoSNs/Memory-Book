@@ -205,40 +205,42 @@ Além disso, esse padrão é amplamente recomendado para aplicações **web dist
 ## 🧩 Padrões de Projeto Implementados
 
 ### 📡 Padrão Observer (Comportamental) - Frontend
-**Aplicação:** Gerenciamento de estado global da aplicação  
-**Justificativa:** 
-- **Desacoplamento**: Componentes observam mudanças de estado sem conhecer a implementação
-- **Reatividade**: Interface atualiza automaticamente quando estado muda
-- **Escalabilidade**: Múltiplos componentes podem observar o mesmo estado
-- **Manutenibilidade**: Centralização do estado facilita debugging e manutenção
 
-**Implementações:**
-- **AuthContext**: Gerencia estado de autenticação (login/logout/usuário atual)
-- **GradientContext**: Controla temas e gradientes da aplicação
-- **ToastContext**: Sistema de notificações globais
-- **MemoryController**: Gerencia estado das memórias com Context API
+### ❓ Por que utilizamos?
+Para **sincronizar automaticamente** a interface quando dados importantes mudam (como login/logout do usuário).
+
+### 🔧 Que problema resolve?
+**Problema:** Quando o usuário faz login, TODOS os componentes da tela precisam saber disso para se atualizar.
+**Solução:** Um "observador central" avisa todos os componentes interessados automaticamente.
+
+### 💻 Como aplicamos no frontend?
+1. **Usuário faz login** → Digita email/senha e clica "Entrar"
+2. **AuthContext recebe a informação** → "Usuário logou!"
+3. **AuthContext avisa TODOS automaticamente** → Como um mensageiro
+4. **Componentes reagem sozinhos:**
+   - `GradientContext` → Carrega gradiente escolhido e aplica na tela
+   - `MapThemeContext` → Carrega preferência de mapa
+   - `AppHeader` → Carrega o contador de memórias
+   - `MapView` → Carrega as memórias do usuário
+   
 
 **Diagrama do Padrão Observer:**
 ```
-┌─────────────────┐    notifica     ┌─────────────────┐
-│   AuthContext   │ ──────────────> │   LoginForm     │
-│   (Subject)     │                 │   (Observer)    │
-│                 │                 │                 │
-│ - user          │                 │ - useAuth()     │
-│ - isAuth        │                 │ - renderiza UI  │
-│ - login()       │                 │                 │
-│ - logout()      │                 └─────────────────┘
-└─────────────────┘                          │
-         │                                   │
-         │ notifica                          │
-         ▼                                   ▼
-┌─────────────────┐                 ┌─────────────────┐
-│   AppHeader     │                 │   MapView       │
-│   (Observer)    │                 │   (Observer)    │
-│                 │                 │                 │
-│ - useAuth()     │                 │ - useAuth()     │
-│ - mostra user   │                 │ - acesso proteg │
-└─────────────────┘                 └─────────────────┘
+                    AuthContext (Subject)
+                             |
+                             | notifica
+                             |
+         ┌───────────────────┼───────────────────┬───────────────────┐
+         ↓                   ↓                   ↓                   ↓
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│  GradientContext│ │ MapThemeContext │ │    AppHeader    │ │     MapView     │
+│   (Observer)    │ │   (Observer)    │ │   (Observer)    │ │   (Observer)    │
+│                 │ │                 │ │                 │ │                 │
+│ - Carrega prefs │ │ - Carrega prefs │ │ - carrega o     │ │ - Carrega       │
+│   do gradiente  │ │   do mapa       │ │   contador de   │ │   memórias      │
+│ - Aplica        │ │ - Aplica tema   │ │   memórias      │ │ - Atualiza      │
+│   gradiente     │ │   do mapa       │ │                 │ │   interface     │
+└─────────────────┘ └─────────────────┘ └─────────────────┘ └─────────────────┘
 ```
 
 ### 🧩 Component/Composite Pattern (Estrutural) - Frontend
