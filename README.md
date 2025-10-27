@@ -244,42 +244,43 @@ Para **sincronizar automaticamente** a interface quando dados importantes mudam 
 ```
 
 ### 🧩 Component/Composite Pattern (Estrutural) - Frontend
-**Aplicação:** Estrutura hierárquica de componentes React  
-**Justificativa:**
-- **Reutilização**: Componentes podem ser compostos para formar interfaces complexas
-- **Modularidade**: Cada componente tem responsabilidade específica
-- **Manutenibilidade**: Mudanças em um componente não afetam outros
-- **Escalabilidade**: Facilita adição de novos componentes e funcionalidades
 
-**Implementações:**
-- **Componentes Atômicos**: FormField, Button, Toast, Modal
-- **Componentes Moleculares**: LoginForm, MemoryForm, MemoryCard
-- **Componentes Organizmos**: AppHeader, MapView, MemoryListModal
-- **Templates/Views**: App, MapView (container principal)
+### ❓ Por que utilizamos?
+Para **construir interfaces complexas** juntando peças pequenas e reutilizáveis.
+
+### 🔧 Que problema resolve?
+**Problema:** Interface complexa é difícil de manter e repetir código.
+**Solução:** Quebrar em "peças LEGO" que se encaixam para formar qualquer tela.
+
+### 💻 Como aplicamos no frontend?
+
+**1. Componentes Leaf (Peças básicas):**
+- **FormField**: É o arquivo `components/FormField.jsx`
+- Componente simples que não contém outros componentes
+- Usado para: inputs de email, senha, título, local, nome
+
+**2. Componentes Composite (Juntam peças):**
+- **LoginForm**: Junta 2 FormField + 1 Button
+- **MemoryForm**: Junta 2 FormField + 1 Button  
+- **RegisterForm**: Junta 3 FormField + 1 Button
+- **ProfileModal**: Junta 1 FormField + 1 Button
 
 **Diagrama do Component Pattern:**
 ```
-                    ┌─────────────────┐
-                    │       App       │
-                    │   (Composite)   │
-                    └─────────┬───────┘
+                         App (Composite)
                               │
-                    ┌─────────▼───────┐
-                    │   AppHeader     │
-                    │   (Composite)   │
-                    └─────────┬───────┘
-                              │
-            ┌─────────────────┼─────────────────┐
-            │                 │                 │
-    ┌───────▼─────┐   ┌───────▼─────┐   ┌───────▼─────┐
-    │ProfileModal │   │MemoryForm   │   │   Button    │
-    │(Composite)  │   │(Composite)  │   │   (Leaf)    │
-    └─────────────┘   └─────────────┘   └─────────────┘
-                              │
-                    ┌─────────▼─────────┐
-                    │   FormField       │
-                    │     (Leaf)        │
-                    └───────────────────┘
+        ┌─────────────────────┼─────────────────────┐
+        ▼                     ▼                     ▼
+   LoginForm              MemoryForm           RegisterForm
+  (Composite)            (Composite)           (Composite)
+        │                     │                     │
+   ┌────┼────┐           ┌────┼────┐           ┌────┼────┬────┐
+   ▼    ▼    ▼           ▼    ▼    ▼           ▼    ▼    ▼    ▼
+FormField FormField   FormField FormField   FormField FormField FormField Button
+ Email   Senha        Título   Local        Nome    Email   Senha
+(Leaf)  (Leaf)       (Leaf)   (Leaf)       (Leaf)  (Leaf)  (Leaf)  (Leaf)
+
+🎯 MESMA PEÇA FormField REUTILIZADA 7 VEZES EM 3 LUGARES DIFERENTES!
 ```
 
 ### 🏭 Factory Method Pattern (Criacional) - Backend
