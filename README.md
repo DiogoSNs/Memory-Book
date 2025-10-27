@@ -226,11 +226,11 @@ Para **sincronizar automaticamente** a interface quando dados importantes mudam 
 
 **Diagrama do Padrão Observer:**
 ```
-                    AuthContext (Subject)
-                             |
-                             | notifica
-                             |
-         ┌───────────────────┼───────────────────┬───────────────────┐
+                            AuthContext (Subject)
+                                       |     
+                                       | notifica
+                                       |
+         ┌───────────────────┬───────────────────┬───────────────────┐
          ↓                   ↓                   ↓                   ↓
 ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
 │  GradientContext│ │ MapThemeContext │ │    AppHeader    │ │     MapView     │
