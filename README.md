@@ -280,7 +280,7 @@ FormField FormField   FormField FormField   FormField FormField FormField Button
  Email   Senha        Título   Local        Nome    Email   Senha
 (Leaf)  (Leaf)       (Leaf)   (Leaf)       (Leaf)  (Leaf)  (Leaf)  (Leaf)
 
-🎯 MESMA PEÇA FormField REUTILIZADA 7 VEZES EM 3 LUGARES DIFERENTES!
+MESMA PEÇA FormField REUTILIZADA 7 VEZES EM 3 LUGARES DIFERENTES!
 ```
 
 ### 🏭 Factory Method Pattern (Criacional) - Backend
