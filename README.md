@@ -241,6 +241,8 @@ Para **sincronizar automaticamente** a interface quando dados importantes mudam 
 │ - Aplica        │ │ - Aplica tema   │ │   memórias      │ │ - Atualiza      │
 │   gradiente     │ │   do mapa       │ │                 │ │   interface     │
 └─────────────────┘ └─────────────────┘ └─────────────────┘ └─────────────────┘
+
+Quando login acontece, TODOS se atualizam sozinhos!
 ```
 
 ### 🧩 Component/Composite Pattern (Estrutural) - Frontend
