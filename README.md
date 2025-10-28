@@ -451,18 +451,30 @@ Para **simplificar o uso da API** e **centralizar toda a comunicação externa**
 Memory-Book/
 │
 ├── frontend/                   # Frontend React + Vite
+│   ├── public/                 # Arquivos públicos
+│   │   ├── _redirects          # Configuração Netlify
+│   │   ├── marker-icon.svg     # Ícone dos marcadores
+│   │   └── vite.svg           # Logo do Vite
 │   ├── src/
 │   │   ├── components/         # Componentes reutilizáveis
+│   │   │   ├── ConfirmationModal.jsx
+│   │   │   ├── FormField.jsx
+│   │   │   ├── LoadingScreen.jsx
 │   │   │   ├── LoginForm.jsx
-│   │   │   ├── RegisterForm.jsx
+│   │   │   ├── MapClickHandler.jsx
 │   │   │   ├── MemoryForm.jsx
 │   │   │   ├── MemoryListModal.jsx
 │   │   │   ├── MemoryMarker.jsx
-│   │   │   ├── ConfirmationModal.jsx
-│   │   │   └── FormField.jsx
-│   │   ├── contexts/           # Context API
+│   │   │   ├── MemoryPopupContent.jsx
+│   │   │   ├── PrivateRoute.jsx
+│   │   │   ├── ProfileModal.jsx
+│   │   │   ├── RegisterForm.jsx
+│   │   │   ├── Toast.jsx
+│   │   │   └── WelcomeScreen.jsx
+│   │   ├── contexts/           # Context API (Estados Globais)
 │   │   │   ├── AuthContext.jsx
 │   │   │   ├── GradientContext.jsx
+│   │   │   ├── MapThemeContext.jsx
 │   │   │   └── ToastContext.jsx
 │   │   ├── controllers/        # Controladores de estado
 │   │   │   └── MemoryController.jsx
@@ -470,16 +482,36 @@ Memory-Book/
 │   │   │   ├── Memory.js
 │   │   │   └── MemoryRepository.js
 │   │   ├── views/              # Páginas principais
-│   │   │   ├── MapView.jsx
-│   │   │   └── AppHeader.jsx
+│   │   │   ├── AppHeader.jsx
+│   │   │   ├── ControlBar.jsx
+│   │   │   └── MapView.jsx
 │   │   ├── utils/              # Utilitários
-│   │   └── assets/             # Recursos estáticos
-│   ├── package.json
-│   └── vite.config.js
+│   │   │   ├── api.js          # Configuração da API
+│   │   │   └── helpers.js      # Funções auxiliares
+│   │   ├── assets/             # Recursos estáticos
+│   │   │   ├── backgroundAurora.jpg
+│   │   │   ├── backgroundForest.jpg
+│   │   │   ├── backgroundMint.jpg
+│   │   │   ├── backgroundNebula.jpg
+│   │   │   ├── backgroundSunset.jpg
+│   │   │   └── react.svg
+│   │   ├── App.css             # Estilos do App principal
+│   │   ├── App.jsx             # Componente principal
+│   │   ├── index.css           # Estilos globais
+│   │   └── main.jsx            # Ponto de entrada React
+│   ├── .env.example            # Exemplo de variáveis de ambiente
+│   ├── .gitignore              # Arquivos ignorados pelo Git
+│   ├── eslint.config.js        # Configuração do ESLint
+│   ├── index.html              # HTML principal
+│   ├── package.json            # Dependências e scripts
+│   ├── package-lock.json       # Lock das dependências
+│   ├── simplificacao.md        # Este arquivo de documentação
+│   └── vite.config.js          # Configuração do Vite
 │
 ├── backend/                    # Backend Flask + Python
 │   ├── src/
 │   │   ├── models/             # Modelos SQLAlchemy
+│   │   │   ├── __init__.py
 │   │   │   ├── base_model.py
 │   │   │   ├── user.py
 │   │   │   ├── memory.py
@@ -493,20 +525,29 @@ Memory-Book/
 │   │   │   ├── auth_controller.py
 │   │   │   ├── memory_controller.py
 │   │   │   └── theme_controller.py
-│   │   ├── config.py
-│   │   ├── app_factory.py
-│   │   └── database.py
-│   ├── app.py                  # Ponto de entrada
+│   │   ├── utils/              # Utilitários do backend
+│   │   ├── __init__.py         # Inicialização do pacote
+│   │   ├── config.py           # Configurações
+│   │   ├── app_factory.py      # Factory da aplicação
+│   │   └── database.py         # Configuração do banco
+│   ├── instance/               # Instância do banco
+│   │   └── memory_book.db      # Banco SQLite
+│   ├── venv/                   # Ambiente virtual Python
+│   ├── .env                    # Variáveis de ambiente (não versionado)
+│   ├── .env.example            # Exemplo de variáveis de ambiente
+│   ├── app.py                  # Ponto de entrada da aplicação
+│   ├── ENDPOINTS_DOCUMENTATION.md # Documentação da API
+│   ├── package-lock.json       # Lock das dependências Node (se houver)
+│   ├── Procfile                # Configuração para deploy
+│   ├── README.md               # Documentação do backend
 │   ├── requirements.txt        # Dependências Python
 │   ├── reset_db.py            # Script de reset do banco
-│   ├── test_api.py            # Testes da API
-│   └── ENDPOINTS_DOCUMENTATION.md
+│   └── test_api.py            # Testes da API
 │
 └── README.md                   # Documentação principal
 ```
 
 ---
-
 
 ## 🚀 Como Rodar o Projeto
 
