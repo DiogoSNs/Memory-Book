@@ -429,7 +429,7 @@ MESMA PEÇA FormField REUTILIZADA 7 VEZES EM 3 LUGARES DIFERENTES!
 ### 🎯 Organização por Integrante da Equipe
 
 **Diogo Nascimento - Frontend Lead:**
-- **Observer Pattern**: Implementação dos Contexts (AuthContext, GradientContext, ToastContext)
+- **Observer Pattern**: Implementação dos Contexts
 - **Component Pattern**: Estrutura de componentes React reutilizáveis
 
 **Alberto Pontiery - Backend Lead:**
