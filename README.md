@@ -286,18 +286,19 @@ MESMA PEÇA FormField REUTILIZADA 7 VEZES EM 3 LUGARES DIFERENTES!
 ```
 
 ### 🏭 Factory Method Pattern (Criacional) - Backend
-**Aplicação:** Criação de modelos de dados no backend  
-**Justificativa:**
-- **Encapsulamento**: Lógica de criação centralizada e reutilizável
-- **Validação**: Garantia de que objetos são criados com dados válidos
-- **Flexibilidade**: Permite diferentes formas de criação sem alterar código cliente
-- **Consistência**: Padronização na criação de instâncias
 
-**Implementações:**
-- **BaseModel.create()**: Factory method base para todos os modelos
-- **User.create()**: Factory method específico com hash de senha
-- **Memory.create()**: Factory method para memórias com validações
-- **Theme.create()**: Factory method para temas personalizados
+### ❓ Por que utilizamos?
+Para **padronizar e centralizar** a criação de objetos no backend, garantindo que cada modelo seja instanciado de forma **segura, validada e consistente**.
+
+### 🔧 Que problema resolve?
+**Problema:** Cada classe precisava lidar sozinha com a criação e validação dos seus objetos, o que gerava repetição e risco de erro.  
+**Solução:** Um **método fábrica** centralizado em `BaseModel.create()` padroniza o processo de criação e validação em todas as subclasses (`User`, `Memory`, `Theme`).
+
+### 💻 Como aplicamos no backend?
+1. **Controller solicita criação** → Exemplo: `UserController` pede para criar um usuário  
+2. **Classe modelo usa Factory Method** → `User.create()` gera a instância com hash de senha  
+3. **Validação é feita internamente** → Cada modelo aplica suas regras (`_validate_coords()`, `_validate_colors()`)  
+4. **Instância criada é retornada pronta para uso** → Sem necessidade de validações externas  
 
 **Diagrama do Factory Method:**
 ```
@@ -328,18 +329,20 @@ MESMA PEÇA FormField REUTILIZADA 7 VEZES EM 3 LUGARES DIFERENTES!
 ```
 
 ### 🗃️ Repository Pattern (Estrutural) - Backend
-**Aplicação:** Abstração da camada de acesso a dados  
-**Justificativa:**
-- **Separação de responsabilidades**: Lógica de negócio separada do acesso a dados
-- **Testabilidade**: Facilita criação de mocks para testes unitários
-- **Flexibilidade**: Permite trocar implementação de persistência sem afetar controllers
-- **Reutilização**: Operações CRUD padronizadas e reutilizáveis
 
-**Implementações:**
-- **BaseRepository**: Repositório abstrato com operações CRUD básicas
-- **UserRepository**: Operações específicas para usuários (busca por email, etc.)
-- **MemoryRepository**: Operações para memórias (busca por usuário, localização)
-- **ThemeRepository**: Operações para temas personalizados
+### ❓ Por que utilizamos?
+Para **separar a lógica de negócio do acesso a dados**, permitindo **testes mais simples, reuso e flexibilidade** na troca de persistência.
+
+### 🔧 Que problema resolve?
+**Problema:** Controllers ficavam sobrecarregados com lógica de banco de dados e manipulação de modelos.  
+**Solução:** O **Repository Pattern** atua como uma camada intermediária, **abstraindo as operações CRUD** e fornecendo uma interface limpa entre a aplicação e o banco.
+
+### 💻 Como aplicamos no backend?
+1. **Controller faz uma requisição** → Exemplo: `AuthController` chama `UserRepository.get_by_email()`  
+2. **Repositório executa a operação de forma isolada** → Acesso ao banco é encapsulado  
+3. **Resultado é retornado ao Controller** → Que aplica apenas a lógica de negócio  
+4. **Fica fácil testar e trocar a base de dados** → Sem alterar os controllers  
+
 
 **Diagrama do Repository Pattern:**
 ```
@@ -375,18 +378,19 @@ MESMA PEÇA FormField REUTILIZADA 7 VEZES EM 3 LUGARES DIFERENTES!
 ```
 
 ### 🏛️ Facade Pattern (Estrutural) - Integração
-**Aplicação:** Simplificação da interface de comunicação com a API  
-**Justificativa:**
-- **Simplicidade**: Interface única e simples para operações complexas da API
-- **Desacoplamento**: Frontend não precisa conhecer detalhes da implementação da API
-- **Centralização**: Lógica de autenticação, tratamento de erros e configurações centralizadas
-- **Manutenibilidade**: Mudanças na API requerem alterações apenas no Facade
 
-**Implementações:**
-- **ApiFacade**: Classe principal que encapsula todas as operações da API
-- **TokenManager**: Gerenciamento centralizado de tokens JWT
-- **ApiError**: Tratamento padronizado de erros da API
-- **api (objeto)**: Interface simplificada para uso direto nos componentes
+### ❓ Por que utilizamos?
+Para **simplificar o uso da API** e **centralizar toda a comunicação externa** em uma interface única, fácil e segura.
+
+### 🔧 Que problema resolve?
+**Problema:** O frontend precisaria lidar diretamente com requisições HTTP complexas e tokens de autenticação.  
+**Solução:** O **Facade** (`ApiFacade`) fornece uma **única porta de entrada** para todas as operações, cuidando de autenticação, erros e integração.
+
+### 💻 Como aplicamos na integração?
+1. **Frontend chama o Facade** → Exemplo: `api.login(credentials)`  
+2. **`ApiFacade` coordena os subsistemas** → TokenManager, ApiError e HTTP Client  
+3. **Faz a requisição e trata erros automaticamente** → Sem expor detalhes da API  
+4. **Frontend recebe resposta limpa e padronizada** → Sem precisar conhecer a lógica interna  
 
 **Diagrama do Facade Pattern:** - Integração
 ```
