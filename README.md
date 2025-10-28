@@ -374,7 +374,7 @@ MESMA PEÇA FormField REUTILIZADA 7 VEZES EM 3 LUGARES DIFERENTES!
 └─────────────────┘ └─────────────┘ └─────────────┘
 ```
 
-### 🏛️ Facade Pattern (Estrutural)
+### 🏛️ Facade Pattern (Estrutural) - Integração
 **Aplicação:** Simplificação da interface de comunicação com a API  
 **Justificativa:**
 - **Simplicidade**: Interface única e simples para operações complexas da API
