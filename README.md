@@ -189,7 +189,7 @@ Além disso, esse padrão é amplamente recomendado para aplicações **web dist
 ┌─────────────────────────────────────────────────────────────┐
 │                    CAMADA DE DADOS                          │
 ├─────────────────────────────────────────────────────────────┤
-│  Banco de Dados (SQLite/PostgreSQL)                         │
+│  Banco de Dados (SQLite)                                    │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐            │
 │  │   users     │ │  memories   │ │   themes    │            │
 │  │ - id (PK)   │ │ - id (PK)   │ │ - id (PK)   │            │
@@ -549,14 +549,6 @@ Memory-Book/
 
 ---
 
-## 🚀 Como Rodar o Projeto
-
-### Pré-requisitos
-- **Python 3.8+** (para o backend)
-- **Node.js 16+** (para o frontend)
-- **npm ou yarn** (gerenciador de pacotes)
-
-
 ### 🔧 Configuração do Backend
 
 ```bash
@@ -606,47 +598,6 @@ O frontend estará rodando em `http://localhost:5173`
 # Na pasta backend, execute:
 python reset_db.py
 ```
-
----
-
-## 🎮 Como Usar a Aplicação
-
-### 1. **Autenticação**
-- Acesse `http://localhost:5173`
-- **Cadastre-se** com nome, email e senha
-- **Faça login** com suas credenciais
-
-### 2. **Criando Memórias**
-- **Clique em qualquer lugar do mapa** para adicionar uma nova memória
-- Preencha os dados:
-  - **Título** da memória
-  - **Descrição** detalhada
-  - **Data** do acontecimento
-  - **Foto** (upload de imagem)
-  - **Cor** personalizada
-  - **URL do Spotify** (opcional)
-- **Salve** a memória
-
-### 3. **Visualizando Memórias**
-- **Clique nos marcadores** no mapa para ver detalhes
-- Use o botão **"Minhas Memórias"** para ver todas em lista
-- **Filtre** por título, descrição ou data
-- **Edite ou exclua** memórias existentes
-
-### 4. **Personalização**
-- Acesse o **perfil** no canto superior direito
-- Escolha entre diferentes **gradientes**:
-  - 🌅 Aurora (rosa/roxo)
-  - 🌇 Sunset (laranja/vermelho)
-  - 🌊 Ocean (azul/ciano)
-  - 🌲 Forest (verde)
-  - 🌌 Cosmic (roxo/azul escuro)
-
-### 5. **Funcionalidades Extras**
-- **Exportar memórias** em PDF
-- **Integração com Spotify** para trilha sonora
-- **Interface responsiva** para mobile
-- **Sistema de notificações** para feedback
 
 ---
 
