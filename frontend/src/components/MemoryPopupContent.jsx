@@ -34,8 +34,7 @@
 
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { Trash2, ChevronLeft, ChevronRight, X } from "lucide-react";
-import { extractSpotifyId } from '../utils/helpers.js';
+import { Trash2, ChevronLeft, ChevronRight, X, Music } from "lucide-react";
 
 export function MemoryPopupContent({ memory, onDelete, onClose }) {
   const [showFullImage, setShowFullImage] = useState(false);
@@ -44,7 +43,19 @@ export function MemoryPopupContent({ memory, onDelete, onClose }) {
   const [touchEnd, setTouchEnd] = useState(null);
   const [showControls, setShowControls] = useState(true);
   const [hideTimeout, setHideTimeout] = useState(null);
-  const spotifyId = extractSpotifyId(memory.spotifyUrl);
+  const selectedMusic = memory.music;
+  const getSpotifyEmbedUrl = (music) => {
+    if (!music) return null;
+    const id = music.id || music.spotify_id || (() => {
+      const url = music.external_url || '';
+      const idx = url.indexOf('/track/');
+      if (idx === -1) return null;
+      const rest = url.slice(idx + 7);
+      const q = rest.indexOf('?');
+      return q !== -1 ? rest.slice(0, q) : rest;
+    })();
+    return id ? `https://open.spotify.com/embed/track/${id}` : null;
+  };
 
   // Mobile detection
   const isMobile = window.innerWidth <= 768;
@@ -180,17 +191,34 @@ export function MemoryPopupContent({ memory, onDelete, onClose }) {
         </div>
       )}
 
-      {spotifyId && (
+      {selectedMusic && (
         <div style={{ marginBottom: "0.75rem" }}>
-          <iframe
-            src={`https://open.spotify.com/embed/track/${spotifyId}?utm_source=generator&theme=0`}
-            width="100%"
-            height="152"
-            frameBorder="0"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy"
-            style={{ borderRadius: "0.5rem" }}
-          ></iframe>
+          {getSpotifyEmbedUrl(selectedMusic) ? (
+            <iframe
+              src={getSpotifyEmbedUrl(selectedMusic)}
+              style={{ width: "100%", height: "80px", border: "none", borderRadius: "0.5rem" }}
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+            />
+          ) : (
+            (selectedMusic.external_url || selectedMusic.spotify_id) && (
+              <div style={{ marginTop: "0.5rem" }}>
+                <a
+                  href={
+                    selectedMusic.external_url ||
+                    (selectedMusic.spotify_id
+                      ? `https://open.spotify.com/track/${selectedMusic.spotify_id}`
+                      : "#")
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#2563eb", textDecoration: "none", fontWeight: 600 }}
+                >
+                  Abrir no Spotify
+                </a>
+              </div>
+            )
+          )}
         </div>
       )}
 

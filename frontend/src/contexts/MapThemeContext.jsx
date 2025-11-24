@@ -4,7 +4,7 @@
 // ============================================
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useAuth } from './AuthContext.jsx';
+import { authSubject } from './AuthContext.jsx';
 import { api } from '../utils/api.js';
 
 // Temas disponíveis para o mapa
@@ -32,7 +32,12 @@ const MAP_THEMES = {
 const MapThemeContext = createContext();
 
 export function MapThemeProvider({ children }) {
-  const { isAuthenticated, user } = useAuth();
+  // OBSERVER EXPLÍCITO: observa autenticação para sincronizar tema do mapa
+  const [authSnapshot, setAuthSnapshot] = useState(authSubject.getState());
+  useEffect(() => {
+    const unsubscribe = authSubject.subscribe((snapshot) => setAuthSnapshot(snapshot));
+    return unsubscribe;
+  }, []);
   
   // Inicializar com tema do localStorage ou padrão
   const [currentMapTheme, setCurrentMapTheme] = useState(() => {
@@ -51,7 +56,7 @@ export function MapThemeProvider({ children }) {
   useEffect(() => {
     const loadUserPreferences = async () => {
       // Se não estiver autenticado, manter o tema atual do localStorage
-      if (!isAuthenticated || !user) {
+      if (!authSnapshot.isAuthenticated || !authSnapshot.user) {
         return;
       }
 
@@ -75,7 +80,7 @@ export function MapThemeProvider({ children }) {
     };
 
     loadUserPreferences();
-  }, [isAuthenticated, user]);
+  }, [authSnapshot.isAuthenticated, authSnapshot.user]);
 
   // Função para alterar o tema do mapa
   const changeMapTheme = async (themeKey) => {
@@ -88,7 +93,7 @@ export function MapThemeProvider({ children }) {
       setCurrentMapTheme(themeKey);
       
       // Se o usuário estiver autenticado, salvar na API
-      if (isAuthenticated && user) {
+      if (authSnapshot.isAuthenticated && authSnapshot.user) {
         await api.updateUserPreferences({
           map_theme: themeKey
         });

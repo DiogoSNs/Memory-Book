@@ -29,7 +29,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../utils/api';
-import { useAuth } from './AuthContext';
+import { authSubject } from './AuthContext.jsx';
 
 // Importação dos backgrounds como URLs estáticas
 import backgroundNebula from '../assets/backgroundNebula.jpg';
@@ -91,13 +91,18 @@ export const GradientProvider = ({ children }) => {
     return (savedGradient && GRADIENTS[savedGradient]) ? savedGradient : 'aurora';
   });
   const [isLoading, setIsLoading] = useState(false);
-  const { user, isAuthenticated } = useAuth();
+  // OBSERVER EXPLÍCITO: observa autenticação para sincronizar preferências do usuário
+  const [authSnapshot, setAuthSnapshot] = useState(authSubject.getState());
+  useEffect(() => {
+    const unsubscribe = authSubject.subscribe((snapshot) => setAuthSnapshot(snapshot));
+    return unsubscribe;
+  }, []);
 
   // Carregar preferências do usuário da API
   useEffect(() => {
     const loadUserPreferences = async () => {
       // Se não estiver autenticado, manter o gradiente atual do localStorage
-      if (!isAuthenticated || !user) {
+      if (!authSnapshot.isAuthenticated || !authSnapshot.user) {
         return;
       }
 
@@ -122,7 +127,7 @@ export const GradientProvider = ({ children }) => {
     };
 
     loadUserPreferences();
-  }, [isAuthenticated, user]);
+  }, [authSnapshot.isAuthenticated, authSnapshot.user]);
 
   // Efeito para sempre manter o localStorage sincronizado com o gradiente atual
   useEffect(() => {
@@ -135,7 +140,7 @@ export const GradientProvider = ({ children }) => {
     setCurrentGradient(gradientKey);
 
     // Se estiver autenticado, salvar na API
-    if (isAuthenticated && user) {
+    if (authSnapshot.isAuthenticated && authSnapshot.user) {
       try {
         await api.updateUserPreferences({
           selected_gradient: gradientKey

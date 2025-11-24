@@ -325,6 +325,20 @@ class ApiFacade {
       body: JSON.stringify(preferences),
     });
   }
+
+  // ============================================
+  // MÚSICAS - INTEGRAÇÃO COM SPOTIFY (BUSCA POR NOME)
+  // ============================================
+
+  /**
+   * Busca faixas no Spotify pelo nome
+   * Comentário: espera endpoint do backend em `/spotify/search?q=` que devolve
+   * itens com { title, artist, preview_url, spotify_id, cover_url }
+   */
+  static async searchSpotifyTracks(query) {
+    const q = encodeURIComponent(query);
+    return await this.#makeRequest(`/spotify/search?q=${q}&limit=30`);
+  }
 }
 
 // ============================================
@@ -366,4 +380,7 @@ export const api = {
   // Preferências
   getUserPreferences: () => ApiFacade.getUserPreferences(),
   updateUserPreferences: (preferences) => ApiFacade.updateUserPreferences(preferences),
+
+  // Músicas (Spotify)
+  searchSpotifyTracks: (query) => ApiFacade.searchSpotifyTracks(query),
 };

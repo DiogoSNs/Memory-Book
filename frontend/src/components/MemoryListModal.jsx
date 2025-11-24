@@ -41,7 +41,8 @@ import { X, List, FileText, Calendar, Image, Upload, Music, Save, Edit3, Trash2,
 import { useMemories } from '../controllers/MemoryController.jsx';
 import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
-import { extractSpotifyId, processFileWithTimeout, validateFileSize, validatePhotoLimit } from '../utils/helpers.js';
+import { processFileWithTimeout, validateFileSize, validatePhotoLimit } from '../utils/helpers.js';
+import SpotifySearch from './SpotifySearch.jsx';
 import { FormField } from './FormField.jsx';
 import { ConfirmationModal } from './ConfirmationModal.jsx';
 
@@ -57,15 +58,19 @@ export function MemoryListModal({ isOpen, onClose }) {
     description: "",
     date: "",
     photos: [],
-    spotifyUrl: "",
+    // NOVO: música selecionada
+    music: null,
   });
-  const [showSpotifyInput, setShowSpotifyInput] = useState(false);
+  // NOVO: removido fluxo antigo de link do Spotify
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [memoryToDelete, setMemoryToDelete] = useState(null);
   const [dateFilter, setDateFilter] = useState({
     startDate: "",
     endDate: "",
   });
+  // NOVO: estado de busca por nome/título (Observer de input do usuário)
+  // Comentário: armazenamos o texto para filtrar memórias por título de forma opcional
+  const [searchText, setSearchText] = useState("");
   const [showFullImage, setShowFullImage] = useState(false);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [selectedMemoryPhotos, setSelectedMemoryPhotos] = useState([]);
@@ -73,6 +78,19 @@ export function MemoryListModal({ isOpen, onClose }) {
   const [touchEnd, setTouchEnd] = useState(null);
   const [showControls, setShowControls] = useState(true);
   const [hideTimeout, setHideTimeout] = useState(null);
+
+  const getSpotifyEmbedUrl = (music) => {
+    if (!music) return null;
+    const id = music.id || music.spotify_id || (() => {
+      const url = music.external_url || '';
+      const idx = url.indexOf('/track/');
+      if (idx === -1) return null;
+      const rest = url.slice(idx + 7);
+      const q = rest.indexOf('?');
+      return q !== -1 ? rest.slice(0, q) : rest;
+    })();
+    return id ? `https://open.spotify.com/embed/track/${id}` : null;
+  };
 
   // Mobile detection
   useEffect(() => {
@@ -85,27 +103,32 @@ export function MemoryListModal({ isOpen, onClose }) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // NOVO: lógica de filtragem combinando período (data) e título
+  // Comentário: mantemos totalmente o filtro por data e adicionamos filtro opcional por nome
   const filteredMemories = useMemo(() => {
-    if (!dateFilter.startDate && !dateFilter.endDate) {
-      return memories;
-    }
-
     return memories.filter((memory) => {
+      // Filtro por período (existente)
       const memoryDate = new Date(memory.date);
       const startDate = dateFilter.startDate ? new Date(dateFilter.startDate) : null;
       const endDate = dateFilter.endDate ? new Date(dateFilter.endDate) : null;
 
+      let dateMatch = true;
       if (startDate && endDate) {
-        return memoryDate >= startDate && memoryDate <= endDate;
+        dateMatch = memoryDate >= startDate && memoryDate <= endDate;
       } else if (startDate) {
-        return memoryDate >= startDate;
+        dateMatch = memoryDate >= startDate;
       } else if (endDate) {
-        return memoryDate <= endDate;
+        dateMatch = memoryDate <= endDate;
       }
 
-      return true;
+      // Filtro por título (novo e opcional)
+      const title = (memory.title || "").toLowerCase();
+      const query = (searchText || "").toLowerCase();
+      const textMatch = !query || title.includes(query);
+
+      return dateMatch && textMatch;
     });
-  }, [memories, dateFilter]);
+  }, [memories, dateFilter, searchText]);
 
   const startEditing = (memory) => {
     setEditingMemory(memory.id);
@@ -114,9 +137,9 @@ export function MemoryListModal({ isOpen, onClose }) {
       description: memory.description || "",
       date: memory.date,
       photos: memory.photos || [],
-      spotifyUrl: memory.spotifyUrl || "",
+      // NOVO: carrega música selecionada, se existir
+      music: memory.music || null,
     });
-    setShowSpotifyInput(!!memory.spotifyUrl);
   };
 
   const cancelEditing = () => {
@@ -126,9 +149,8 @@ export function MemoryListModal({ isOpen, onClose }) {
       description: "",
       date: "",
       photos: [],
-      spotifyUrl: "",
+      music: null,
     });
-    setShowSpotifyInput(false);
   };
 
   const saveEdit = () => {
@@ -137,19 +159,13 @@ export function MemoryListModal({ isOpen, onClose }) {
       return;
     }
 
-    if (editForm.spotifyUrl && !extractSpotifyId(editForm.spotifyUrl)) {
-      showToast(
-        "Link do Spotify inválido! Use um link como: https://open.spotify.com/track/...", "error"
-      );
-      return;
-    }
-
     updateMemory(editingMemory, {
       title: editForm.title,
       description: editForm.description,
       date: editForm.date,
       photos: editForm.photos.length > 0 ? editForm.photos : null,
-      spotifyUrl: editForm.spotifyUrl.trim() || null,
+      // NOVO: persiste música selecionada
+      music: editForm.music || null,
     });
 
     cancelEditing();
@@ -390,6 +406,7 @@ export function MemoryListModal({ isOpen, onClose }) {
                     color: "#6b7280",
                     flexShrink: 0
                   }} />
+                  {/* Atualização de rótulo para refletir todos os filtros (título + período) */}
                   {!isMobile && (
                     <span style={{ 
                       fontSize: "0.875rem", 
@@ -397,18 +414,54 @@ export function MemoryListModal({ isOpen, onClose }) {
                       fontWeight: "500",
                       whiteSpace: "nowrap"
                     }}>
-                      Filtrar por período:
+                      Filtros:
                     </span>
                   )}
                 </div>
                 
+              <div style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                gap: isMobile ? "0.75rem" : "0.5rem",
+                flexDirection: isMobile ? "column" : "row",
+                width: isMobile ? "100%" : "auto"
+              }}>
+                {/* Buscar por título primeiro */}
                 <div style={{ 
                   display: "flex", 
                   alignItems: "center", 
-                  gap: isMobile ? "0.75rem" : "0.5rem",
-                  flexDirection: isMobile ? "column" : "row",
+                  gap: "0.5rem",
                   width: isMobile ? "100%" : "auto"
                 }}>
+                  {!isMobile && (
+                    <label style={{ 
+                      fontSize: isMobile ? "0.8rem" : "0.875rem", 
+                      color: "#374151", 
+                      fontWeight: "500",
+                      minWidth: isMobile ? "2rem" : "auto",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.375rem"
+                    }}>
+                  
+                      Buscar:
+                    </label>
+                  )}
+                  <input
+                    type="text"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    placeholder={isMobile ? "Buscar por título" : "Buscar por título ou palavra-chave"}
+                    style={{
+                      padding: isMobile ? "0.5rem" : "0.375rem 0.5rem",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "0.375rem",
+                      fontSize: isMobile ? "0.8rem" : "0.875rem",
+                      flex: isMobile ? 1 : "none",
+                      minWidth: isMobile ? "0" : "16rem"
+                    }}
+                  />
+                </div>
                   <div style={{ 
                     display: "flex", 
                     alignItems: "center", 
@@ -452,40 +505,41 @@ export function MemoryListModal({ isOpen, onClose }) {
                     }}>
                       Até:
                     </label>
-                    <input
-                      type="date"
-                      value={dateFilter.endDate}
-                      onChange={(e) => setDateFilter(prev => ({ ...prev, endDate: e.target.value }))}
-                      style={{
-                        padding: isMobile ? "0.5rem" : "0.375rem 0.5rem",
-                        border: "1px solid #d1d5db",
-                        borderRadius: "0.375rem",
-                        fontSize: isMobile ? "0.8rem" : "0.875rem",
-                        flex: isMobile ? 1 : "none",
-                        minWidth: isMobile ? "0" : "auto"
-                      }}
-                    />
-                  </div>
-                </div>
-                {(dateFilter.startDate || dateFilter.endDate) && (
-                  <button
-                    onClick={() => setDateFilter({ startDate: "", endDate: "" })}
+                  <input
+                    type="date"
+                    value={dateFilter.endDate}
+                    onChange={(e) => setDateFilter(prev => ({ ...prev, endDate: e.target.value }))}
                     style={{
-                      padding: isMobile ? "0.5rem 0.75rem" : "0.375rem 0.75rem",
-                      background: "#ef4444",
-                      color: "white",
-                      border: "none",
+                      padding: isMobile ? "0.5rem" : "0.375rem 0.5rem",
+                      border: "1px solid #d1d5db",
                       borderRadius: "0.375rem",
-                      fontSize: isMobile ? "0.8rem" : "0.75rem",
-                      cursor: "pointer",
-                      fontWeight: "500",
-                      alignSelf: isMobile ? "flex-start" : "auto",
-                      marginTop: isMobile ? "0.5rem" : "0"
+                      fontSize: isMobile ? "0.8rem" : "0.875rem",
+                      flex: isMobile ? 1 : "none",
+                      minWidth: isMobile ? "0" : "auto"
                     }}
-                  >
-                    Limpar
-                  </button>
-                )}
+                  />
+                </div>
+                
+              </div>
+              {(dateFilter.startDate || dateFilter.endDate) && (
+                <button
+                  onClick={() => setDateFilter({ startDate: "", endDate: "" })}
+                  style={{
+                    padding: isMobile ? "0.5rem 0.75rem" : "0.375rem 0.75rem",
+                    background: "#ef4444",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "0.375rem",
+                    fontSize: isMobile ? "0.8rem" : "0.75rem",
+                    cursor: "pointer",
+                    fontWeight: "500",
+                    alignSelf: isMobile ? "flex-start" : "auto",
+                    marginTop: isMobile ? "0.5rem" : "0"
+                  }}
+                >
+                  Limpar
+                </button>
+              )}
               </div>
             </div>
           </div>
@@ -679,45 +733,13 @@ export function MemoryListModal({ isOpen, onClose }) {
                         </FormField>
 
                         <FormField
-                          label="Música do Spotify"
+                          label="Música"
                           icon={<Music style={{ width: "1rem", height: "1rem" }} />}
                         >
-                          <div>
-                            {!showSpotifyInput ? (
-                              <button
-                                onClick={() => setShowSpotifyInput(true)}
-                                style={{
-                                  width: "100%",
-                                  padding: "0.5rem 1rem",
-                                  border: "1px solid #d1d5db",
-                                  borderRadius: "0.5rem",
-                                  background: "white",
-                                  color: "#6b7280",
-                                  cursor: "pointer",
-                                  fontSize: "0.75rem",
-                                  textAlign: "left",
-                                }}
-                              >
-                                + Adicionar música do Spotify
-                              </button>
-                            ) : (
-                              <input
-                                type="text"
-                                value={editForm.spotifyUrl}
-                                onChange={(e) =>
-                                  setEditForm((prev) => ({ ...prev, spotifyUrl: e.target.value }))
-                                }
-                                placeholder="Cole o link da música do Spotify"
-                                style={{
-                                  width: "100%",
-                                  padding: "0.5rem 1rem",
-                                  border: "1px solid #d1d5db",
-                                  borderRadius: "0.5rem",
-                                  fontSize: "0.875rem",
-                                }}
-                              />
-                            )}
-                          </div>
+                          <SpotifySearch
+                            onSelect={(m) => setEditForm((prev) => ({ ...prev, music: m }))}
+                            initialSelection={editForm.music}
+                          />
                         </FormField>
 
                         <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -844,19 +866,7 @@ export function MemoryListModal({ isOpen, onClose }) {
                           </div>
                         )}
 
-                        {memory.spotifyUrl && extractSpotifyId(memory.spotifyUrl) && (
-                          <div style={{ marginBottom: "0.75rem" }}>
-                            <iframe
-                              src={`https://open.spotify.com/embed/track/${extractSpotifyId(memory.spotifyUrl)}?utm_source=generator&theme=0`}
-                              width="100%"
-                              height="152"
-                              frameBorder="0"
-                              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                              loading="lazy"
-                              style={{ borderRadius: "0.5rem" }}
-                            ></iframe>
-                          </div>
-                        )}
+                        
 
                         {memory.description && (
                           <p
@@ -869,6 +879,37 @@ export function MemoryListModal({ isOpen, onClose }) {
                           >
                             {memory.description}
                           </p>
+                        )}
+
+                        {memory.music && (
+                          <div style={{ marginTop: "0.5rem" }}>
+                            {getSpotifyEmbedUrl(memory.music) ? (
+                              <iframe
+                                src={getSpotifyEmbedUrl(memory.music)}
+                                style={{ width: "100%", height: "80px", border: "none", borderRadius: "0.5rem" }}
+                                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                                loading="lazy"
+                              />
+                            ) : (
+                              (memory.music.external_url || memory.music.spotify_id) && (
+                                <div style={{ marginTop: "0.5rem" }}>
+                                  <a
+                                    href={
+                                      memory.music.external_url ||
+                                      (memory.music.spotify_id
+                                        ? `https://open.spotify.com/track/${memory.music.spotify_id}`
+                                        : "#")
+                                    }
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    style={{ color: "#2563eb", textDecoration: "none", fontWeight: 600 }}
+                                  >
+                                    Abrir no Spotify
+                                  </a>
+                                </div>
+                              )
+                            )}
+                          </div>
                         )}
 
                         <p

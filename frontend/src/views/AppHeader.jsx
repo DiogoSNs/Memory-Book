@@ -33,12 +33,10 @@
 import React, { useState, useEffect } from "react";
 import { MapPin, Heart } from "lucide-react";
 import { useMemories } from '../controllers/MemoryController.jsx';
-import { useAuth } from '../contexts/AuthContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
 
 export function AppHeader() {
   const { memories } = useMemories();
-  const { showWelcome, isAuthenticated } = useAuth();
   const { getCurrentGradientData } = useGradient();
   const [isMobile, setIsMobile] = useState(false);
   

@@ -45,7 +45,6 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import { List, Plus, User, Navigation, Crosshair } from "lucide-react";
 import L from "leaflet";
 import { useMemories } from '../controllers/MemoryController.jsx';
-import { useAuth } from '../contexts/AuthContext.jsx';
 import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
 import { useMapTheme } from '../contexts/MapThemeContext.jsx';
@@ -56,11 +55,14 @@ import { MemoryListModal } from '../components/MemoryListModal.jsx';
 import ProfileModal from '../components/ProfileModal.jsx';
 
 export function MapView() {
-  const { memories, addMemory, memoriesCount } = useMemories();
-  const { showWelcome, isAuthenticated } = useAuth();
+  // Remoção de variáveis não utilizadas: _addMemory e _memoriesCount
+  // Comentário: estes valores não são lidos neste componente; mantemos apenas 'memories'
+  const { memories } = useMemories();
   const { showToast } = useToast();
   const { getCurrentGradientData } = useGradient();
-  const { currentMapTheme, mapThemes, toggleMapTheme, getCurrentMapThemeData } = useMapTheme();
+  // Remoção de variável não utilizada: _mapThemes
+  // Comentário: o conjunto de temas não é utilizado diretamente aqui; usamos apenas o tema atual, toggle e dados
+  const { currentMapTheme, toggleMapTheme, getCurrentMapThemeData } = useMapTheme();
   const gradientData = getCurrentGradientData();
   
   // Estado para responsividade
@@ -73,7 +75,7 @@ export function MapView() {
   const [showMemoryList, setShowMemoryList] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const mapRef = useRef(null);
-  const [userLocation, setUserLocation] = useState(null);
+  // Não mantemos a coordenada em estado; apenas o marcador visível
   const [userLocationMarker, setUserLocationMarker] = useState(null);
 
   // Estilos CSS para animação suave
@@ -110,7 +112,7 @@ export function MapView() {
       // Remove os estilos quando o componente é desmontado
       document.head.removeChild(style);
     };
-  }, []);
+  }, [tooltipAnimation]);
 
   // UseEffect para forçar redimensionamento do mapa
   useEffect(() => {
@@ -221,9 +223,8 @@ export function MapView() {
           const marker = L.marker(newLocation, { icon: userIcon }).addTo(mapRef.current);
           marker.bindPopup('Você está aqui!').openPopup();
           
-          // Salva a referência do marcador e localização
+          // Salva a referência do marcador
           setUserLocationMarker(marker);
-          setUserLocation(newLocation);
         }
       },
       (error) => {
@@ -532,7 +533,8 @@ export function MapView() {
         onClose={() => setShowProfile(false)}
         onThemeToggle={handleThemeToggle}
         currentTheme={getCurrentMapThemeData().name}
-        currentThemeIcon={getCurrentMapThemeData().icon}
+        // Removido prop não utilizado pelo componente filho
+        // Comentário: ProfileModal não referencia 'currentThemeIcon'; manter apenas 'currentTheme'
         memories={memories}
       />
     </div>

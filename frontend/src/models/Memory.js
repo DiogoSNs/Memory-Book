@@ -12,7 +12,7 @@ export class Memory {
     lat,
     lng,
     photos = null,
-    spotifyUrl = null,
+    music = null,
     color = null
   }) {
     this.id = id || Date.now();
@@ -22,7 +22,9 @@ export class Memory {
     this.lat = lat;
     this.lng = lng;
     this.photos = photos;
-    this.spotifyUrl = spotifyUrl;
+    // NOVO: objeto de música selecionada { title, artist, preview_url, spotify_id, startTime, duration }
+    // Comentário: substitui o antigo spotifyUrl baseado em link
+    this.music = music;
     this.color = color || this.getRandomColor();
   }
 
@@ -68,7 +70,7 @@ export class Memory {
       lat: this.lat,
       lng: this.lng,
       photos: this.photos,
-      spotifyUrl: this.spotifyUrl,
+      music: this.music,
       color: this.color
     };
   }

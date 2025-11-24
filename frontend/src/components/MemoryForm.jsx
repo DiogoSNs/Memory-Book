@@ -37,8 +37,9 @@ import { X, FileText, Calendar, Image, Upload, Music, Palette } from "lucide-rea
 import { useMemories } from '../controllers/MemoryController.jsx';
 import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
-import { extractSpotifyId, processFileWithTimeout, validateFileSize, validatePhotoLimit } from '../utils/helpers.js';
+import { processFileWithTimeout, validateFileSize, validatePhotoLimit } from '../utils/helpers.js';
 import { FormField } from './FormField.jsx';
+import SpotifySearch from './SpotifySearch.jsx';
 
 export function MemoryForm({ selectedLocation, onClose }) {
   const { addMemory } = useMemories();
@@ -49,8 +50,8 @@ export function MemoryForm({ selectedLocation, onClose }) {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [photos, setPhotos] = useState([]);
-  const [spotifyUrl, setSpotifyUrl] = useState("");
-  const [showSpotifyInput, setShowSpotifyInput] = useState(false);
+  // NOVO: música selecionada via busca por nome (substitui o antigo link)
+  const [selectedMusic, setSelectedMusic] = useState(null);
   const [photoError, setPhotoError] = useState("");
   const [markerColor, setMarkerColor] = useState("#FF6B6B");
 
@@ -96,14 +97,6 @@ export function MemoryForm({ selectedLocation, onClose }) {
       return;
     }
 
-    if (spotifyUrl && !extractSpotifyId(spotifyUrl)) {
-      showToast(
-        "Link do Spotify inválido! Use um link como: https://open.spotify.com/track/...",
-        "error"
-      );
-      return;
-    }
-
     addMemory({
       title,
       description,
@@ -111,7 +104,8 @@ export function MemoryForm({ selectedLocation, onClose }) {
       lat: selectedLocation.lat,
       lng: selectedLocation.lng,
       photos: photos.length > 0 ? photos : null,
-      spotifyUrl: spotifyUrl.trim() || null,
+      // NOVO: salva objeto completo de música, se selecionado
+      music: selectedMusic || null,
       color: markerColor,
     });
 
@@ -380,69 +374,12 @@ export function MemoryForm({ selectedLocation, onClose }) {
           </FormField>
 
           <FormField
-            label="Música do Spotify"
+            label="Música"
             icon={<Music style={{ width: "1rem", height: "1rem" }} />}
           >
             <div>
-              {!showSpotifyInput ? (
-                <button
-                  onClick={() => setShowSpotifyInput(true)}
-                  style={{
-                    width: "100%",
-                    padding: "0.5rem 1rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.5rem",
-                    background: "white",
-                    color: "#6b7280",
-                    cursor: "pointer",
-                    fontSize: "0.875rem",
-                    textAlign: "left",
-                  }}
-                >
-                  + Adicionar música do Spotify
-                </button>
-              ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <input
-                    type="text"
-                    value={spotifyUrl}
-                    onChange={(e) => setSpotifyUrl(e.target.value)}
-                    placeholder="Cole o link da música do Spotify"
-                    style={{
-                      width: "100%",
-                      padding: "0.5rem 1rem",
-                      border: "1px solid #d1d5db",
-                      borderRadius: "0.5rem",
-                      fontSize: "0.875rem",
-                    }}
-                  />
-                  <p
-                    style={{ fontSize: "0.75rem", color: "#6b7280", margin: 0 }}
-                  >
-                    💡 Como pegar o link: Spotify → clique nos 3 pontos da
-                    música → Compartilhar → Copiar link
-                  </p>
-                  {spotifyUrl && extractSpotifyId(spotifyUrl) && (
-                    <div
-                      style={{
-                        padding: "0.5rem",
-                        background: "#f0fdf4",
-                        borderRadius: "0.375rem",
-                        fontSize: "0.75rem",
-                        color: "#15803d",
-                      }}
-                    >
-                      ✓ Link válido!
-                    </div>
-                  )}
-                </div>
-              )}
+              {/* NOVO: busca e seleção de música por nome */}
+              <SpotifySearch onSelect={setSelectedMusic} initialSelection={selectedMusic} />
             </div>
           </FormField>
 

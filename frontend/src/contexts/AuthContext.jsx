@@ -1,115 +1,108 @@
 // ============================================
-// PADRÃO OBSERVER - AuthContext
-// Implementa o padrão Observer usando React Context API
+// PADRÃO OBSERVER EXPLÍCITO - AuthContext
+// Substitui completamente o Observer implícito do React Context
+// por um Subject manual com subscribe/unsubscribe/notify
 // ============================================
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React from 'react';
 import { api, ApiError } from '../utils/api.js';
 
-// Context que atua como SUBJECT no padrão Observer
-// Mantém o estado de autenticação e notifica todos os observers (componentes)
-const AuthContext = createContext();
-
-/**
- * Hook customizado que atua como OBSERVER
- * Permite que componentes se inscrevam para receber notificações
- * sobre mudanças no estado de autenticação
- */
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
-  }
-  return context;
-};
-
-/**
- * AuthProvider - SUBJECT no padrão Observer
- * 
- * Responsabilidades:
- * 1. Manter o estado global de autenticação (Subject State)
- * 2. Notificar automaticamente todos os observers quando o estado muda
- * 3. Fornecer métodos para modificar o estado (login, logout, register)
- * 
- * Padrão Observer em ação:
- * - Quando setUser() é chamado, todos os componentes que usam useAuth() são re-renderizados
- * - React Context API gerencia automaticamente a notificação dos observers
- */
-export const AuthProvider = ({ children }) => {
-  // Estado do Subject - quando muda, notifica todos os observers
-  const [user, setUser] = useState(null);                    // Dados do usuário logado
-  const [isLoading, setIsLoading] = useState(true);          // Estado de carregamento
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Status de autenticação
-  const [showWelcome, setShowWelcome] = useState(false);     // Controle de tela de boas-vindas
-  const [isNewRegistration, setIsNewRegistration] = useState(false); // Flag de novo registro
-
-  // Verificar se há usuário logado ao inicializar
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        // Verificar se há token válido
-        if (api.isAuthenticated()) {
-          // Tentar obter dados do usuário atual
-          const userData = await api.getCurrentUser();
-          setUser(userData.user);
-          setIsAuthenticated(true);
-          
-          // Nunca mostrar boas-vindas automaticamente ao carregar
-          setShowWelcome(false);
-        }
-      } catch (error) {
-        console.error('Erro ao verificar status de autenticação:', error);
-        // Token inválido ou expirado, fazer logout
-        await api.logout();
-        setUser(null);
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
-      }
+// ============================================
+// Subject manual de autenticação
+// - Mantém lista explícita de observers
+// - Expõe subscribe(), unsubscribe() e notify()
+// - Gerencia estado e notifica manualmente cada mudança
+// ============================================
+class AuthSubject {
+  constructor() {
+    this.observers = new Set();
+    this.state = {
+      user: null,
+      isAuthenticated: false,
+      isLoading: true,
+      showWelcome: false,
+      isNewRegistration: false,
     };
+  }
 
-    checkAuthStatus();
-  }, []);
+  // Inscreve um observer (função callback) e retorna a função de unsubscribe
+  subscribe(observer) {
+    this.observers.add(observer);
+    // Entrega snapshot inicial imediatamente
+    observer(this.getState());
+    return () => this.unsubscribe(observer);
+  }
 
-  // Função de login
-  const login = async (email, password) => {
+  // Remove um observer da lista
+  unsubscribe(observer) {
+    this.observers.delete(observer);
+  }
+
+  // Notifica todos observers com o snapshot atual
+  notify() {
+    const snapshot = this.getState();
+    this.observers.forEach((fn) => {
+      try {
+        fn(snapshot);
+      } catch (e) {
+        console.error('Observer falhou ao processar notificação:', e);
+      }
+    });
+  }
+
+  // Retorna cópia imutável do estado
+  getState() {
+    return { ...this.state };
+  }
+
+  // Atualiza parcialmente o estado e notifica
+  setPartial(partial) {
+    this.state = { ...this.state, ...partial };
+    this.notify();
+  }
+
+  // Inicializa status de autenticação
+  async checkAuthStatus() {
     try {
-      setIsLoading(true);
-      
-      // Fazer login via API
+      this.setPartial({ isLoading: true });
+      if (api.isAuthenticated()) {
+        const userData = await api.getCurrentUser();
+        this.setPartial({ user: userData.user, isAuthenticated: true, showWelcome: false });
+      }
+    } catch (error) {
+      console.error('Erro ao verificar status de autenticação:', error);
+      await api.logout().catch(() => {});
+      this.setPartial({ user: null, isAuthenticated: false });
+    } finally {
+      this.setPartial({ isLoading: false });
+    }
+  }
+
+  // Login explícito com notificação manual
+  async login(email, password) {
+    try {
+      this.setPartial({ isLoading: true });
       const response = await api.login({ email, password });
-      
-      setUser(response.user);
-      setIsAuthenticated(true);
-      
-      // Não mostrar boas-vindas no login, apenas no registro
-      setShowWelcome(false);
-      
+      this.setPartial({ user: response.user, isAuthenticated: true, showWelcome: false });
       return { success: true, user: response.user };
     } catch (error) {
       let errorMessage = 'Erro ao fazer login';
       let suggestion = null;
       let errorType = null;
-      
-      console.log('🔍 [AuthContext] Erro capturado:', error);
-      console.log('🔍 [AuthContext] error.data:', error.data);
-      
+
+      console.log('🔍 [AuthSubject] Erro capturado:', error);
+      console.log('🔍 [AuthSubject] error.data:', error?.data);
+
       if (error instanceof ApiError) {
-        // Mensagem principal
         errorMessage = error.message || 'Erro ao fazer login';
-        
-        // Dados adicionais
         if (error.data) {
           suggestion = error.data.suggestion || error.data.sugestao || null;
           errorType = error.data.error_type || error.data.errorType || error.data.type || null;
-          
-          // Fallback quando backend usa campo 'error'
           if (!errorMessage && error.data.error) {
             errorMessage = error.data.error;
           }
         }
-        
-        // Mapeamento de mensagens padrão por status
+
         if (error.status === 0) {
           errorMessage = 'Falha de conexão com o servidor';
           suggestion = 'Verifique sua internet ou se o backend está rodando.';
@@ -131,8 +124,7 @@ export const AuthProvider = ({ children }) => {
           suggestion = suggestion || 'Verifique email e senha e tente novamente.';
           errorType = 'invalid_credentials';
         }
-        
-        // Inferir tipo pelo texto
+
         if (!errorType && /senha incorreta/i.test(errorMessage)) {
           errorType = 'invalid_password';
         }
@@ -140,55 +132,36 @@ export const AuthProvider = ({ children }) => {
           errorType = 'user_not_found';
         }
       }
-      
-      const errorResponse = { 
-        success: false, 
-        error: errorMessage,
-        suggestion: suggestion,
-        errorType: errorType
-      };
-      
-      console.log('🔍 [AuthContext] Retornando erro de login:', errorResponse);
-      
+
+      const errorResponse = { success: false, error: errorMessage, suggestion, errorType };
+      console.log('🔍 [AuthSubject] Retornando erro de login:', errorResponse);
       return errorResponse;
     } finally {
-      setIsLoading(false);
+      this.setPartial({ isLoading: false });
     }
-  };
+  }
 
-  // Função de registro
-  const register = async (userData) => {
+  // Registro explícito com notificação manual
+  async register(userData) {
     try {
-      setIsLoading(true);
-      
-      // Fazer registro via API
+      this.setPartial({ isLoading: true });
       const response = await api.register(userData);
-      
-      setUser(response.user);
-      setIsAuthenticated(true);
-      
-      // Marcar como novo registro e mostrar boas-vindas
-      setIsNewRegistration(true);
-      setShowWelcome(true);
-      
+      this.setPartial({ user: response.user, isAuthenticated: true, isNewRegistration: true, showWelcome: true });
       return { success: true, user: response.user };
     } catch (error) {
       let errorMessage = 'Erro ao criar conta';
       let suggestion = null;
       let errorType = null;
-      
+
       if (error instanceof ApiError) {
         errorMessage = error.message || 'Erro ao criar conta';
-        
         if (error.data) {
           suggestion = error.data.suggestion || error.data.sugestao || null;
           errorType = error.data.error_type || error.data.errorType || error.data.type || null;
-          
           if (!errorMessage && error.data.error) {
             errorMessage = error.data.error;
           }
         }
-        
         if (error.status === 0) {
           errorMessage = 'Falha de conexão com o servidor';
           suggestion = 'Verifique sua internet ou se o backend está rodando.';
@@ -202,77 +175,86 @@ export const AuthProvider = ({ children }) => {
           suggestion = suggestion || 'Verifique os campos e tente novamente.';
           errorType = 'invalid_data';
         }
-        
         if (!errorType && /email já está em uso/i.test(errorMessage)) {
           errorType = 'email_already_exists';
         }
       }
-      
-      const errorResponse = { 
-        success: false, 
-        error: errorMessage,
-        suggestion: suggestion,
-        errorType: errorType
-      };
-      
-      return errorResponse;
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  // Função de logout
-  const logout = async () => {
+      return { success: false, error: errorMessage, suggestion, errorType };
+    } finally {
+      this.setPartial({ isLoading: false });
+    }
+  }
+
+  // Logout explícito com notificação manual
+  async logout() {
     try {
       await api.logout();
     } catch (error) {
       console.error('Erro no logout:', error);
     } finally {
-      setUser(null);
-      setIsAuthenticated(false);
+      this.setPartial({ user: null, isAuthenticated: false });
     }
-  };
+  }
 
-  // Função para atualizar dados do usuário
-  const updateUser = async (userData) => {
+  // Atualização explícita de dados do usuário
+  async updateUser(userData) {
     try {
-      const response = await api.updateUserProfile(user.id, userData);
-      const updatedUser = { ...user, ...response.user };
-      setUser(updatedUser);
+      const response = await api.updateUserProfile(this.state.user.id, userData);
+      const updatedUser = { ...this.state.user, ...response.user };
+      this.setPartial({ user: updatedUser });
       return { success: true, user: updatedUser };
     } catch (error) {
       console.error('Erro ao atualizar usuário:', error);
-      
       let errorMessage = 'Erro ao atualizar dados';
       if (error instanceof ApiError) {
         errorMessage = error.message;
       }
-      
       return { success: false, error: errorMessage };
     }
-  };
+  }
 
-  // Função para fechar a tela de boas-vindas
-  const closeWelcome = () => {
-    setShowWelcome(false);
-    setIsNewRegistration(false);
-  };
+  // Controle explícito da tela de boas-vindas
+  closeWelcome() {
+    this.setPartial({ showWelcome: false, isNewRegistration: false });
+  }
+}
 
-  const value = {
-    user,
-    isAuthenticated,
-    isLoading,
-    showWelcome,
-    login,
-    register,
-    logout,
-    updateUser,
-    closeWelcome
-  };
+// Instância única (Singleton) do Subject
+export const authSubject = new AuthSubject();
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+// ============================================
+// Hook OBSERVER explícito
+// - Inscreve o componente no Subject manual
+// - Atualiza estado local via notify()
+// - Expõe ações do Subject
+// ============================================
+export const useAuth = () => {
+  const [snapshot, setSnapshot] = React.useState(authSubject.getState());
+
+  React.useEffect(() => {
+    const unsubscribe = authSubject.subscribe(setSnapshot);
+    return unsubscribe;
+  }, []);
+
+  return {
+    ...snapshot,
+    login: (...args) => authSubject.login(...args),
+    register: (...args) => authSubject.register(...args),
+    logout: () => authSubject.logout(),
+    updateUser: (data) => authSubject.updateUser(data),
+    closeWelcome: () => authSubject.closeWelcome(),
+  };
+};
+
+// ============================================
+// Provider simplificado
+// - Não usa React Context
+// - Apenas inicializa o Subject e renderiza children
+// ============================================
+export const AuthProvider = ({ children }) => {
+  React.useEffect(() => {
+    authSubject.checkAuthStatus();
+  }, []);
+  return children;
 };

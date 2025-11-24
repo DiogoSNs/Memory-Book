@@ -32,7 +32,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Mail, Lock, MapPin } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { authSubject } from '../contexts/AuthContext.jsx';
 import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
 
@@ -46,7 +46,6 @@ const LoginForm = ({ onSwitchToRegister }) => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const { login } = useAuth();
   const { showToast } = useToast();
   const { getCurrentGradientData } = useGradient();
   const gradientData = getCurrentGradientData();
@@ -108,7 +107,8 @@ const LoginForm = ({ onSwitchToRegister }) => {
     setErrors({});
 
     try {
-      const result = await login(formData.email, formData.password);
+      // Ação explícita no Subject: login notifica observadores
+      const result = await authSubject.login(formData.email, formData.password);
       
       if (!result || !result.success) {
         const errorMessage = result?.error || 'Erro ao fazer login. Tente novamente.';

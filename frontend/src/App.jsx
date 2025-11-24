@@ -29,10 +29,10 @@
  */
 
 import React from 'react';
-import { AuthProvider, useAuth } from './contexts/AuthContext.jsx';
+import { AuthProvider, authSubject } from './contexts/AuthContext.jsx';
 import { MemoryProvider } from './controllers/MemoryController.jsx';
 import { ToastProvider, useToast } from './contexts/ToastContext.jsx';
-import { GradientProvider, useGradient } from './contexts/GradientContext.jsx';
+import { GradientProvider } from './contexts/GradientContext.jsx';
 import { MapThemeProvider } from './contexts/MapThemeContext.jsx';
 import { AppHeader } from './views/AppHeader.jsx';
 import { MapView } from './views/MapView.jsx';
@@ -41,27 +41,25 @@ import WelcomeScreen from './components/WelcomeScreen.jsx';
 
 // Componente interno que usa o contexto de autenticação
 function AppContent() {
-  const { showWelcome, closeWelcome } = useAuth();
-  const { getCurrentGradientData } = useGradient();
-  const gradientData = getCurrentGradientData();
-  const [mapKey, setMapKey] = React.useState(0);
-  const [isMobile, setIsMobile] = React.useState(false);
-  const { ToastContainer } = useToast();
-
-  // Hook para detectar tamanho da tela
+  // OBSERVER EXPLÍCITO: este componente observa o Subject de autenticação
+  // - Faz subscribe no mount e unsubscribe no unmount
+  // - update(snapshot) atualiza estado local com dados notificados
+  const [authSnapshot, setAuthSnapshot] = React.useState(authSubject.getState());
   React.useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    
-    return () => window.removeEventListener('resize', checkScreenSize);
+    // subscribe: registra este componente como observador explícito
+    const unsubscribe = authSubject.subscribe((snapshot) => setAuthSnapshot(snapshot));
+    // unsubscribe: remove observador ao desmontar
+    return unsubscribe;
   }, []);
 
+  const [mapKey, setMapKey] = React.useState(0);
+  const { ToastContainer } = useToast();
+
+  // AppContent não precisa observar tamanho de tela; MapView lida com isso
+
   const handleCloseWelcome = () => {
-    closeWelcome();
+    // update: dispara ação explícita no Subject e ele notificará os observers
+    authSubject.closeWelcome();
     // Força o mapa a se redimensionar após um pequeno delay
     setTimeout(() => {
       setMapKey(prev => prev + 1);
@@ -93,8 +91,8 @@ function AppContent() {
         </MemoryProvider>
       </PrivateRoute>
       
-      {/* Mensagem de boas-vindas fora do PrivateRoute para aparecer sempre */}
-      {showWelcome && <WelcomeScreen onClose={handleCloseWelcome} />}
+      {/* OBSERVER: renderiza Welcome de acordo com snapshot notificado pelo Subject */}
+      {authSnapshot.showWelcome && <WelcomeScreen onClose={handleCloseWelcome} />}
       
       {/* Sistema de notificações Toast */}
       <ToastContainer />

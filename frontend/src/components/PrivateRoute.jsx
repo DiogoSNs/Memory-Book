@@ -28,22 +28,30 @@
  */
 
 import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { authSubject } from '../contexts/AuthContext.jsx';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import LoadingScreen from './LoadingScreen';
 
 const PrivateRoute = ({ children }) => {
-  const { user, isLoading } = useAuth();
+  // OBSERVER EXPLÍCITO: este componente protege rotas observando autenticação
+  // - subscribe no mount e unsubscribe no unmount
+  // - update(snapshot) atualiza estado interno com dados do Subject
+  const [authSnapshot, setAuthSnapshot] = React.useState(authSubject.getState());
+  React.useEffect(() => {
+    const unsubscribe = authSubject.subscribe((snapshot) => setAuthSnapshot(snapshot));
+    return unsubscribe;
+  }, []);
+
   const [showRegister, setShowRegister] = React.useState(false);
 
   // Mostrar loading enquanto verifica autenticação
-  if (isLoading) {
+  if (authSnapshot.isLoading) {
     return <LoadingScreen />;
   }
 
   // Se usuário não está autenticado, mostrar tela de login/registro
-  if (!user) {
+  if (!authSnapshot.user) {
     return showRegister ? (
       <RegisterForm onSwitchToLogin={() => setShowRegister(false)} />
     ) : (

@@ -36,7 +36,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, MapPin } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { authSubject } from '../contexts/AuthContext.jsx';
 import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
 
@@ -53,7 +53,6 @@ const RegisterForm = ({ onSwitchToLogin }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   
-  const { register } = useAuth();
   const { showToast } = useToast();
   const { getCurrentGradientData } = useGradient();
   const gradientData = getCurrentGradientData() || {};
@@ -134,7 +133,8 @@ const RegisterForm = ({ onSwitchToLogin }) => {
         name: formData.name, 
         email: formData.email 
       });
-      const result = await register({
+      // Ação explícita no Subject: register notifica observadores
+      const result = await authSubject.register({
         name: formData.name,
         email: formData.email,
         password: formData.password

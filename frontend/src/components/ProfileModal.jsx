@@ -37,7 +37,7 @@
 import React, { useState } from "react";
 import { X, User, Moon, Sun, LogOut, Share2, Settings, Satellite, Palette } from "lucide-react";
 import jsPDF from "jspdf";
-import { useAuth } from '../contexts/AuthContext.jsx';
+import { authSubject } from '../contexts/AuthContext.jsx';
 import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
 import { ConfirmationModal } from './ConfirmationModal.jsx';
@@ -55,9 +55,16 @@ if (typeof window !== 'undefined') {
   };
 }
 
-const ProfileModal = ({ isOpen, onClose, onThemeToggle, currentTheme, currentThemeIcon, memories = [] }) => {
+const ProfileModal = ({ isOpen, onClose, onThemeToggle, currentTheme, memories = [] }) => {
   
-  const { user, logout } = useAuth();
+  // OBSERVER EXPLÍCITO: este modal observa o estado de autenticação
+  // - subscribe para receber snapshots, unsubscribe ao desmontar
+  // - update(snapshot) atualiza dados de usuário exibidos
+  const [authSnapshot, setAuthSnapshot] = React.useState(authSubject.getState());
+  React.useEffect(() => {
+    const unsubscribe = authSubject.subscribe((snapshot) => setAuthSnapshot(snapshot));
+    return unsubscribe;
+  }, []);
   const { showToast } = useToast();
   const { currentGradient, changeGradient, availableGradients } = useGradient();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -65,8 +72,8 @@ const ProfileModal = ({ isOpen, onClose, onThemeToggle, currentTheme, currentThe
   
   // Dados do usuário logado
   const userData = {
-    name: user?.name || "Usuário",
-    email: user?.email || "email@exemplo.com",
+    name: authSnapshot.user?.name || "Usuário",
+    email: authSnapshot.user?.email || "email@exemplo.com",
     avatar: null,
     joinDate: "Janeiro 2024" // Por enquanto fixo, mas pode ser implementado no futuro
   };
@@ -95,7 +102,8 @@ const ProfileModal = ({ isOpen, onClose, onThemeToggle, currentTheme, currentThe
   };
 
   const confirmLogout = () => {
-    logout();
+    // Ação explícita: chama logout no Subject, que notificará todos os observadores
+    authSubject.logout();
     setShowLogoutConfirm(false);
     onClose();
   };

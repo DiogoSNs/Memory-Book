@@ -29,7 +29,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { api, ApiError } from '../utils/api.js';
-import { useAuth } from '../contexts/AuthContext.jsx';
+import { authSubject } from '../contexts/AuthContext.jsx';
 
 // Context para compartilhar estado das memórias
 const MemoryContext = createContext(null);
@@ -40,17 +40,23 @@ export function MemoryProvider({ children }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { isAuthenticated } = useAuth();
+  // OBSERVER EXPLÍCITO: observa autenticação para carregar memórias quando autenticado
+  const [authSnapshot, setAuthSnapshot] = useState(authSubject.getState());
+  useEffect(() => {
+    const unsubscribe = authSubject.subscribe((snapshot) => setAuthSnapshot(snapshot));
+    return unsubscribe;
+  }, []);
 
   // Carrega memórias ao inicializar (apenas se autenticado)
   useEffect(() => {
-    if (isAuthenticated) {
+    // update: quando Subject notifica autenticação, decide carregar/limpar
+    if (authSnapshot.isAuthenticated) {
       loadMemories();
     } else {
       setMemories([]);
       setIsLoaded(false);
     }
-  }, [isAuthenticated]);
+  }, [authSnapshot.isAuthenticated]);
 
   // Função para carregar memórias da API
   const loadMemories = async () => {
