@@ -45,11 +45,15 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Configurações de CORS
-    CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:5173').split(',')
+    CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:5173,http://localhost:5174').split(',')
     
     # Configurações de upload
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
     UPLOAD_FOLDER = 'uploads'
+
+    # Integração Spotify (Client Credentials)
+    SPOTIFY_CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID')
+    SPOTIFY_CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET')
 
 class DevelopmentConfig(Config):
     """Configuração para desenvolvimento"""

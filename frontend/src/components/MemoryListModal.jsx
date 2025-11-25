@@ -35,13 +35,13 @@
  * - State: Gerencia múltiplos estados de edição e filtros
  */
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import { X, List, FileText, Calendar, Image, Upload, Music, Save, Edit3, Trash2, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemories } from '../controllers/MemoryController.jsx';
 import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
-import { processFileWithTimeout, validateFileSize, validatePhotoLimit } from '../utils/helpers.js';
+import { processFileWithTimeout, validateFileSize, validatePhotoLimit, validateVideoSize, getVideoDuration, recordVideoSegment } from '../utils/helpers.js';
 import SpotifySearch from './SpotifySearch.jsx';
 import { FormField } from './FormField.jsx';
 import { ConfirmationModal } from './ConfirmationModal.jsx';
@@ -58,6 +58,7 @@ export function MemoryListModal({ isOpen, onClose }) {
     description: "",
     date: "",
     photos: [],
+    videos: [],
     // NOVO: música selecionada
     music: null,
   });
@@ -90,6 +91,124 @@ export function MemoryListModal({ isOpen, onClose }) {
       return q !== -1 ? rest.slice(0, q) : rest;
     })();
     return id ? `https://open.spotify.com/embed/track/${id}` : null;
+  };
+
+  const VideoEditor = ({ value = [], onChange, gradient }) => {
+    const [pendingVideo, setPendingVideo] = useState(null);
+    const [videoDuration, setVideoDuration] = useState(0);
+    const [trimStart, setTrimStart] = useState(0);
+    const [trimEnd, setTrimEnd] = useState(0);
+    const pendingVideoRef = useRef(null);
+
+    const handleUpload = async (e) => {
+      const files = Array.from(e.target.files);
+      if (!files.length) return;
+      const { valid, error, validFiles } = validateVideoSize(files);
+      if (!valid) {
+        alert(error);
+      }
+      const file = (validFiles && validFiles[0]) || null;
+      if (!file) return;
+      try {
+        const duration = await getVideoDuration(file);
+        setVideoDuration(duration);
+        if (duration <= 30) {
+          const dataUrl = await processFileWithTimeout(file, 20000, 25 * 1024 * 1024);
+          onChange([...(value || []), dataUrl]);
+        } else {
+          setPendingVideo(file);
+          setTrimStart(0);
+          setTrimEnd(Math.min(30, Math.floor(duration)));
+        }
+      } catch {
+        alert('Não foi possível processar o vídeo.');
+      }
+    };
+
+    const confirmCut = async () => {
+      if (!pendingVideo) return;
+      try {
+        const videoEl = pendingVideoRef.current;
+        if (!videoEl) throw new Error('Video preview não disponível');
+        await new Promise((res, rej) => {
+          if (isFinite(videoEl.duration) && videoEl.duration > 0) {
+            res();
+          } else {
+            const onMeta = () => { videoEl.removeEventListener('loadedmetadata', onMeta); res(); };
+            const onErr = () => { videoEl.removeEventListener('error', onErr); rej(new Error('Falha ao carregar vídeo')); };
+            videoEl.addEventListener('loadedmetadata', onMeta);
+            videoEl.addEventListener('error', onErr);
+          }
+        });
+        const start = Math.min(trimStart, Math.max(0, videoDuration - 30));
+        const durationSel = Math.max(1, Math.min(30, Math.floor(trimEnd - start)));
+        const blob = await recordVideoSegment(videoEl, start, durationSel);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const dataUrl = reader.result;
+          onChange([...(value || []), dataUrl]);
+          setPendingVideo(null);
+          setVideoDuration(0);
+          setTrimStart(0);
+          setTrimEnd(0);
+        };
+        reader.readAsDataURL(blob);
+      } catch {
+        alert('Seu navegador não suporta corte de vídeo. Envie um arquivo até 30s.');
+      }
+    };
+
+    return (
+      <div>
+        <input type="file" accept="video/*" multiple={false} onChange={handleUpload} style={{ display: 'none' }} id="video-upload-edit" />
+        <label htmlFor="video-upload-edit" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.5rem', border: '2px dashed #d1d5db', borderRadius: '0.5rem', cursor: 'pointer', color: '#6b7280', fontSize: '0.75rem' }}>
+          <Upload style={{ width: '1rem', height: '1rem' }} /> Adicionar vídeo
+        </label>
+
+        {pendingVideo && (
+          <div style={{ marginTop: '0.5rem', display: 'grid', gap: '0.5rem' }}>
+            <video ref={pendingVideoRef} src={URL.createObjectURL(pendingVideo)} controls style={{ width: '100%', borderRadius: '0.5rem', border: '1px solid #e5e7eb' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>Início</span>
+              <input type="range" min={0} max={Math.max(0, Math.floor(videoDuration - 30))} value={trimStart} onChange={(e) => {
+                const start = Number(e.target.value);
+                setTrimStart(start);
+                setTrimEnd((prev) => {
+                  let end = prev;
+                  if (end < start) end = start;
+                  if (end > start + 30) end = start + 30;
+                  return Math.min(Math.floor(videoDuration), end);
+                });
+              }} style={{ flex: 1 }} />
+              <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>{trimStart}s</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>Fim</span>
+              <input type="range" min={trimStart} max={Math.min(Math.floor(videoDuration), trimStart + 30)} value={trimEnd} onChange={(e) => {
+                const val = Number(e.target.value);
+                const clamped = Math.max(trimStart, Math.min(val, trimStart + 30));
+                setTrimEnd(clamped);
+              }} style={{ flex: 1 }} />
+              <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>{trimEnd}s</span>
+            </div>
+            <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+              Selecionado: {Math.max(0, Math.min(30, Math.floor(trimEnd - trimStart)))}s
+            </div>
+            <button type="button" onClick={confirmCut} style={{ padding: '0.5rem 0.75rem', borderRadius: '0.5rem', border: 'none', background: gradient, color: 'white', cursor: 'pointer', fontWeight: 600 }}>
+              Confirmar corte
+            </button>
+          </div>
+        )}
+
+        {Array.isArray(value) && value.length > 0 && (
+          <div style={{ display: 'grid', gap: '0.5rem', marginTop: '0.5rem' }}>
+            {value.map((v, idx) => (
+              <video key={idx} src={v} controls style={{ width: '100%', borderRadius: '0.5rem', border: '1px solid #e5e7eb' }} />
+            ))}
+          </div>
+        )}
+      </div>
+    );
   };
 
   // Mobile detection
@@ -137,6 +256,7 @@ export function MemoryListModal({ isOpen, onClose }) {
       description: memory.description || "",
       date: memory.date,
       photos: memory.photos || [],
+      videos: memory.videos || [],
       // NOVO: carrega música selecionada, se existir
       music: memory.music || null,
     });
@@ -149,6 +269,7 @@ export function MemoryListModal({ isOpen, onClose }) {
       description: "",
       date: "",
       photos: [],
+      videos: [],
       music: null,
     });
   };
@@ -164,6 +285,7 @@ export function MemoryListModal({ isOpen, onClose }) {
       description: editForm.description,
       date: editForm.date,
       photos: editForm.photos.length > 0 ? editForm.photos : null,
+      videos: editForm.videos && editForm.videos.length > 0 ? editForm.videos : null,
       // NOVO: persiste música selecionada
       music: editForm.music || null,
     });
@@ -733,6 +855,17 @@ export function MemoryListModal({ isOpen, onClose }) {
                         </FormField>
 
                         <FormField
+                          label={`Vídeo (${editForm.videos.length}/1)`}
+                          icon={<Upload style={{ width: "1rem", height: "1rem" }} />}
+                        >
+                          <VideoEditor
+                            value={editForm.videos}
+                            onChange={(videos) => setEditForm((prev) => ({ ...prev, videos }))}
+                            gradient={gradientData.gradient}
+                          />
+                        </FormField>
+
+                        <FormField
                           label="Música"
                           icon={<Music style={{ width: "1rem", height: "1rem" }} />}
                         >
@@ -866,7 +999,13 @@ export function MemoryListModal({ isOpen, onClose }) {
                           </div>
                         )}
 
-                        
+                        {Array.isArray(memory.videos) && memory.videos.length > 0 && (
+                          <div style={{ display: "grid", gap: "0.5rem", marginBottom: "0.75rem" }}>
+                            {memory.videos.map((v, idx) => (
+                              <video key={idx} src={v} controls style={{ width: "100%", borderRadius: "0.5rem", border: "1px solid #e5e7eb" }} />
+                            ))}
+                          </div>
+                        )}
 
                         {memory.description && (
                           <p

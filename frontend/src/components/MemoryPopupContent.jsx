@@ -191,6 +191,14 @@ export function MemoryPopupContent({ memory, onDelete, onClose }) {
         </div>
       )}
 
+      {Array.isArray(memory.videos) && memory.videos.length > 0 && (
+        <div style={{ marginBottom: "0.75rem", display: "grid", gap: "0.5rem" }}>
+          {memory.videos.map((v, idx) => (
+            <video key={idx} src={v} controls style={{ width: "100%", borderRadius: "0.5rem", border: "1px solid #e5e7eb" }} />
+          ))}
+        </div>
+      )}
+
       {selectedMusic && (
         <div style={{ marginBottom: "0.75rem" }}>
           {getSpotifyEmbedUrl(selectedMusic) ? (

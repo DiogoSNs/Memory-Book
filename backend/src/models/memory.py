@@ -38,8 +38,9 @@ class Memory(BaseModel):
     date = db.Column(db.String(10), nullable=False)  # Formato YYYY-MM-DD
     lat = db.Column(db.Float, nullable=False)
     lng = db.Column(db.Float, nullable=False)
-    photos = db.Column(db.JSON)  # Array de URLs/base64 das fotos
-    spotify_url = db.Column(db.String(500))  # URL do Spotify
+    photos = db.Column(db.JSON)  # Array de URLs/base64 das fotos e (compatível) vídeos
+    music = db.Column(db.JSON)  # Objeto de música selecionada (title, artist, preview_url, spotify_id, startTime, duration)
+    spotify_url = db.Column(db.String(500))  # (Legado) URL do Spotify
     color = db.Column(db.String(7))  # Cor em hexadecimal (#RRGGBB)
     
     # Relacionamento com usuário
@@ -120,12 +121,20 @@ class Memory(BaseModel):
         """
         data = super().to_dict()
         
-        # Renomear spotify_url para spotifyUrl (camelCase para o frontend)
+        # Renomear spotify_url para spotifyUrl (camelCase para o frontend) - legado
         if 'spotify_url' in data:
             data['spotifyUrl'] = data.pop('spotify_url')
         
         # Remover user_id do retorno (não necessário no frontend)
         data.pop('user_id', None)
+        
+        # Compatibilidade: separar vídeos embutidos em photos (data URLs de vídeo)
+        media = data.get('photos') or []
+        if isinstance(media, list) and media:
+            videos = [m for m in media if isinstance(m, str) and m.startswith('data:video/')]
+            photos = [m for m in media if not (isinstance(m, str) and m.startswith('data:video/'))]
+            data['photos'] = photos if photos else None
+            data['videos'] = videos if videos else None
         
         return data
     

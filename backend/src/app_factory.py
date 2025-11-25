@@ -62,10 +62,12 @@ def create_app(config_class):
     # Registrar blueprints (controllers)
     from src.controllers.auth_controller import auth_bp
     from src.controllers.memory_controller import memory_bp
+    from src.controllers.spotify_controller import spotify_bp
     from src.controllers.theme_controller import theme_bp
     
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(memory_bp, url_prefix='/api/memories')
+    app.register_blueprint(spotify_bp, url_prefix='/api/spotify')
     app.register_blueprint(theme_bp, url_prefix='/api/themes')
     
     # Criar tabelas do banco de dados

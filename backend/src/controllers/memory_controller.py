@@ -69,7 +69,7 @@ def create_memory():
         lat (float): Latitude
         lng (float): Longitude
         photos (list, optional): Lista de fotos
-        spotifyUrl (str, optional): URL do Spotify
+        music (object, optional): Objeto da música selecionada
         color (str, optional): Cor da memória
         
     Returns:
@@ -83,10 +83,12 @@ def create_memory():
         if not data or not all(k in data for k in ('title', 'date', 'lat', 'lng')):
             return jsonify({'error': 'Título, data, latitude e longitude são obrigatórios'}), 400
         
-        # Converter spotifyUrl para spotify_url (snake_case para o banco)
-        if 'spotifyUrl' in data:
-            data['spotify_url'] = data.pop('spotifyUrl')
-        
+        # Unificar mídia: armazenar vídeos junto às fotos para compatibilidade sem migração
+        photos = data.get('photos') or []
+        videos = data.get('videos') or []
+        if isinstance(videos, list) and len(videos) > 0:
+            photos = list(photos) + list(videos)
+
         # Criar memória
         memory = memory_repo.create_memory(
             user_id=user_id,
@@ -95,8 +97,8 @@ def create_memory():
             lat=float(data['lat']),
             lng=float(data['lng']),
             description=data.get('description', ''),
-            photos=data.get('photos'),
-            spotify_url=data.get('spotify_url'),
+            photos=photos or None,
+            music=data.get('music'),
             color=data.get('color')
         )
         
@@ -164,10 +166,14 @@ def update_memory(memory_id):
         if not data:
             return jsonify({'error': 'Dados para atualização são obrigatórios'}), 400
         
-        # Converter spotifyUrl para spotify_url se presente
-        if 'spotifyUrl' in data:
-            data['spotify_url'] = data.pop('spotifyUrl')
-        
+        # Compatibilidade: mesclar vídeos (se enviados) com fotos antes de atualizar
+        if 'videos' in data:
+            photos = data.get('photos') or []
+            videos = data.get('videos') or []
+            if isinstance(videos, list) and len(videos) > 0:
+                data['photos'] = list(photos) + list(videos)
+            data.pop('videos', None)
+
         # Atualizar memória
         memory = memory_repo.update_memory(memory_id, user_id, **data)
         

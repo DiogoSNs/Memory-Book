@@ -32,12 +32,12 @@
  * - Facade Pattern: Interface simplificada para criação de memórias
  */
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { X, FileText, Calendar, Image, Upload, Music, Palette } from "lucide-react";
 import { useMemories } from '../controllers/MemoryController.jsx';
 import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
-import { processFileWithTimeout, validateFileSize, validatePhotoLimit } from '../utils/helpers.js';
+import { processFileWithTimeout, validateFileSize, validatePhotoLimit, validateVideoSize, getVideoDuration, recordVideoSegment } from '../utils/helpers.js';
 import { FormField } from './FormField.jsx';
 import SpotifySearch from './SpotifySearch.jsx';
 
@@ -50,9 +50,16 @@ export function MemoryForm({ selectedLocation, onClose }) {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [photos, setPhotos] = useState([]);
+  const [videos, setVideos] = useState([]);
   // NOVO: música selecionada via busca por nome (substitui o antigo link)
   const [selectedMusic, setSelectedMusic] = useState(null);
   const [photoError, setPhotoError] = useState("");
+  const [videoError, setVideoError] = useState("");
+  const [pendingVideo, setPendingVideo] = useState(null);
+  const pendingVideoRef = useRef(null);
+  const [videoDuration, setVideoDuration] = useState(0);
+  const [trimStart, setTrimStart] = useState(0);
+  const [trimEnd, setTrimEnd] = useState(0);
   const [markerColor, setMarkerColor] = useState("#FF6B6B");
 
   const handlePhotoUpload = async (e) => {
@@ -87,6 +94,73 @@ export function MemoryForm({ selectedLocation, onClose }) {
     }
   };
 
+  const handleVideoUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    setVideoError("");
+    if (!files.length) return;
+    const { valid, error, validFiles } = validateVideoSize(files);
+    if (!valid) {
+      setVideoError(error);
+    }
+    const file = (validFiles && validFiles[0]) || null;
+    if (!file) return;
+    try {
+      const duration = await getVideoDuration(file);
+      setVideoDuration(duration);
+      if (duration <= 30) {
+        const dataUrl = await processFileWithTimeout(file, 20000, 25 * 1024 * 1024);
+        setVideos((prev) => [...prev, dataUrl]);
+      } else {
+        setPendingVideo(file);
+        setTrimStart(0);
+        setTrimEnd(Math.min(30, Math.floor(duration)));
+      }
+    } catch {
+      setVideoError('Não foi possível processar o vídeo.');
+    }
+  };
+
+  const confirmVideoCut = async () => {
+    if (!pendingVideo) return;
+    setVideoError("");
+    try {
+      const videoEl = pendingVideoRef.current;
+      if (!videoEl) throw new Error('Video preview não disponível');
+      // Garante metadata carregada antes de gravar
+      await new Promise((res, rej) => {
+        if (isFinite(videoEl.duration) && videoEl.duration > 0) {
+          res();
+        } else {
+          const onMeta = () => {
+            videoEl.removeEventListener('loadedmetadata', onMeta);
+            res();
+          };
+          const onErr = () => {
+            videoEl.removeEventListener('error', onErr);
+            rej(new Error('Falha ao carregar vídeo'));
+          };
+          videoEl.addEventListener('loadedmetadata', onMeta);
+          videoEl.addEventListener('error', onErr);
+        }
+      });
+      const start = Math.min(trimStart, Math.max(0, videoDuration - 30));
+      const durationSel = Math.max(1, Math.min(30, Math.floor(trimEnd - start)));
+      const blob = await recordVideoSegment(videoEl, start, durationSel);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result;
+        setVideos((prev) => [...prev, dataUrl]);
+        setPendingVideo(null);
+        setVideoDuration(0);
+        setTrimStart(0);
+        setTrimEnd(0);
+      };
+      reader.readAsDataURL(blob);
+    } catch {
+      setVideoError('Seu navegador não suporta corte de vídeo. Envie um arquivo até 30s.');
+    }
+  };
+
   const removePhoto = (index) => {
     setPhotos((prev) => prev.filter((_, i) => i !== index));
   };
@@ -104,6 +178,7 @@ export function MemoryForm({ selectedLocation, onClose }) {
       lat: selectedLocation.lat,
       lng: selectedLocation.lng,
       photos: photos.length > 0 ? photos : null,
+      videos: videos.length > 0 ? videos : null,
       // NOVO: salva objeto completo de música, se selecionado
       music: selectedMusic || null,
       color: markerColor,
@@ -368,6 +443,130 @@ export function MemoryForm({ selectedLocation, onClose }) {
                   }}
                 >
                   {photoError}
+                </div>
+              )}
+            </div>
+          </FormField>
+
+          <FormField
+            label={`Vídeo (${videos.length}/1)`}
+            icon={<Upload style={{ width: "1rem", height: "1rem" }} />}
+          >
+            <div>
+              <input
+                type="file"
+                accept="video/*"
+                multiple={false}
+                onChange={handleVideoUpload}
+                style={{ display: "none" }}
+                id="video-upload"
+              />
+              <label
+                htmlFor="video-upload"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.5rem",
+                  padding: "0.75rem",
+                  border: "2px dashed #d1d5db",
+                  borderRadius: "0.5rem",
+                  cursor: "pointer",
+                  color: "#6b7280",
+                  fontSize: "0.875rem",
+                }}
+              >
+                <Upload style={{ width: "1.25rem", height: "1.25rem" }} />
+                Clique para adicionar vídeo
+              </label>
+
+              {pendingVideo && (
+                <div style={{ marginTop: "0.5rem", display: "grid", gap: "0.5rem" }}>
+                  <video
+                    ref={pendingVideoRef}
+                    src={URL.createObjectURL(pendingVideo)}
+                    controls
+                    style={{ width: "100%", borderRadius: "0.5rem", border: "1px solid #e5e7eb" }}
+                  />
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>Início</span>
+                    <input
+                      type="range"
+                      min={0}
+                      max={Math.max(0, Math.floor(videoDuration - 30))}
+                      value={trimStart}
+                      onChange={(e) => {
+                        const start = Number(e.target.value);
+                        setTrimStart(start);
+                        setTrimEnd((prev) => {
+                          let end = prev;
+                          if (end < start) end = start;
+                          if (end > start + 30) end = start + 30;
+                          return Math.min(Math.floor(videoDuration), end);
+                        });
+                      }}
+                      style={{ flex: 1 }}
+                    />
+                    <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>{trimStart}s</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>Fim</span>
+                    <input
+                      type="range"
+                      min={trimStart}
+                      max={Math.min(Math.floor(videoDuration), trimStart + 30)}
+                      value={trimEnd}
+                      onChange={(e) => {
+                        const val = Number(e.target.value);
+                        const clamped = Math.max(trimStart, Math.min(val, trimStart + 30));
+                        setTrimEnd(clamped);
+                      }}
+                      style={{ flex: 1 }}
+                    />
+                    <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>{trimEnd}s</span>
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "#6b7280" }}>
+                    Selecionado: {Math.max(0, Math.min(30, Math.floor(trimEnd - trimStart)))}s
+                  </div>
+                  <button
+                    type="button"
+                    onClick={confirmVideoCut}
+                    style={{
+                      padding: "0.5rem 0.75rem",
+                      borderRadius: "0.5rem",
+                      border: "none",
+                      background: gradientData.gradient,
+                      color: "white",
+                      cursor: "pointer",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Confirmar corte
+                  </button>
+                </div>
+              )}
+
+              {videos.length > 0 && (
+                <div style={{ display: "grid", gap: "0.5rem", marginTop: "0.5rem" }}>
+                  {videos.map((v, idx) => (
+                    <video key={idx} src={v} controls style={{ width: "100%", borderRadius: "0.5rem", border: "1px solid #e5e7eb" }} />
+                  ))}
+                </div>
+              )}
+
+              {videoError && (
+                <div
+                  style={{
+                    color: "#ef4444",
+                    fontSize: "0.875rem",
+                    marginTop: "0.5rem",
+                    padding: "0.5rem",
+                    backgroundColor: "#fef2f2",
+                    border: "1px solid #fecaca",
+                    borderRadius: "0.375rem",
+                  }}
+                >
+                  {videoError}
                 </div>
               )}
             </div>
