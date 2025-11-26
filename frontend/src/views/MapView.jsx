@@ -262,7 +262,7 @@ export function MapView() {
           center={[-23.5505, -46.6333]}
           zoom={5}
           minZoom={2}
-          maxZoom={18}
+          maxZoom={22}
           maxBounds={[[-90, -180], [90, 180]]}
           maxBoundsViscosity={1.0}
           worldCopyJump={false}
@@ -279,6 +279,7 @@ export function MapView() {
             url={getCurrentMapThemeData().url}
             bounds={[[-90, -180], [90, 180]]}
             noWrap={true}
+            maxNativeZoom={getCurrentMapThemeData().maxNativeZoom}
             keepBuffer={2}
             updateWhenIdle={false}
             updateWhenZooming={false}
@@ -314,23 +315,14 @@ export function MapView() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: isAddingMemory 
-              ? "0 10px 25px rgba(239, 68, 68, 0.3)" 
-              : "0 10px 25px rgba(76, 29, 149, 0.3)",
             transition: "all 0.3s ease",
             zIndex: 950,
           }}
           onMouseOver={(e) => {
             e.currentTarget.style.transform = "scale(1.1)";
-            e.currentTarget.style.boxShadow = isAddingMemory 
-              ? "0 15px 35px rgba(239, 68, 68, 0.4)" 
-              : "0 15px 35px rgba(76, 29, 149, 0.4)";
           }}
           onMouseOut={(e) => {
             e.currentTarget.style.transform = "scale(1)";
-            e.currentTarget.style.boxShadow = isAddingMemory 
-              ? "0 10px 25px rgba(239, 68, 68, 0.3)" 
-              : "0 10px 25px rgba(76, 29, 149, 0.3)";
           }}
           title={isAddingMemory ? "Cancelar adição" : "Adicionar memória"}
         >
@@ -361,17 +353,14 @@ export function MapView() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 8px 20px rgba(76, 29, 149, 0.3)",
               transition: "all 0.3s ease",
               zIndex: 950,
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.transform = "scale(1.1)";
-              e.currentTarget.style.boxShadow = "0 12px 30px rgba(76, 29, 149, 0.4)";
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "0 8px 20px rgba(76, 29, 149, 0.3)";
             }}
             title="Perfil do usuário"
           >
@@ -398,18 +387,15 @@ export function MapView() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
               transition: "all 0.3s ease",
               zIndex: 950,
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.transform = "scale(1.1)";
-              e.currentTarget.style.boxShadow = "0 8px 20px rgba(0, 0, 0, 0.2)";
               e.currentTarget.style.background = "#f9fafb";
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
               e.currentTarget.style.background = "white";
             }}
             title="Ir para minha localização"
@@ -469,17 +455,14 @@ export function MapView() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 10px 25px rgba(76, 29, 149, 0.3)",
               transition: "all 0.3s ease",
               position: "relative",
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.transform = "scale(1.1)";
-              e.currentTarget.style.boxShadow = "0 15px 35px rgba(76, 29, 149, 0.4)";
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "0 10px 25px rgba(76, 29, 149, 0.3)";
             }}
             title="Ver todas as memórias"
           >

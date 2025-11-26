@@ -692,11 +692,9 @@ export function MemoryListModal({ isOpen, onClose }) {
             ) : (
               <div
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile 
-                    ? "1fr" 
-                    : "repeat(auto-fill, minmax(350px, 1fr))",
-                  gap: isMobile ? "0.75rem" : "1rem",
+                  columnCount: isMobile ? 1 : 3,
+                  columnGap: isMobile ? "0.75rem" : "1rem",
+                  columnWidth: isMobile ? undefined : "350px",
                 }}
               >
                 {filteredMemories.map((memory) => (
@@ -708,6 +706,10 @@ export function MemoryListModal({ isOpen, onClose }) {
                       padding: isMobile ? "0.75rem" : "1rem",
                       background: "white",
                       boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                      breakInside: "avoid",
+                      marginBottom: isMobile ? "0.75rem" : "1rem",
+                      width: "100%",
+                      display: "inline-block",
                     }}
                   >
                     {editingMemory === memory.id ? (
