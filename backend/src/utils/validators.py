@@ -196,3 +196,21 @@ def validate_memory_description(description: str) -> tuple[bool, Optional[str]]:
         return False, "Descrição deve ter no máximo 2000 caracteres"
     
     return True, None
+from moviepy.editor import VideoFileClip
+
+def validate_video_duration(file_path: str, max_seconds: int = 30) -> float:
+    """
+    Valida duração de vídeo usando MoviePy.
+    Retorna a duração em segundos.
+    Levanta ValueError se exceder max_seconds ou se não for possível ler.
+    """
+    try:
+        with VideoFileClip(file_path) as clip:
+            duration = float(clip.duration or 0)
+            if not (duration > 0):
+                raise ValueError('Não foi possível obter a duração do vídeo')
+            if duration > max_seconds:
+                raise ValueError('Vídeo deve ter no máximo 30 segundos')
+            return duration
+    except Exception as e:
+        raise ValueError(str(e))

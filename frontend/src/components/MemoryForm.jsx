@@ -37,7 +37,7 @@ import { X, FileText, Calendar, Image, Upload, Music, Palette } from "lucide-rea
 import { useMemories } from '../controllers/MemoryController.jsx';
 import { useToast } from '../contexts/ToastContext.jsx';
 import { useGradient } from '../contexts/GradientContext.jsx';
-import { processFileWithTimeout, validateFileSize, validatePhotoLimit, validateVideoSize, getVideoDuration, recordVideoSegment } from '../utils/helpers.js';
+import { processFileWithTimeout, validateFileSize, validatePhotoLimit, validateVideoSize, isVideoExtension, validateVideoDuration } from '../utils/helpers.js';
 import { FormField } from './FormField.jsx';
 import SpotifySearch from './SpotifySearch.jsx';
 
@@ -55,12 +55,9 @@ export function MemoryForm({ selectedLocation, onClose }) {
   const [selectedMusic, setSelectedMusic] = useState(null);
   const [photoError, setPhotoError] = useState("");
   const [videoError, setVideoError] = useState("");
-  const [pendingVideo, setPendingVideo] = useState(null);
-  const pendingVideoRef = useRef(null);
   const [videoDuration, setVideoDuration] = useState(0);
-  const [trimStart, setTrimStart] = useState(0);
-  const [trimEnd, setTrimEnd] = useState(0);
   const [markerColor, setMarkerColor] = useState("#FF6B6B");
+  const [isValidatingVideo, setIsValidatingVideo] = useState(false);
 
   const handlePhotoUpload = async (e) => {
     const files = Array.from(e.target.files);
@@ -105,18 +102,26 @@ export function MemoryForm({ selectedLocation, onClose }) {
     const file = (validFiles && validFiles[0]) || null;
     if (!file) return;
     try {
-      const duration = await getVideoDuration(file);
-      setVideoDuration(duration);
-      if (duration <= 30) {
-        const dataUrl = await processFileWithTimeout(file, 20000, 25 * 1024 * 1024);
-        setVideos((prev) => [...prev, dataUrl]);
-      } else {
-        setPendingVideo(file);
-        setTrimStart(0);
-        setTrimEnd(Math.min(30, Math.floor(duration)));
+      if (!(file.type && file.type.startsWith('video/')) && !isVideoExtension(file.name)) {
+        setVideoError('Tipo de arquivo inválido para vídeo.');
+        e.target.value = '';
+        return;
       }
+      setIsValidatingVideo(true);
+      const { valid: ok, duration, error: derr } = await validateVideoDuration(file, 30);
+      setIsValidatingVideo(false);
+      setVideoDuration(duration || 0);
+      if (!ok) {
+        const secs = Math.floor(duration || 0);
+        setVideoError(`Este vídeo possui ${secs} segundos e excede o limite de 30 segundos.`);
+        e.target.value = '';
+        return;
+      }
+      const dataUrl = await processFileWithTimeout(file, 20000, 25 * 1024 * 1024);
+      setVideos((prev) => [...prev, dataUrl]);
     } catch {
       setVideoError('Não foi possível processar o vídeo.');
+      e.target.value = '';
     }
   };
 
@@ -471,80 +476,18 @@ export function MemoryForm({ selectedLocation, onClose }) {
                   padding: "0.75rem",
                   border: "2px dashed #d1d5db",
                   borderRadius: "0.5rem",
-                  cursor: "pointer",
+                  cursor: isValidatingVideo ? "wait" : "pointer",
                   color: "#6b7280",
                   fontSize: "0.875rem",
+                  opacity: isValidatingVideo ? 0.6 : 1,
+                  pointerEvents: isValidatingVideo ? 'none' : 'auto',
                 }}
               >
                 <Upload style={{ width: "1.25rem", height: "1.25rem" }} />
-                Clique para adicionar vídeo
+                {isValidatingVideo ? 'Validando vídeo...' : 'Clique para adicionar vídeo'}
               </label>
 
-              {pendingVideo && (
-                <div style={{ marginTop: "0.5rem", display: "grid", gap: "0.5rem" }}>
-                  <video
-                    ref={pendingVideoRef}
-                    src={URL.createObjectURL(pendingVideo)}
-                    controls
-                    style={{ width: "100%", borderRadius: "0.5rem", border: "1px solid #e5e7eb" }}
-                  />
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>Início</span>
-                    <input
-                      type="range"
-                      min={0}
-                      max={Math.max(0, Math.floor(videoDuration - 30))}
-                      value={trimStart}
-                      onChange={(e) => {
-                        const start = Number(e.target.value);
-                        setTrimStart(start);
-                        setTrimEnd((prev) => {
-                          let end = prev;
-                          if (end < start) end = start;
-                          if (end > start + 30) end = start + 30;
-                          return Math.min(Math.floor(videoDuration), end);
-                        });
-                      }}
-                      style={{ flex: 1 }}
-                    />
-                    <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>{trimStart}s</span>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>Fim</span>
-                    <input
-                      type="range"
-                      min={trimStart}
-                      max={Math.min(Math.floor(videoDuration), trimStart + 30)}
-                      value={trimEnd}
-                      onChange={(e) => {
-                        const val = Number(e.target.value);
-                        const clamped = Math.max(trimStart, Math.min(val, trimStart + 30));
-                        setTrimEnd(clamped);
-                      }}
-                      style={{ flex: 1 }}
-                    />
-                    <span style={{ fontSize: "0.75rem", color: "#6b7280" }}>{trimEnd}s</span>
-                  </div>
-                  <div style={{ fontSize: "0.75rem", color: "#6b7280" }}>
-                    Selecionado: {Math.max(0, Math.min(30, Math.floor(trimEnd - trimStart)))}s
-                  </div>
-                  <button
-                    type="button"
-                    onClick={confirmVideoCut}
-                    style={{
-                      padding: "0.5rem 0.75rem",
-                      borderRadius: "0.5rem",
-                      border: "none",
-                      background: gradientData.gradient,
-                      color: "white",
-                      cursor: "pointer",
-                      fontWeight: 600,
-                    }}
-                  >
-                    Confirmar corte
-                  </button>
-                </div>
-              )}
+              {/* Validação automática: sem tela de edição/corte */}
 
               {videos.length > 0 && (
                 <div style={{ display: "grid", gap: "0.5rem", marginTop: "0.5rem" }}>

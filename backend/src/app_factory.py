@@ -64,11 +64,13 @@ def create_app(config_class):
     from src.controllers.memory_controller import memory_bp
     from src.controllers.spotify_controller import spotify_bp
     from src.controllers.theme_controller import theme_bp
+    from src.controllers.media_controller import media_bp
     
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(memory_bp, url_prefix='/api/memories')
     app.register_blueprint(spotify_bp, url_prefix='/api/spotify')
     app.register_blueprint(theme_bp, url_prefix='/api/themes')
+    app.register_blueprint(media_bp, url_prefix='/api/media')
     
     # Criar tabelas do banco de dados
     with app.app_context():

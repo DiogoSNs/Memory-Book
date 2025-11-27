@@ -122,6 +122,32 @@ export const getVideoDuration = (file) => {
   });
 };
 
+// Detecta se arquivo é vídeo por extensão
+export const isVideoExtension = (filename) => {
+  if (!filename) return false;
+  return /\.(mp4|mov|avi|mkv|webm|m4v)$/i.test(filename);
+};
+
+// Valida duração de vídeo no navegador (HTML5 Video)
+export const validateVideoDuration = (file, maxSeconds = 30) => {
+  return new Promise(async (resolve) => {
+    try {
+      const duration = await getVideoDuration(file);
+      if (!isFinite(duration) || duration <= 0) {
+        resolve({ valid: false, duration: 0, error: 'Não foi possível obter a duração do vídeo.' });
+        return;
+      }
+      if (duration > maxSeconds) {
+        resolve({ valid: false, duration, error: `Vídeo com ${Math.floor(duration)}s excede ${maxSeconds}s.` });
+      } else {
+        resolve({ valid: true, duration });
+      }
+    } catch (e) {
+      resolve({ valid: false, duration: 0, error: 'Falha ao validar duração do vídeo.' });
+    }
+  });
+};
+
 // Grava um segmento de um vídeo via captureStream + MediaRecorder
 export const recordVideoSegment = (videoEl, startTime = 0, durationSec = 30) => {
   return new Promise((resolve, reject) => {
