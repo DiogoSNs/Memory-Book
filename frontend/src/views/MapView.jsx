@@ -259,20 +259,22 @@ export function MapView() {
       width: '100vw'
     }}>
         <MapContainer
-          center={[-23.5505, -46.6333]}
-          zoom={5}
-          minZoom={2}
-          maxZoom={22}
-          maxBounds={[[-90, -180], [90, 180]]}
-          maxBoundsViscosity={1.0}
-          worldCopyJump={false}
-          style={{ 
-            height: "100%", 
-            width: "100%", 
-            background: "#e5e7eb" // Volta para o fundo cinza original
-          }}
-          ref={mapRef}
-        >
+            center={[-23.5505, -46.6333]} // Ou sua posição inicial
+            zoom={4}
+            minZoom={3} // MUDANÇA 1: Impede afastar demais
+            maxBounds={[
+              [-85, -180], // Sul (Corte em 85 para evitar área cinza polar)
+              [85, 180]    // Norte
+            ]}
+            maxBoundsViscosity={1.0} // Mantém travado firme
+            worldCopyJump={false}
+            style={{ 
+              height: "100vh", 
+              width: "100%", 
+              background: "#1a1a1a" // MUDANÇA 2: Cor escura para fundir com o mapa
+            }} 
+            ref={mapRef}
+          >
           <TileLayer
             key={currentMapTheme} // Força re-render quando o tema muda
             attribution={getCurrentMapThemeData().attribution}
