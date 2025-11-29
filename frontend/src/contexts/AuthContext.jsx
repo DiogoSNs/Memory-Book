@@ -90,8 +90,7 @@ class AuthSubject {
       let suggestion = null;
       let errorType = null;
 
-      console.log('🔍 [AuthSubject] Erro capturado:', error);
-      console.log('🔍 [AuthSubject] error.data:', error?.data);
+      
 
       if (error instanceof ApiError) {
         errorMessage = error.message || 'Erro ao fazer login';
@@ -134,7 +133,6 @@ class AuthSubject {
       }
 
       const errorResponse = { success: false, error: errorMessage, suggestion, errorType };
-      console.log('🔍 [AuthSubject] Retornando erro de login:', errorResponse);
       return errorResponse;
     } finally {
       this.setPartial({ isLoading: false });

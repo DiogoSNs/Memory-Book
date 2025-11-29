@@ -29,17 +29,7 @@ export class MemoryRepository {
     try {
       const serialized = memories.map(memory => memory.toJSON());
       const jsonString = JSON.stringify(serialized);
-      
-      // Debug: verificar tamanho dos dados
-      console.log("📊 Tamanho dos dados:", (jsonString.length / 1024 / 1024).toFixed(2), "MB");
-      console.log("📊 Número de memórias:", memories.length);
-      
-      // Verificar se há fotos
-      const memoriesWithPhotos = memories.filter(m => m.photos && m.photos.length > 0);
-      console.log("📸 Memórias com fotos:", memoriesWithPhotos.length);
-      
       localStorage.setItem(this.storageKey, jsonString);
-      console.log("💾 Memórias salvas com sucesso!");
       return true;
     } catch (error) {
       console.error("❌ Erro ao salvar memórias:", error);

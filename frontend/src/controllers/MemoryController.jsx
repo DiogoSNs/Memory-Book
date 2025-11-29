@@ -66,7 +66,6 @@ export function MemoryProvider({ children }) {
       const response = await api.getMemories();
       setMemories(response.memories || []);
       setIsLoaded(true);
-      console.log("✅ Memórias carregadas:", response.memories?.length || 0);
     } catch (error) {
       console.error("Erro ao carregar memórias:", error);
       setError(error instanceof ApiError ? error.message : 'Erro ao carregar memórias');

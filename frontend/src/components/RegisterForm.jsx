@@ -69,9 +69,8 @@ const RegisterForm = ({ onSwitchToLogin }) => {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  // Debug: monitorar mudanças no estado errors
   useEffect(() => {
-    console.log('🔍 [RegisterForm] Estado errors atualizado:', errors);
+    // Mantido sem logs para evitar ruído no console
   }, [errors]);
 
   const handleChange = (e) => {
@@ -129,28 +128,17 @@ const RegisterForm = ({ onSwitchToLogin }) => {
 
     setIsLoading(true);
     try {
-      console.log('🔍 [RegisterForm] Iniciando registro com:', { 
-        name: formData.name, 
-        email: formData.email 
-      });
       // Ação explícita no Subject: register notifica observadores
       const result = await authSubject.register({
         name: formData.name,
         email: formData.email,
         password: formData.password
       });
-      console.log('🔍 [RegisterForm] Resultado do registro:', result);
       
       if (!result.success) {
         const errorMessage = result?.error || 'Erro ao criar conta';
         const errorSuggestion = result?.suggestion || null;
         const errorType = result?.errorType || null;
-        
-        console.log('🔍 [RegisterForm] Definindo erros:', { 
-          general: errorMessage,
-          suggestion: errorSuggestion,
-          errorType: errorType
-        });
         
         setErrors({ 
           general: errorMessage,

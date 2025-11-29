@@ -79,9 +79,7 @@ export function MemoryForm({ selectedLocation, onClose }) {
 
     for (const file of files) {
       try {
-        console.log("📸 Processando arquivo:", file.name, "Tamanho:", (file.size / 1024 / 1024).toFixed(2), "MB");
         const result = await processFileWithTimeout(file);
-        console.log("✅ Arquivo processado com sucesso. Tamanho final:", (result.length / 1024 / 1024).toFixed(2), "MB");
         setPhotos((prev) => [...prev, result]);
       } catch (error) {
         console.error("❌ Erro ao processar arquivo:", error);
