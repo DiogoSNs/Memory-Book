@@ -44,6 +44,7 @@ export function SpotifySearch({ onSelect, initialSelection }) {
       external_url: track.external_url || null,
     };
     setSelected(selection);
+    setResults([]);
     onSelect?.(selection);
   };
 
@@ -52,7 +53,7 @@ export function SpotifySearch({ onSelect, initialSelection }) {
       <input
         type="text"
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => { setQuery(e.target.value); if (selected) setSelected(null); }}
         placeholder="Digite o nome da música"
         style={{
           width: '100%',
@@ -70,7 +71,7 @@ export function SpotifySearch({ onSelect, initialSelection }) {
         <div style={{ fontSize: '0.875rem', color: '#dc2626' }}>{error}</div>
       )}
 
-      {results.length > 0 && (
+      {results.length > 0 && !selected && (
         <div style={{ display: 'grid', gap: '0.5rem', maxHeight: '30vh', overflowY: 'auto' }}>
           {results.map((track) => (
             <div key={track.id} style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', alignItems: 'center', gap: '0.5rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', padding: '0.5rem' }}>
@@ -89,7 +90,7 @@ export function SpotifySearch({ onSelect, initialSelection }) {
         </div>
       )}
 
-      {!loading && !error && query.trim().length >= 2 && results.length === 0 && (
+      {!loading && !error && !selected && query.trim().length >= 2 && results.length === 0 && (
         <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Sem resultados</div>
       )}
 
