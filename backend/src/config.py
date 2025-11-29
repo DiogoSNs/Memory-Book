@@ -23,10 +23,11 @@ Padrões de Projeto:
 """
 
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
-# Carregar variáveis de ambiente do arquivo .env
-load_dotenv()
+dotenv_path = Path(__file__).resolve().parent.parent / '.env'
+load_dotenv(dotenv_path=dotenv_path)
 
 class Config:
     """Configuração base da aplicação"""
