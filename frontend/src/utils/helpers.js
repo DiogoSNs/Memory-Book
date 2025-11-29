@@ -130,21 +130,22 @@ export const isVideoExtension = (filename) => {
 
 // Valida duração de vídeo no navegador (HTML5 Video)
 export const validateVideoDuration = (file, maxSeconds = 30) => {
-  return new Promise(async (resolve) => {
-    try {
-      const duration = await getVideoDuration(file);
-      if (!isFinite(duration) || duration <= 0) {
-        resolve({ valid: false, duration: 0, error: 'Não foi possível obter a duração do vídeo.' });
-        return;
-      }
-      if (duration > maxSeconds) {
-        resolve({ valid: false, duration, error: `Vídeo com ${Math.floor(duration)}s excede ${maxSeconds}s.` });
-      } else {
-        resolve({ valid: true, duration });
-      }
-    } catch (e) {
-      resolve({ valid: false, duration: 0, error: 'Falha ao validar duração do vídeo.' });
-    }
+  return new Promise((resolve) => {
+    getVideoDuration(file)
+      .then((duration) => {
+        if (!isFinite(duration) || duration <= 0) {
+          resolve({ valid: false, duration: 0, error: 'Não foi possível obter a duração do vídeo.' });
+          return;
+        }
+        if (duration > maxSeconds) {
+          resolve({ valid: false, duration, error: `Vídeo com ${Math.floor(duration)}s excede ${maxSeconds}s.` });
+        } else {
+          resolve({ valid: true, duration });
+        }
+      })
+      .catch(() => {
+        resolve({ valid: false, duration: 0, error: 'Falha ao validar duração do vídeo.' });
+      });
   });
 };
 

@@ -32,7 +32,7 @@
  * - Facade Pattern: Interface simplificada para criação de memórias
  */
 
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { X, FileText, Calendar, Image, Upload, Music, Palette } from "lucide-react";
 import { useMemories } from '../controllers/MemoryController.jsx';
 import { useToast } from '../contexts/ToastContext.jsx';
@@ -55,7 +55,7 @@ export function MemoryForm({ selectedLocation, onClose }) {
   const [selectedMusic, setSelectedMusic] = useState(null);
   const [photoError, setPhotoError] = useState("");
   const [videoError, setVideoError] = useState("");
-  const [videoDuration, setVideoDuration] = useState(0);
+  
   const [markerColor, setMarkerColor] = useState("#FF6B6B");
   const [isValidatingVideo, setIsValidatingVideo] = useState(false);
 
@@ -108,9 +108,8 @@ export function MemoryForm({ selectedLocation, onClose }) {
         return;
       }
       setIsValidatingVideo(true);
-      const { valid: ok, duration, error: derr } = await validateVideoDuration(file, 30);
+      const { valid: ok, duration } = await validateVideoDuration(file, 30);
       setIsValidatingVideo(false);
-      setVideoDuration(duration || 0);
       if (!ok) {
         const secs = Math.floor(duration || 0);
         setVideoError(`Este vídeo possui ${secs} segundos e excede o limite de 30 segundos.`);
@@ -125,46 +124,6 @@ export function MemoryForm({ selectedLocation, onClose }) {
     }
   };
 
-  const confirmVideoCut = async () => {
-    if (!pendingVideo) return;
-    setVideoError("");
-    try {
-      const videoEl = pendingVideoRef.current;
-      if (!videoEl) throw new Error('Video preview não disponível');
-      // Garante metadata carregada antes de gravar
-      await new Promise((res, rej) => {
-        if (isFinite(videoEl.duration) && videoEl.duration > 0) {
-          res();
-        } else {
-          const onMeta = () => {
-            videoEl.removeEventListener('loadedmetadata', onMeta);
-            res();
-          };
-          const onErr = () => {
-            videoEl.removeEventListener('error', onErr);
-            rej(new Error('Falha ao carregar vídeo'));
-          };
-          videoEl.addEventListener('loadedmetadata', onMeta);
-          videoEl.addEventListener('error', onErr);
-        }
-      });
-      const start = Math.min(trimStart, Math.max(0, videoDuration - 30));
-      const durationSel = Math.max(1, Math.min(30, Math.floor(trimEnd - start)));
-      const blob = await recordVideoSegment(videoEl, start, durationSel);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const dataUrl = reader.result;
-        setVideos((prev) => [...prev, dataUrl]);
-        setPendingVideo(null);
-        setVideoDuration(0);
-        setTrimStart(0);
-        setTrimEnd(0);
-      };
-      reader.readAsDataURL(blob);
-    } catch {
-      setVideoError('Seu navegador não suporta corte de vídeo. Envie um arquivo até 30s.');
-    }
-  };
 
   const removePhoto = (index) => {
     setPhotos((prev) => prev.filter((_, i) => i !== index));

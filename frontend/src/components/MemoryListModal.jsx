@@ -35,7 +35,7 @@
  * - State: Gerencia múltiplos estados de edição e filtros
  */
 
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { X, List, FileText, Calendar, Image, Upload, Music, Save, Edit3, Trash2, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemories } from '../controllers/MemoryController.jsx';
@@ -75,7 +75,7 @@ export function MemoryListModal({ isOpen, onClose }) {
   const [searchText, setSearchText] = useState("");
   const [showFullImage, setShowFullImage] = useState(false);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
-  const [selectedMemoryPhotos, setSelectedMemoryPhotos] = useState([]);
+  const [selectedMemoryPhotos] = useState([]);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const [showControls, setShowControls] = useState(true);
@@ -94,8 +94,7 @@ export function MemoryListModal({ isOpen, onClose }) {
     return id ? `https://open.spotify.com/embed/track/${id}` : null;
   };
 
-  const VideoEditor = ({ value = [], onChange, gradient }) => {
-    const [videoDuration, setVideoDuration] = useState(0);
+  const VideoEditor = ({ value = [], onChange }) => {
     const [isValidatingVideo, setIsValidatingVideo] = useState(false);
     const [videoError, setVideoError] = useState('');
 
@@ -115,9 +114,8 @@ export function MemoryListModal({ isOpen, onClose }) {
           return;
         }
         setIsValidatingVideo(true);
-        const { valid: ok, duration, error: derr } = await validateVideoDuration(file, 30);
+        const { valid: ok, duration } = await validateVideoDuration(file, 30);
         setIsValidatingVideo(false);
-        setVideoDuration(duration || 0);
         if (!ok) {
           const secs = Math.floor(duration || 0);
           setVideoError(`Este vídeo possui ${secs} segundos e excede o limite de 30 segundos.`);
@@ -295,13 +293,6 @@ export function MemoryListModal({ isOpen, onClose }) {
     setShowConfirmModal(false);
   };
 
-  const openPhoto = (photos, index) => {
-    setSelectedMemoryPhotos(photos);
-    setSelectedPhotoIndex(index);
-    setShowFullImage(true);
-    setShowControls(true);
-    resetHideTimer();
-  };
 
   // Reset timer to hide controls
   const resetHideTimer = () => {
@@ -810,7 +801,6 @@ export function MemoryListModal({ isOpen, onClose }) {
                           <VideoEditor
                             value={editForm.videos}
                             onChange={(videos) => setEditForm((prev) => ({ ...prev, videos }))}
-                            gradient={gradientData.gradient}
                           />
                         </FormField>
 
