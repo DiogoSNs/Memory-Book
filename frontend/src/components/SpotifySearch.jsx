@@ -45,6 +45,7 @@ export function SpotifySearch({ onSelect, initialSelection }) {
     };
     setSelected(selection);
     setResults([]);
+    setQuery('');
     onSelect?.(selection);
   };
 
