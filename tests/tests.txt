@@ -1,0 +1,32 @@
+=================== T2 (testes das funcionalidade da entrega 2) ===================
+Registro de usuário (sucesso)
+Registro de usuário com campo faltando
+Login de usuário (sucesso)
+Login de usuário com senha errada
+Logout de usuário (sucesso)
+Logout sem token
+Health check da API (sucesso)
+Health check rota inválida
+Criar memória (sucesso)
+Criar memória sem título (erro)
+Listar memórias com token (sucesso)
+Listar memórias sem token (erro)
+Atualizar memória (sucesso)
+Atualizar memória com ID inexistente (erro)
+Deletar memória (sucesso)
+Deletar memória de outro usuário (bloqueio)
+Obter preferências do usuário (sucesso)
+Atualizar preferências com valor inválido (erro)
+Criar tema (sucesso)
+Criar tema com campos faltando (erro)
+
+=================== T3 (testes das funcionalidade da versão mais recente) ===================
+Função de acesso ao Spotify funciona com mock e retorna estrutura mínima
+Buscar música via API do Spotify (sucesso)
+Buscar música com nome vazio (retorna lista vazia)
+Busca ao Spotify com mock de resposta
+Armazenar link da música na memória
+Atualizar música da memória via nova seleção (mock)
+Upload de vídeo válido (<= 30s)
+Bloqueio de upload de vídeo > 30s
+Exclusão de vídeo anexado à memória
