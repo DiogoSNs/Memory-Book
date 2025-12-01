@@ -29,8 +29,8 @@
 ### Preferências e Temas
 - **Obter preferências (sucesso):** retorna configurações atuais do usuário
 - **Atualizar preferências com valor inválido:** valida e rejeita entradas fora do padrão
-- **Criar tema (sucesso):** registra tema preferencial do usuário com dados válidos
-- **Criar tema com campos faltando:** rejeita criação de tema sem informações obrigatórias
+- **Selecionar tema (sucesso):** registra tema preferencial do usuário com dados válidos
+- **Selecionar tema com campos faltando:** rejeita criação de tema sem informações obrigatórias
 
 ---
 
