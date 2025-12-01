@@ -2,8 +2,12 @@ import os
 from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 from src.utils.validators import validate_video_duration
+from src.utils.helpers import sanitize_filename, generate_unique_filename
+from src.utils.media_manager import build_memory_dirs, make_file_url
+import logging
 
 media_bp = Blueprint('media', __name__)
+logger = logging.getLogger(__name__)
 
 VIDEO_EXTENSIONS = {'mp4', 'mov', 'avi', 'webm', 'mkv', 'm4v'}
 PHOTO_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
@@ -14,9 +18,11 @@ def upload_media():
         if 'file' not in request.files:
             return jsonify({'error': 'Nenhum arquivo enviado'}), 400
         file = request.files['file']
-        filename = secure_filename(file.filename or '')
-        if filename == '' or '.' not in filename:
+        original_filename = secure_filename(file.filename or '')
+        if original_filename == '' or '.' not in original_filename:
             return jsonify({'error': 'Nome de arquivo inválido'}), 400
+        safe_name = secure_filename(sanitize_filename(original_filename))
+        filename = safe_name
         ext = filename.rsplit('.', 1)[1].lower()
 
         base_upload = os.path.join(current_app.static_folder, 'uploads')
@@ -42,9 +48,16 @@ def upload_media():
                 return jsonify({'error': 'Vídeo deve ter no máximo 30 segundos', 'detail': str(ve)}), 400
 
         # Mover para pasta final
-        final_dir = os.path.join(base_upload, folder)
-        os.makedirs(final_dir, exist_ok=True)
-        final_path = os.path.join(final_dir, filename)
+        user_id_arg = request.args.get('user_id', type=int)
+        memory_id_arg = request.args.get('memory_id', type=int)
+        if user_id_arg and memory_id_arg:
+            _, photos_dir, videos_dir = build_memory_dirs(user_id_arg, memory_id_arg)
+            target_dir = videos_dir if folder == 'videos' else photos_dir
+        else:
+            final_dir = os.path.join(base_upload, folder)
+            os.makedirs(final_dir, exist_ok=True)
+            target_dir = final_dir
+        final_path = os.path.join(target_dir, filename)
         try:
             os.replace(tmp_path, final_path)
         except Exception:
@@ -54,7 +67,11 @@ def upload_media():
             os.remove(tmp_path)
 
         rel_path = f"/static/uploads/{folder}/{filename}"
-        return jsonify({'path': rel_path, 'media_type': 'video' if folder=='videos' else 'photo'}), 200
+        api_url = None
+        if user_id_arg and memory_id_arg:
+            api_url = make_file_url(user_id_arg, memory_id_arg, 'video' if folder=='videos' else 'photo', filename)
+        logger.info('media_upload', extra={'filename': filename, 'ext': ext, 'folder': folder, 'user_id': user_id_arg, 'memory_id': memory_id_arg})
+        return jsonify({'path': rel_path, 'file_url': api_url, 'media_type': 'video' if folder=='videos' else 'photo'}), 200
     except Exception as e:
         return jsonify({'error': 'Falha ao enviar mídia', 'detail': str(e)}), 500
 

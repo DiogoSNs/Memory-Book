@@ -197,6 +197,7 @@ def validate_memory_description(description: str) -> tuple[bool, Optional[str]]:
     
     return True, None
 from moviepy.editor import VideoFileClip
+from typing import Any
 
 def validate_video_duration(file_path: str, max_seconds: int = 30) -> float:
     """
@@ -214,3 +215,21 @@ def validate_video_duration(file_path: str, max_seconds: int = 30) -> float:
             return duration
     except Exception as e:
         raise ValueError(str(e))
+
+def validate_music(data: Any) -> tuple[bool, Optional[str]]:
+    if not isinstance(data, dict):
+        return False, "Estrutura de music deve ser um objeto"
+    ident = data.get('spotify_id') or data.get('id')
+    title = data.get('title') or data.get('name')
+    artists = data.get('artists') or data.get('artist')
+    if not isinstance(ident, str) or not ident.strip():
+        return False, "Campo id/spotify_id inválido"
+    if not isinstance(title, str) or not title.strip():
+        return False, "Campo title/name inválido"
+    if artists is not None and not isinstance(artists, str):
+        return False, "Campo artists/artist deve ser texto"
+    if 'startTime' in data and not isinstance(data.get('startTime'), (int, float)):
+        return False, "Campo startTime deve ser numérico"
+    if 'duration' in data and not isinstance(data.get('duration'), (int, float)):
+        return False, "Campo duration deve ser numérico"
+    return True, None

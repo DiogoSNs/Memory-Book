@@ -26,6 +26,7 @@ Padrões de Projeto:
 
 from src.app_factory import db
 from .base_model import BaseModel
+from src.utils.helpers import serialize_memory_dict
 
 class Memory(BaseModel):
     """Modelo de memória compatível com o frontend React"""
@@ -120,23 +121,7 @@ class Memory(BaseModel):
             dict: Dados da memória no formato esperado pelo frontend
         """
         data = super().to_dict()
-        
-        # Renomear spotify_url para spotifyUrl (camelCase para o frontend) - legado
-        if 'spotify_url' in data:
-            data['spotifyUrl'] = data.pop('spotify_url')
-        
-        # Remover user_id do retorno (não necessário no frontend)
-        data.pop('user_id', None)
-        
-        # Compatibilidade: separar vídeos embutidos em photos (data URLs de vídeo)
-        media = data.get('photos') or []
-        if isinstance(media, list) and media:
-            videos = [m for m in media if isinstance(m, str) and m.startswith('data:video/')]
-            photos = [m for m in media if not (isinstance(m, str) and m.startswith('data:video/'))]
-            data['photos'] = photos if photos else None
-            data['videos'] = videos if videos else None
-        
-        return data
+        return serialize_memory_dict(data)
     
     def __repr__(self):
         return f'<Memory {self.title}>'

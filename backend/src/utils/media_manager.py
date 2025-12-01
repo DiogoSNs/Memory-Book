@@ -4,7 +4,6 @@ import re
 from typing import Tuple
 from flask import current_app
 from werkzeug.utils import secure_filename
-from moviepy.editor import VideoFileClip
 from src.utils.helpers import sanitize_filename, generate_unique_filename
 
 def build_memory_dirs(user_id: int, memory_id: int) -> Tuple[str, str, str]:
@@ -38,19 +37,5 @@ def make_file_url(user_id: int, memory_id: int, media_type: str, filename: str) 
     media_type = 'photos' if media_type == 'photo' else ('videos' if media_type == 'video' else media_type)
     return f"/api/media/user_{user_id}/memory_{memory_id}/{media_type}/{filename}"
 
-def validate_video_duration(file_path: str, max_seconds: int = 30) -> float:
-    """
-    Valida duração de vídeo usando MoviePy.
-    Retorna a duração em segundos. Levanta ValueError se exceder max_seconds ou se não for possível ler.
-    """
-    try:
-        with VideoFileClip(file_path) as clip:
-            duration = float(clip.duration or 0)
-            if not (duration > 0):
-                raise ValueError('Não foi possível obter a duração do vídeo')
-            if duration > max_seconds:
-                raise ValueError('Vídeo deve ter no máximo 30 segundos')
-            return duration
-    except Exception as e:
-        raise ValueError(str(e))
+# validação de vídeo consolidada em src.utils.validators
 

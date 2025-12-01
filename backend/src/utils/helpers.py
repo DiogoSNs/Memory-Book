@@ -241,3 +241,27 @@ def generate_unique_filename(original_filename: str) -> str:
         return f"{timestamp}_{unique_id}.{extension}"
     else:
         return f"{timestamp}_{unique_id}"
+
+VIDEO_EXTENSIONS = {"mp4", "mov", "avi", "webm", "mkv", "m4v"}
+
+def serialize_memory_dict(data: dict) -> dict:
+    if 'spotify_url' in data:
+        data['spotifyUrl'] = data.pop('spotify_url')
+    data.pop('user_id', None)
+    media = data.get('photos') or []
+    if isinstance(media, list) and media:
+        videos = []
+        photos = []
+        for m in media:
+            if isinstance(m, str):
+                lower = m.lower()
+                is_video = lower.startswith('data:video/') or any(lower.endswith(f'.{ext}') for ext in VIDEO_EXTENSIONS) or '/videos/' in lower
+                if is_video:
+                    videos.append(m)
+                else:
+                    photos.append(m)
+            else:
+                photos.append(m)
+        data['photos'] = photos if photos else None
+        data['videos'] = videos if videos else None
+    return data

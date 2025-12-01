@@ -123,8 +123,7 @@ def update_theme():
         if 'isActive' in data:
             update_data['is_active'] = data['isActive']
         
-        # Atualizar tema
-        updated_theme = theme_repo.update(theme.id, **update_data)
+        updated_theme = theme_repo.update(theme, **update_data)
         
         return jsonify({
             'message': 'Tema atualizado com sucesso',

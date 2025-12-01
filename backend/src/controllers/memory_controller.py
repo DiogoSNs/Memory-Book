@@ -6,6 +6,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from src.repositories.memory_repository import MemoryRepository
+from src.utils.validators import validate_music
 
 # Blueprint para rotas de memórias
 memory_bp = Blueprint('memories', __name__)
@@ -89,6 +90,10 @@ def create_memory():
         if isinstance(videos, list) and len(videos) > 0:
             photos = list(photos) + list(videos)
 
+        if data.get('music') is not None:
+            ok, err = validate_music(data.get('music'))
+            if not ok:
+                return jsonify({'error': err}), 400
         # Criar memória
         memory = memory_repo.create_memory(
             user_id=user_id,
@@ -174,6 +179,10 @@ def update_memory(memory_id):
                 data['photos'] = list(photos) + list(videos)
             data.pop('videos', None)
 
+        if data.get('music') is not None:
+            ok, err = validate_music(data.get('music'))
+            if not ok:
+                return jsonify({'error': err}), 400
         # Atualizar memória
         memory = memory_repo.update_memory(memory_id, user_id, **data)
         
