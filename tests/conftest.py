@@ -1,8 +1,12 @@
 """
-Fixtures e utilitários de testes
-- Ajusta o path para importar o backend (src.*)
-- Fornece app e client do Flask
+Fixtures e utilitários de testes:
+- Ajuste de path para importar o backend (src.*)
+- App e client do Flask para requisições
 - Helpers para criar usuário, logar e criar memória
+
+Padrão seguido:
+- Mesmo estilo dos demais testes (simplicidade e isolamento por teste)
+- Comentários curtos explicando cada fixture/helper
 """
 import os
 import sys
@@ -20,7 +24,7 @@ from src.config import DevelopmentConfig
 
 
 class TestConfig(DevelopmentConfig):
-    # Configuração de teste (modo TESTING e banco SQLite isolado)
+    # Configuração de teste (modo TESTING; banco SQLite isolado)
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///test_memory_book.sqlite'
 
