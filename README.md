@@ -101,7 +101,7 @@ No Trabalho 3, realizamos uma refatoração estrutural no fluxo de atualização
 
 Antes, a sincronização entre componentes ocorria de forma implícita pelo React, já que o Context obrigava re-renders automáticos em toda a árvore sempre que qualquer alteração de estado era realizada.
 
-Para tornar o fluxo mais controlado, explícito e alinhado ao padrão de projeto, substituímos parte desse comportamento automático pela implementação manual do padrão Observer.
+Para tornar o fluxo mais controlado, explícito e alinhado ao padrão GoF, substituímos parte desse comportamento automático pela implementação manual do padrão Observer.
 
 #### ❓ Por que utilizamos?
 
