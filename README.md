@@ -1,8 +1,8 @@
 # Meu Projeto
 
 ## Sumário
-- [Cenários de testes das funcionalidades entregues no T2 ](#cenários-de-teste)
-- [Instalação](#2-cenários-funcionais)
+- [Cenários de testes das funcionalidades entregues no T2 ](##cenários-de-teste-t2)
+- [Cenários de testes das funcionalidades entregues no T3](###cenários-de-teste-t3)
 - [Funcionalidades](#funcionalidades)
 - [Testes](#testes)
 - [API](#api)
@@ -11,7 +11,7 @@
 
 
 
-# Cenários de Teste
+## Cenários de Teste T2
 
 ## 1 Funcionalidades
 
@@ -22,52 +22,54 @@ Como um usuário autenticado
 Eu quero criar uma nova memória vinculada a uma localização no mapa  
 De modo que eu possa armazenar recordações com fotos, textos e música associadas ao local onde ocorreram
 
-### 1.1 Necessidade 2 - Visualizar memórias existentes
+### 1.2 Necessidade 2 - Visualizar memórias existentes
 Como um usuário autenticado  
 Eu quero visualizar todas as minhas memórias diretamente no mapa  
 De modo que eu possa acessar rapidamente informações e fotos associadas a cada ponto geográfico
 
-### 1.1 Necessidade 3 - Editar memórias
+### 1.3 Necessidade 3 - Editar memórias
 Como um usuário autenticado  
 Eu quero editar o texto, imagem, localização e cor de uma memória  
 De modo que eu possa atualizar ou corrigir informações conforme necessário
 
-### 1.1 Necessidade 4 - Excluir memórias
+### 1.4 Necessidade 4 - Excluir memórias
 Como um usuário autenticado  
 Eu quero excluir uma memória  
 De modo que eu remova conteúdos que não são mais relevantes
 
-### 1.1 Necessidade 5 - Aplicar temas
+### 1.5 Necessidade 5 - Aplicar temas
 Como um usuário autenticado  
 Eu quero escolher um tema visual (Aurora, Ocean, Sunset, Forest, Cosmic)  
 De modo que a interface apresente uma identidade visual personalizada
 
-### 1.1 Necessidade 6 - Criar conta (registro)
+### 1.6 Necessidade 6 - Criar conta (registro)
 Como um usuário não autenticado  
 Eu quero criar uma nova conta informando meus dados de registro  
 De modo que eu possa acessar o Memory Book com um perfil próprio e seguro
 
-### 1.1 Necessidade 7 - Fazer login
+### 1.7 Necessidade 7 - Fazer login
 Como um usuário não autenticado  
 Eu quero acessar minha conta por meio de e-mail e senha  
 De modo que eu possa utilizar todas as funcionalidades do Memory Book
 
-### 1.1 Necessidade 8 - Fazer logout
+### 1.8 Necessidade 8 - Fazer logout
 Como um usuário autenticado  
 Eu quero encerrar minha sessão no sistema  
 De modo que eu garanta a segurança da minha conta e volte ao estado de usuário não autenticado
 
-### 1.1 Necessidade 9 - Utilizar o mapa interativo
+### 1.9 Necessidade 9 - Utilizar o mapa interativo
 Como um usuário autenticado  
 Eu quero navegar e selecionar pontos no mapa  
 De modo que eu possa registrar a memória no local exato onde ocorreu
 
-### 1.1 Necessidade 10 - Buscar músicas no Spotify (ENTREGA 3)
+## Cenários de Teste T3
+
+### 1.10 Necessidade 10 - Buscar músicas no Spotify
 Como um usuário autenticado  
 Eu quero buscar uma música digitando seu nome ou artista dentro da memória  
 De modo que eu possa selecionar uma faixa diretamente da lista de resultados sem precisar copiar links externos e tê-la associada a memória
 
-### 1.1 Necessidade 11 - Adicionar vídeos curtos à memória (ENTREGA 3)
+### 1.11 Necessidade 11 - Adicionar vídeos curtos à memória
 Como um usuário autenticado  
 Eu quero enviar um vídeo curto (até 30 segundos) ao criar ou editar uma memória  
 De modo que minhas recordações incluam registros audiovisuais rápidos do momento
