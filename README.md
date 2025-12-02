@@ -63,7 +63,7 @@ De modo que minhas recordações incluam registros audiovisuais rápidos do mome
 
 ## 2 Cenários Funcionais
 
-Nesta seção são apresentados os cenários funcionais derivados diretamente das nove necessidades identificadas para o sistema Memory Book. Cada cenário descreve, de forma estruturada e objetiva, como o sistema deve se comportar diante de ações típicas do usuário, cobrindo desde operações essenciais como registrar, visualizar, editar e excluir memórias até funcionalidades de suporte, como autenticação, personalização por temas e interação com o mapa.
+Nesta seção são apresentados os cenários funcionais derivados diretamente das onze necessidades identificadas para o sistema Memory Book. Cada cenário descreve, de forma estruturada e objetiva, como o sistema deve se comportar diante de ações típicas do usuário, cobrindo desde operações essenciais como registrar, visualizar, editar e excluir memórias até funcionalidades de suporte, como autenticação, personalização por temas e interação com o mapa.
 
 Os cenários foram organizados por funcionalidade principal, seguindo a sequência lógica estabelecida nas necessidades: primeiro as operações relacionadas às memórias, depois os mecanismos de personalização e, por fim, o fluxo de autenticação do usuário. Cada caso está descrito no formato Dado – Quando – Então, permitindo fácil reprodutibilidade, clareza nos requisitos validados e associação direta com os testes realizados posteriormente.
 
