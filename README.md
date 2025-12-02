@@ -1,3 +1,425 @@
+# Cenários de Teste
+
+## 1 Funcionalidades
+
+O sistema Memory Book permite que usuários registrem, organizem e visualizem memórias associadas a locais em um mapa interativo. As funcionalidades envolvem criação de memórias, manipulação de conteúdos multimídia, personalização visual por temas e integração com serviços externos, tudo isso garantindo usabilidade, consistência e segurança.
+
+### 1.1 Necessidade 1 - Registrar memórias no mapa
+Como um usuário autenticado  
+Eu quero criar uma nova memória vinculada a uma localização no mapa  
+De modo que eu possa armazenar recordações com fotos, textos e música associadas ao local onde ocorreram
+
+### 1.1 Necessidade 2 - Visualizar memórias existentes
+Como um usuário autenticado  
+Eu quero visualizar todas as minhas memórias diretamente no mapa  
+De modo que eu possa acessar rapidamente informações e fotos associadas a cada ponto geográfico
+
+### 1.1 Necessidade 3 - Editar memórias
+Como um usuário autenticado  
+Eu quero editar o texto, imagem, localização e cor de uma memória  
+De modo que eu possa atualizar ou corrigir informações conforme necessário
+
+### 1.1 Necessidade 4 - Excluir memórias
+Como um usuário autenticado  
+Eu quero excluir uma memória  
+De modo que eu remova conteúdos que não são mais relevantes
+
+### 1.1 Necessidade 5 - Aplicar temas
+Como um usuário autenticado  
+Eu quero escolher um tema visual (Aurora, Ocean, Sunset, Forest, Cosmic)  
+De modo que a interface apresente uma identidade visual personalizada
+
+### 1.1 Necessidade 6 - Criar conta (registro)
+Como um usuário não autenticado  
+Eu quero criar uma nova conta informando meus dados de registro  
+De modo que eu possa acessar o Memory Book com um perfil próprio e seguro
+
+### 1.1 Necessidade 7 - Fazer login
+Como um usuário não autenticado  
+Eu quero acessar minha conta por meio de e-mail e senha  
+De modo que eu possa utilizar todas as funcionalidades do Memory Book
+
+### 1.1 Necessidade 8 - Fazer logout
+Como um usuário autenticado  
+Eu quero encerrar minha sessão no sistema  
+De modo que eu garanta a segurança da minha conta e volte ao estado de usuário não autenticado
+
+### 1.1 Necessidade 9 - Utilizar o mapa interativo
+Como um usuário autenticado  
+Eu quero navegar e selecionar pontos no mapa  
+De modo que eu possa registrar a memória no local exato onde ocorreu
+
+### 1.1 Necessidade 10 - Buscar músicas no Spotify (ENTREGA 3)
+Como um usuário autenticado  
+Eu quero buscar uma música digitando seu nome ou artista dentro da memória  
+De modo que eu possa selecionar uma faixa diretamente da lista de resultados sem precisar copiar links externos e tê-la associada a memória
+
+### 1.1 Necessidade 11 - Adicionar vídeos curtos à memória (ENTREGA 3)
+Como um usuário autenticado  
+Eu quero enviar um vídeo curto (até 30 segundos) ao criar ou editar uma memória  
+De modo que minhas recordações incluam registros audiovisuais rápidos do momento
+
+---
+
+## 2 Cenários Funcionais
+
+Nesta seção são apresentados os cenários funcionais derivados diretamente das nove necessidades identificadas para o sistema Memory Book. Cada cenário descreve, de forma estruturada e objetiva, como o sistema deve se comportar diante de ações típicas do usuário, cobrindo desde operações essenciais como registrar, visualizar, editar e excluir memórias até funcionalidades de suporte, como autenticação, personalização por temas e interação com o mapa.
+
+Os cenários foram organizados por funcionalidade principal, seguindo a sequência lógica estabelecida nas necessidades: primeiro as operações relacionadas às memórias, depois os mecanismos de personalização e, por fim, o fluxo de autenticação do usuário. Cada caso está descrito no formato Dado – Quando – Então, permitindo fácil reprodutibilidade, clareza nos requisitos validados e associação direta com os testes realizados posteriormente.
+
+### 2.1 Registrar memórias no mapa
+
+Cenário 1: Criar nova memória com texto e foto  
+Dado que o usuário está autenticado e visualizando o mapa  
+E seleciona um ponto da interface  
+Quando inserir título, descrição e fizer upload de uma foto  
+E confirmar o cadastro  
+Então o sistema deve salvar a memória no banco  
+E exibir um marcador no mapa na posição selecionada
+
+### 2.2 Visualizar memórias existentes
+
+Cenário 2: Exibir todas as memórias no mapa  
+Dado que o usuário está logado  
+Quando acessa a tela inicial do mapa  
+Então o sistema deve carregar e exibir todos os marcadores referentes às memórias cadastradas
+
+Cenário 3: Abrir uma memória ao clicar no marcador  
+Dado que há uma memória cadastrada no local selecionado  
+Quando o usuário clicar no marcador  
+Então o sistema deve abrir o cartão da memória contendo título, descrição e imagem associada.
+
+### 2.3 Editar memórias
+
+Cenário 4: Editar texto e imagem de uma memória  
+Dado que o usuário está autenticado  
+E abriu uma memória já existente  
+Quando alterar título, descrição e/ou foto  
+E salvar  
+Então o sistema deve atualizar os dados no banco  
+E exibir as alterações no cartão da memória
+
+### 2.4 Excluir memórias
+
+Cenário 5: Excluir memória existente  
+Dado que o usuário abriu uma memória cadastrada  
+Quando clicar no botão de excluir  
+E confirmar a exclusão  
+Então o sistema deve remover a memória do banco  
+E remover o marcador correspondente do mapa
+
+### 2.5 Aplicar temas
+
+Cenário 6: Alterar o tema global do Memory Book  
+Dado que o usuário está autenticado  
+Quando selecionar um tema como Aurora, Ocean, Sunset, Forest ou Cosmic  
+Então o sistema deve atualizar imediatamente as cores, ícones e elementos da interface
+
+### 2.6 Criar Conta (Registro)
+
+Cenário 7: Registro bem-sucedido  
+Dado que o usuário não possui conta  
+Quando preencher nome, e-mail e senha válidos  
+E confirmar o cadastro  
+Então o sistema deve criar a conta  
+E permitir o login imediato ou redirecionar para a página de acesso
+
+Cenário 8: Registro com campo faltando  
+Dado que o usuário está na tela de registro  
+Quando enviar o formulário com dados incompletos  
+Então o sistema deve exibir mensagem de erro  
+E impedir a criação da conta
+
+### 2.7 Login
+
+Cenário 9: Login bem-sucedido  
+Dado que o usuário possui uma conta válida  
+Quando informar e-mail e senha corretos  
+Então o sistema deve autenticar o usuário  
+E gerar um token de sessão
+
+Cenário 10: Login com senha incorreta  
+Dado que há uma conta registrada  
+Quando o usuário inserir uma senha incorreta  
+Então o sistema deve recusar o login  
+E exibir mensagem de credenciais inválidas
+
+### 2.8 Logout
+
+Cenário 11: Logout  
+Dado que o usuário está autenticado  
+Quando clicar no botão de logout  
+Então o sistema deve encerrar a sessão  
+E invalidar o token atual
+
+### 2.9 Usar o mapa interativo
+
+Cenário 12: Navegar pelo mapa  
+Dado que o usuário está autenticado  
+Quando usar zoom e arrastar o mapa  
+Então o sistema deve ajustar a visualização sem perda de marcadores
+
+### 2.10 Buscar músicas no Spotify (ENTREGA 3)
+
+Cenário 13: Pesquisar música digitando nome ou artista  
+Dado que o usuário está autenticado  
+Quando digitar o nome da música ou do artista no campo de busca dentro da criação ou edição da memória  
+Então o sistema deve exibir uma lista de resultados correspondentes obtidos via integração com o Spotify  
+E permitir que o usuário selecione uma faixa da lista para vinculá-la à memória
+
+### 2.11 Adicionar vídeos curtos à memória (ENTREGA 3)
+
+Cenário 14: Enviar vídeo curto de até 30 segundos  
+Dado que o usuário está autenticado  
+Quando selecionar um arquivo de vídeo ao criar ou editar uma memória  
+Então o sistema deve validar que o vídeo possui até 30 segundos  
+E deve fazer upload do conteúdo para armazenamento interno  
+E associá-lo à memória sem comprometer o restante do processo de criação ou edição
+
+---
+
+## 3 Cenários de Desempenho
+
+Nesta seção são definidos os cenários de desempenho que avaliam a eficiência, capacidade de resposta e estabilidade do sistema Memory Book sob diferentes condições. Os cenários refletem operações críticas observadas nos testes funcionais como por exemplo criação, visualização, edição e exclusão de memórias mas agora analisadas sob a perspectiva de performance, escalabilidade e impacto no usuário.
+
+Os testes aqui descritos permitem identificar gargalos, prever comportamentos em situações de estresse e estabelecer métricas mínimas de qualidade para as funcionalidades essenciais do sistema.
+
+### 3.1 Registro, Login e Logout
+
+Cenário 1: Registro (sucesso)  
+Descrição do Cenário: Validação de criação de usuário com dados válidos e resposta rápida.  
+Dado que existe um endpoint de registro disponível  
+Quando o cliente envia nome, e-mail e senha válidos  
+Então o sistema autentica e retorna token em tempo adequado
+
+Cenário 2: Login (senha incorreta)  
+Descrição do Cenário: Negativa ágil de login com senha incorreta.  
+Dado que há um usuário existente  
+Quando a senha enviada é inválida  
+Então o sistema responde 401 sem processamento excessivo
+
+Cenário 3: Logout (sem token)  
+Descrição do Cenário: Bloqueio imediato de logout sem autenticação.  
+Dado que não há token no header  
+Quando o cliente tenta deslogar  
+Então o sistema retorna 401 de forma eficiente
+
+### 3.2 Health Check
+
+Cenário 4: Health check (OK)  
+Descrição do Cenário: Sinalização de saúde do serviço com resposta mínima.  
+Dado que o endpoint de status está ativo  
+Quando o cliente consulta /api/health  
+Então o sistema retorna status OK rapidamente
+
+Cenário 5: Health check (rota inválida)  
+Descrição do Cenário: Resposta adequada a rota inexistente.  
+Dado que a rota /api/healthz não existe  
+Quando o cliente consulta a rota inválida  
+Então o sistema retorna 404 sem custo adicional
+
+### 3.3 Listagem de Memórias
+
+Cenário 6: Listar memórias (com token)  
+Descrição do Cenário: Listagem de memórias autenticada.  
+Dado que o usuário possui memórias  
+Quando consulta a lista com token válido  
+Então o sistema retorna as memórias em tempo adequado
+
+Cenário 7: Listar memórias (sem token)  
+Descrição do Cenário: Bloqueio de listagem sem autenticação.  
+Dado que não há token no header  
+Quando consulta a lista  
+Então o sistema retorna 401 rapidamente
+
+### 3.4 Busca de Música (Spotify) - Entrega 3
+
+Cenário 8: Spotify (função de acesso com mock)  
+Descrição do Cenário: Função de acesso ao Spotify (mock) com estrutura mínima.  
+Dado que a chamada externa está mockada  
+Quando consulta /api/spotify/search  
+Então o retorno contém nome, artistas e link
+
+Cenário 9: Spotify (busca por música)  
+Descrição do Cenário: Busca por música com termo válido.  
+Dado que há um termo de busca  
+Quando consulta /api/spotify/search?q=Imagine  
+Então a API retorna lista de resultados rapidamente
+
+### 3.5 Upload de Vídeos - Entrega 3
+
+Cenário 10: Vídeo (upload válido ≤ 30s)  
+Descrição do Cenário: Upload de vídeo válido até 30 segundos.  
+Dado que a validação de duração retorna ≤30s  
+Quando envia arquivo .mp4 para /api/media/upload  
+Então o sistema aceita e retorna caminho do vídeo
+
+Cenário 11: Vídeo (bloqueio > 30s)  
+Descrição do Cenário: Bloqueio de upload acima de 30 segundos.  
+Dado que a validação retorna erro de duração  
+Quando envia arquivo longo  
+Então o sistema retorna 400 com mensagem adequada
+
+---
+
+# Relatório de Consolidação de Teste
+
+## Escopo dos Testes
+
+O escopo das atividades de Verificação e Validação considerou todas as funcionalidades atualmente implementadas no Memory Book, abrangendo o fluxo de autenticação (registro, login e logout), as operações de criação, visualização, edição e exclusão de memórias, bem como a navegação no mapa interativo.
+
+Foram realizados testes manuais cobrindo os itens D.1 a D.5, com foco em validar o comportamento funcional, a integridade das interfaces, a consistência dos dados e a estabilidade da aplicação durante o uso contínuo. As funcionalidades principais mostraram funcionamento adequado, permitindo ao usuário autenticar-se, registrar memórias geolocalizadas, visualizar seus marcadores no mapa, editar detalhes e removê-los quando necessário.
+
+Alguns parâmetros de desempenho e cenários de carga ainda dependem de testes automatizados — tais como tempo médio de carregamento de memórias, latência de requisições e simulação de múltiplos usuários. No entanto, os testes manuais confirmaram a conformidade funcional do sistema de acordo com os requisitos atuais.
+
+---
+
+# Tabela 1: Teste de Requisitos
+
+| Funcionalidade | Módulo | Demandas |
+|---------------|--------|----------|
+| Registro, login e logout | Autenticação | Validar que o usuário pode criar uma conta com dados válidos |
+| Registro, login e logout | Autenticação | Confirmar que o login funciona com credenciais corretas |
+| Registro, login e logout | Autenticação | Confirmar que o logout encerra a sessão corretamente |
+| Criação de memórias | Gerenciador de Memórias | Validar criação de memórias com título, texto, data e localização |
+| Criação de memórias | Gerenciador de Memórias | Validar upload de imagem junto com a memória |
+| Criação de memórias | Spotify | Validar associação de uma música à memória |
+| Visualização de memórias | Mapa Interativo | Verificar que todas as memórias cadastradas aparecem no mapa |
+| Visualização de memórias | Gerenciador de Memórias | Garantir que os dados da memória são recuperados corretamente |
+| Edição de memórias | Gerenciador de Memórias | Confirmar que o usuário pode editar título, descrição, foto e localização |
+| Exclusão de memórias | Gerenciador de Memórias | Garantir que memórias sejam removidas do sistema e do mapa |
+| Exportação | Exportador PDF | Validar geração de PDF contendo dados completos da memória |
+| Preferências do usuário | Autenticação | Validar leitura e alteração do tema visual |
+| Desempenho | Sistema | Medir tempos de carregamento de memórias (via testes automatizados) |
+
+---
+
+# Tabela 2: Testes Funcionais
+
+| Funcionalidade | Módulo | Demandas |
+|---------------|--------|----------|
+| Criar memória | CRUD de Memórias | Criar memória com texto, foto, música e localização — funcionando |
+| Criar memória | CRUD de Memórias | Bloquear criação sem título — validado |
+| Visualizar memórias | Mapa Interativo | Exibir todas as memórias no mapa ao carregar — funcionando |
+| Abrir memória | Gerenciador de Memórias | Abrir cartão da memória ao clicar no marcador — validado |
+| Editar memória | CRUD de Memórias | Permitir alteração de texto, imagem e música — validado |
+| Editar localização | Mapa Interativo | Permitir mover marcador para atualizar as coordenadas — validado |
+| Excluir memória | CRUD de Memórias | Remover memória e seu marcador — validado |
+| Selecionar tema | Preferências | Alterar tema global — funcionando |
+| Selecionar cor individual | Gerenciador de Memórias | Alterar cor do cartão da memória — funcionando |
+| Validação Spotify | Spotify | Bloquear links inválidos — validado |
+| Exportação PDF | Exportador PDF | Exportar memória individual — validado |
+| Exportação PDF | Exportador PDF | Exportar várias memórias — validado |
+| Navegação no mapa | Mapa Interativo | Zoom e arraste sem perda de marcadores — funcionando |
+
+---
+
+# Tabela 3: Teste de Regressão
+
+| Funcionalidade | Módulo | Demandas |
+|---------------|--------|----------|
+| Registro/login | Autenticação | Revalidar autenticação após atualizações — ok |
+| CRUD de memórias | Gerenciador de Memórias | Retestar criação/edição/exclusão após mudanças — ok |
+| Temas | Preferências | Confirmar que novos temas não quebram interface — ok |
+| Exportação PDF | Exportador PDF | Garantir que exportação continua funcional — ok |
+| Mapa | Mapa Interativo | Validar estabilidade do mapa com novas memórias — ok |
+| Fluxo prolongado | CRUD de Memórias | Testar 20 edições seguidas sem falhas — ok |
+| Desempenho após alterações | Sistema | Medir impacto em tempo de resposta — ok |
+| Concorrência | Sistema | Avaliar múltiplos usuários simultâneos — *inconclusivo* |
+
+---
+
+# Tabela 4: Teste de Performance
+
+| Funcionalidade | Módulo | Demandas |
+|---------------|--------|----------|
+| Carregamento inicial | Mapa Interativo | Medir tempo de carregamento inicial do mapa |
+| Listagem de memórias | Backend | Medir tempo médio de resposta ao listar memórias — ok (via testes automatizados) |
+| Upload de imagens | Backend | Medir tempo de upload de imagens |
+| Validação Spotify | Spotify | Medir latência na busca de músicas — ok (mock e real) |
+| Navegação no mapa | Frontend | Testar fluidez com zoom/arraste intensos — estável |
+| Análise de gargalos | Sistema Completo | Identificar gargalos internos — *inconclusivo* |
+| Exportação PDF | Exportador PDF | Medir tempo de exportação de PDF |
+| Upload de vídeos | Mídia | Validar rapidez no envio de vídeos curtos — ok |
+
+---
+
+# Tabela 5: Teste de Aceite
+
+| Funcionalidade | Módulo | Demandas |
+|---------------|--------|----------|
+| Objetivo geral do sistema | Sistema Completo | Confirmar que o Memory Book registra memórias geolocalizadas com multimídia |
+| Interface e usabilidade | Frontend | Avaliar se a interface é intuitiva e responsiva |
+| Fluxo principal | Sistema Completo | Criar → visualizar → editar → exportar memória — funcionando |
+| Estabilidade | Sistema Completo | Confirmar estabilidade do sistema em sessões longas |
+| Teste de temas | Preferências | Avaliar temas e impacto visual na experiência |
+| Satisfação do usuário | Sistema Completo | Métricas de satisfação do usuário |
+| Uso sob carga | Sistema Completo | Avaliar comportamento sob alta demanda — *inconclusivo* |
+
+# Resultados Obtidos
+
+A presente seção descreve os resultados obtidos durante a execução dos testes planejados para o Memory Book, considerando os diferentes tipos de validação: testes de requisitos, funcionais, de regressão, de performance e de aceite.  
+As tabelas a seguir registram os defeitos encontrados em cada categoria, classificados por criticidade e indicando se foram corrigidos ou permanecem pendentes.
+
+No geral, os testes manuais e automatizados demonstraram boa estabilidade do sistema, poucos defeitos identificados e todos de baixa ou média criticidade. Os cenários de autenticação, manipulação de memórias, integração com o Spotify e upload de vídeos apresentaram comportamento consistente.  
+Alguns aspectos de desempenho ainda dependem de medições adicionais, especialmente em carga e estresse, mas nenhuma falha impeditiva foi verificada nos fluxos principais.
+
+## **Tabela 6: Defeitos Encontrados Durante a Realização do Teste de Requisitos**
+
+| Criticidade | Corrigidos | Não Corrigidos | Total |
+|-------------|------------|----------------|--------|
+| Alta        | 0          | 0              | 0      |
+| Média       | 0          | 0              | 0      |
+| Baixa       | 1          | 0              | 1      |
+
+*Observação: Na lista de memórias, os blocos não se ajustavam ao conteúdo e adotavam a altura da maior memória (ex.: com vídeo); corrigido ajustando o layout para altura automática por cartão e evitando herança de tamanho.*
+
+---
+
+## **Tabela 7: Defeitos Encontrados Durante a Realização do Teste Funcional**
+
+| Criticidade | Corrigidos | Não Corrigidos | Total |
+|-------------|------------|----------------|--------|
+| Alta        | 0          | 0              | 0      |
+| Média       | 1          | 0              | 1      |
+| Baixa       | 0          | 0              | 0      |
+
+*Observação: Busca do Spotify mostrava apenas resultados mockados; corrigido habilitando credenciais e cliente oficial, mantendo fallback mock apenas quando indisponível.*
+
+---
+
+## **Tabela 8: Defeitos Encontrados Durante a Realização do Teste de Regressão**
+
+| Criticidade | Corrigidos | Não Corrigidos | Total |
+|-------------|------------|----------------|--------|
+| Alta        | 0          | 0              | 0      |
+| Média       | 0          | 0              | 0      |
+| Baixa       | 0          | 0              | 0      |
+
+---
+
+## **Tabela 9: Defeitos Encontrados Durante a Realização do Teste de Performance**
+
+| Criticidade | Corrigidos | Não Corrigidos | Total |
+|-------------|------------|----------------|--------|
+| Alta        | 0          | 0              | 0      |
+| Média       | 0          | 0              | 0      |
+| Baixa       | 0          | 0              | 1      |
+
+---
+
+## **Tabela 10: Defeitos Encontrados Durante a Realização do Teste de Aceite**
+
+| Criticidade | Corrigidos | Não Corrigidos | Total |
+|-------------|------------|----------------|--------|
+| Alta        | 0          | 0              | 0      |
+| Média       | 0          | 0              | 0      |
+| Baixa       | 2          | 0              | 2      |
+
+*Observação: (1) Brilho atrás dos botões flutuantes afetava temas escuros; removido brilho atrás dos botões flutuantes. (2) Zoom out excessivo gerava bordas brancas no mapa; corrigido com `minZoom`, `maxBounds` e `noWrap`.*
+
+---
+
 # Testes Automatizados
 
 ---
@@ -169,7 +591,7 @@ Para sincronizar a interface quando dados importantes mudam (como login/logout),
 
 - **Onde o `notify()` acontece:** é invocado sempre que `setPartial(...)` é chamado, ver `frontend/src/contexts/AuthContext.jsx:59–62`
 
----
+  ---
 
 # Teste e desenvolvimento de novas funcionalidades:
 
@@ -348,3 +770,76 @@ Duplicidade de validação de vídeo (`validators.py` e `media_manager.py`); sem
 - **Baixo acoplamento**: `media_manager` e controllers dependem de um ponto único de validação; facilita testes e evolução.
 - **Fail-fast**: dados inválidos são rejeitados cedo com mensagens claras, evitando inconsistências no banco.
 - **Prevenção de erros**: reduz divergências e minimiza risco de erros por duplicidade.
+
+---
+
+# INTEGRAÇÃO 
+
+## Integração das Funcionalidades da Entrega 2 e Entrega 3
+
+Esta seção apresenta de forma organizada a integração entre as funcionalidades desenvolvidas na Entrega 2 e as funcionalidades adicionais implementadas na Entrega 3. Assim como nas demais partes do relatório, o objetivo é demonstrar a evolução incremental do sistema Memory Book, destacando como os recursos anteriormente existentes foram mantidos, ampliados e validados por meio dos testes funcionais, de regressão e de desempenho.
+
+A seguir, as funcionalidades estão separadas por entrega, refletindo o escopo implementado em cada fase e a consolidação final do sistema.
+
+---
+
+### **Entrega 2 — Funcionalidades Implementadas**
+
+As funcionalidades abaixo constituem o núcleo fundamental do Memory Book e foram totalmente desenvolvidas na Entrega 2. Elas definem o fluxo principal de uso do sistema:
+
+- Registro de memórias no mapa (com texto e imagem)
+- Visualização de memórias existentes no mapa
+- Edição de memórias (título, descrição, imagem e localização)
+- Exclusão de memórias
+- Aplicação de temas (Aurora, Ocean, Sunset, Forest, Cosmic)
+- Criação de conta (registro)
+- Login
+- Logout
+- Navegação no mapa interativo (zoom e arraste)
+
+Essas funcionalidades formam a base lógica sobre a qual os recursos avançados da Entrega 3 foram posteriormente integrados.
+
+---
+
+### **Entrega 3 — Funcionalidades Adicionadas**
+
+A Entrega 3 introduziu novas capacidades ao sistema, com foco em integração externa e multimídia avançada. Todos os itens listados abaixo foram especificados como parte da terceira entrega:
+
+- Busca de músicas no Spotify utilizando nome da música ou artista
+- Retorno de lista de resultados (mock) para seleção de faixa
+- Persistência do objeto musical na memória
+- Edição e substituição da música associada à memória
+- Upload de vídeos curtos (até 30 segundos)
+- Validação automática da duração do vídeo
+- Associação do vídeo à memória
+- Remoção de vídeos previamente anexados
+
+Essas funcionalidades ampliaram o escopo do sistema, permitindo que cada memória passe a contar não apenas com texto e imagem, mas também com música e vídeo.
+
+---
+
+### **Integração Entre Entrega 2 e Entrega 3**
+
+As funcionalidades da Entrega 3 foram integradas ao fluxo definido na Entrega 2 sem comprometer os componentes já existentes. A interface de criação e edição de memórias foi estendida para incluir:
+
+- Campo de busca por músicas  
+- Lista de resultados provenientes do mock de integração Spotify  
+- Campo de upload de vídeo com validação interna  
+- Controle de multimídia persistente (música e vídeo)
+
+No backend, o sistema foi atualizado para:
+
+- Validar e armazenar novos tipos de conteúdo associados à memória  
+- Atender aos novos endpoints de música e vídeo  
+- Manter a compatibilidade com as operações CRUD já existentes  
+- Garantir integridade dos dados durante criação, edição e exclusão  
+
+Os testes automatizados e manuais confirmaram que:
+
+- As funcionalidades da Entrega 2 permanecem estáveis  
+- As novas funcionalidades da Entrega 3 foram integradas corretamente  
+- Os fluxos combinados (autenticação → criação → multimídia → edição → exclusão) operam de modo consistente  
+
+Assim, a versão final do Memory Book representa a consolidação das duas etapas de desenvolvimento, compondo um sistema robusto, extensível e funcional.
+
+---
