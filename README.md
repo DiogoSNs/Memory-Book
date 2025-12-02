@@ -1,9 +1,8 @@
 # Meu Projeto
 
 ## Sumário
-- [Cenários de Teste Sistema Final](#Cenários-de-Teste-Sistema-Final)
-- [Cenários de testes das funcionalidades entregues no T2 ](#cenários-de-teste-t2)
-- [Cenários de testes das funcionalidades entregues no T3](#cenários-de-teste-t3)
+- [Cenários de testes das funcionalidades entregues no T2 ](#cenários-de-teste)
+- [Instalação](#2-cenários-funcionais)
 - [Funcionalidades](#funcionalidades)
 - [Testes](#testes)
 - [API](#api)
@@ -11,9 +10,8 @@
 ---
 
 
-# Cenários de Teste Sistema Final
 
-## Cenários de Teste T2
+# Cenários de Teste
 
 ## 1 Funcionalidades
 
@@ -24,54 +22,52 @@ Como um usuário autenticado
 Eu quero criar uma nova memória vinculada a uma localização no mapa  
 De modo que eu possa armazenar recordações com fotos, textos e música associadas ao local onde ocorreram
 
-### 1.2 Necessidade 2 - Visualizar memórias existentes
+### 1.1 Necessidade 2 - Visualizar memórias existentes
 Como um usuário autenticado  
 Eu quero visualizar todas as minhas memórias diretamente no mapa  
 De modo que eu possa acessar rapidamente informações e fotos associadas a cada ponto geográfico
 
-### 1.3 Necessidade 3 - Editar memórias
+### 1.1 Necessidade 3 - Editar memórias
 Como um usuário autenticado  
 Eu quero editar o texto, imagem, localização e cor de uma memória  
 De modo que eu possa atualizar ou corrigir informações conforme necessário
 
-### 1.4 Necessidade 4 - Excluir memórias
+### 1.1 Necessidade 4 - Excluir memórias
 Como um usuário autenticado  
 Eu quero excluir uma memória  
 De modo que eu remova conteúdos que não são mais relevantes
 
-### 1.5 Necessidade 5 - Aplicar temas
+### 1.1 Necessidade 5 - Aplicar temas
 Como um usuário autenticado  
 Eu quero escolher um tema visual (Aurora, Ocean, Sunset, Forest, Cosmic)  
 De modo que a interface apresente uma identidade visual personalizada
 
-### 1.6 Necessidade 6 - Criar conta (registro)
+### 1.1 Necessidade 6 - Criar conta (registro)
 Como um usuário não autenticado  
 Eu quero criar uma nova conta informando meus dados de registro  
 De modo que eu possa acessar o Memory Book com um perfil próprio e seguro
 
-### 1.7 Necessidade 7 - Fazer login
+### 1.1 Necessidade 7 - Fazer login
 Como um usuário não autenticado  
 Eu quero acessar minha conta por meio de e-mail e senha  
 De modo que eu possa utilizar todas as funcionalidades do Memory Book
 
-### 1.8 Necessidade 8 - Fazer logout
+### 1.1 Necessidade 8 - Fazer logout
 Como um usuário autenticado  
 Eu quero encerrar minha sessão no sistema  
 De modo que eu garanta a segurança da minha conta e volte ao estado de usuário não autenticado
 
-### 1.9 Necessidade 9 - Utilizar o mapa interativo
+### 1.1 Necessidade 9 - Utilizar o mapa interativo
 Como um usuário autenticado  
 Eu quero navegar e selecionar pontos no mapa  
 De modo que eu possa registrar a memória no local exato onde ocorreu
 
-## Cenários de Teste T3
-
-### 1.10 Necessidade 10 - Buscar músicas no Spotify
+### 1.1 Necessidade 10 - Buscar músicas no Spotify (ENTREGA 3)
 Como um usuário autenticado  
 Eu quero buscar uma música digitando seu nome ou artista dentro da memória  
 De modo que eu possa selecionar uma faixa diretamente da lista de resultados sem precisar copiar links externos e tê-la associada a memória
 
-### 1.11 Necessidade 11 - Adicionar vídeos curtos à memória
+### 1.1 Necessidade 11 - Adicionar vídeos curtos à memória (ENTREGA 3)
 Como um usuário autenticado  
 Eu quero enviar um vídeo curto (até 30 segundos) ao criar ou editar uma memória  
 De modo que minhas recordações incluam registros audiovisuais rápidos do momento
@@ -509,22 +505,22 @@ Com o limite ativo, o viewport permanece dentro de uma área válida, impedindo 
 
 ```jsx
 <MapContainer
-  center={[-23.5505, -46.6333]}
-  zoom={4}
-  minZoom={3}            // CORREÇÃO: limita o zoom out mínimo para evitar extrapolar o mapa
-  maxBounds={[[-85, -180], [85, 180]]} // CORREÇÃO: define limites globais do mundo, impedindo arrastar além
-  maxBoundsViscosity={1.0} // CORREÇÃO: viscosidade máxima para manter o mapa firmemente dentro dos limites
-  worldCopyJump={false}  // CORREÇÃO: desativa cópia de world tiles, reduzindo artefatos nas bordas
-  style={{ height: '100vh', width: '100%', background: '#1a1a1a' }}
-  ref={mapRef}
+center={[-23.5505, -46.6333]}
+zoom={4}
+minZoom={3}            // CORREÇÃO: limita o zoom out mínimo para evitar extrapolar o mapa
+maxBounds={[[-85, -180], [85, 180]]} // CORREÇÃO: define limites globais do mundo, impedindo arrastar além
+maxBoundsViscosity={1.0} // CORREÇÃO: viscosidade máxima para manter o mapa firmemente dentro dos limites
+worldCopyJump={false}  // CORREÇÃO: desativa cópia de world tiles, reduzindo artefatos nas bordas
+style={{ height: '100vh', width: '100%', background: '#1a1a1a' }}
+ref={mapRef}
 >
-  <TileLayer
-    attribution={getCurrentMapThemeData().attribution}
-    url={getCurrentMapThemeData().url}
-    bounds={[[-90, -180], [90, 180]]} // CORREÇÃO: informa limites ao provedor de tiles
-    noWrap={true} //evita repetição horizontal infinita do mundo
-    maxNativeZoom={getCurrentMapThemeData().maxNativeZoom}
-  />
+<TileLayer
+attribution={getCurrentMapThemeData().attribution}
+url={getCurrentMapThemeData().url}
+bounds={[[-90, -180], [90, 180]]} // CORREÇÃO: informa limites ao provedor de tiles
+noWrap={true} //evita repetição horizontal infinita do mundo
+maxNativeZoom={getCurrentMapThemeData().maxNativeZoom}
+/>
 </MapContainer>
 ```
 
@@ -556,22 +552,22 @@ Para sincronizar a interface quando dados importantes mudam (como login/logout),
 2. **AuthSubject processa login** → Atualiza estado interno via `setPartial(...)`
 3. **AuthSubject chama `notify()`** → Dispara atualização para TODOS os observers inscritos
 4. **Observadores reagem manualmente:**
-   - **GradientContext** → observa autenticação e sincroniza gradiente do usuário
-   - **MapThemeContext** → observa autenticação e sincroniza tema do mapa
-   - **App (conteúdo)** → observa `showWelcome` para exibir/fechar boas-vindas
-   - **PrivateRoute** → observa `user/isLoading` para proteger rotas
-   - **ProfileModal** → observa `user` e dispara `logout()` no Subject
-   - **MemoryController** → observa `isAuthenticated` para carregar/limpar memórias
+- **GradientContext** → observa autenticação e sincroniza gradiente do usuário
+- **MapThemeContext** → observa autenticação e sincroniza tema do mapa
+- **App (conteúdo)** → observa `showWelcome` para exibir/fechar boas-vindas
+- **PrivateRoute** → observa `user/isLoading` para proteger rotas
+- **ProfileModal** → observa `user` e dispara `logout()` no Subject
+- **MemoryController** → observa `isAuthenticated` para carregar/limpar memórias
 
 #### Diagrama do Padrão Observer (Explícito):
 
 ```
-                         AuthSubject (Subject manual)
-                                      |     
-                                      | notify(snapshot)
-                                      |
-         ┌───────────────────┬───────────────────┬───────────────────┬───────────────────┐
-         ↓                   ↓                   ↓                   ↓                   ↓
+                        AuthSubject (Subject manual)
+                                     |     
+                                     | notify(snapshot)
+                                     |
+        ┌───────────────────┬───────────────────┬───────────────────┬───────────────────┐
+        ↓                   ↓                   ↓                   ↓                   ↓
 ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
 │  GradientContext│ │ MapThemeContext │ │    PrivateRoute │ │   App (Welcome) │ │ MemoryController│
 │   (Observer)    │ │   (Observer)    │ │   (Observer)    │ │   (Observer)    │ │   (Observer)    │
@@ -592,23 +588,23 @@ Para sincronizar a interface quando dados importantes mudam (como login/logout),
 #### 🔩 Como implementamos o Subject manual
 
 - **Classe `AuthSubject`** com lista de observers (`Set`), estado interno e métodos:
-  - `subscribe(observer)` → registra o callback e retorna `unsubscribe`
-  - `unsubscribe(observer)` → remove o callback
-  - `notify()` → chama cada observer com o snapshot atual
-  - `setPartial(partial)` → atualiza estado e chama `notify()`
+- `subscribe(observer)` → registra o callback e retorna `unsubscribe`
+- `unsubscribe(observer)` → remove o callback
+- `notify()` → chama cada observer com o snapshot atual
+- `setPartial(partial)` → atualiza estado e chama `notify()`
 
 - **Referência no código:**
-  - `frontend/src/contexts/AuthContext.jsx:16–51` (estrutura do Subject)
-  - `frontend/src/contexts/AuthContext.jsx:58–80` (check inicial)
-  - `frontend/src/contexts/AuthContext.jsx:81–142` (login)
-  - `frontend/src/contexts/AuthContext.jsx:144–187` (register)
-  - `frontend/src/contexts/AuthContext.jsx:189–198` (logout)
-  - `frontend/src/contexts/AuthContext.jsx:200–215` (updateUser)
-  - `frontend/src/contexts/AuthContext.jsx:217–224` (closeWelcome)
+- `frontend/src/contexts/AuthContext.jsx:16–51` (estrutura do Subject)
+- `frontend/src/contexts/AuthContext.jsx:58–80` (check inicial)
+- `frontend/src/contexts/AuthContext.jsx:81–142` (login)
+- `frontend/src/contexts/AuthContext.jsx:144–187` (register)
+- `frontend/src/contexts/AuthContext.jsx:189–198` (logout)
+- `frontend/src/contexts/AuthContext.jsx:200–215` (updateUser)
+- `frontend/src/contexts/AuthContext.jsx:217–224` (closeWelcome)
 
 - **Onde o `notify()` acontece:** é invocado sempre que `setPartial(...)` é chamado, ver `frontend/src/contexts/AuthContext.jsx:59–62`
 
-  ---
+---
 
 # Teste e desenvolvimento de novas funcionalidades:
 
