@@ -168,3 +168,183 @@ Para sincronizar a interface quando dados importantes mudam (como login/logout),
   - `frontend/src/contexts/AuthContext.jsx:217–224` (closeWelcome)
 
 - **Onde o `notify()` acontece:** é invocado sempre que `setPartial(...)` é chamado, ver `frontend/src/contexts/AuthContext.jsx:59–62`
+
+---
+
+# Teste e desenvolvimento de novas funcionalidades:
+
+# Vídeo nas Memórias
+
+## O que mudou
+Adicionamos suporte de upload de vídeo ao backend com validação de duração (máx. 30s), sanitização de nome e retorno de metadados. Compatibilizamos o armazenamento com fotos e a API de memórias continua estável para o frontend.
+
+## Lógica Antiga vs. Nova
+
+### Antes
+Apenas fotos eram suportadas; validação de vídeo existia duplicada e não era integrada ao fluxo de upload.
+
+### Agora
+- Upload via POST `/api/media/upload` (multipart file) valida duração com MoviePy e retorna `media_type`, `path` e opcionalmente `file_url`.
+- Validação centralizada em `backend/src/utils/validators.py:201–216` (remove duplicidade de `media_manager`).
+- Nome de arquivo sanitizado; por padrão mantemos o nome original no retorno para compatibilidade de testes e clientes.
+- Quando `user_id` e `memory_id` são passados na query, arquivos são organizados em `instance/uploads/user_{id}/memory_{id}/videos|photos`.
+- O modelo Memory serializa fotos e vídeos separados com detecção robusta (por data URL, extensão ou diretório).
+
+## Por que é melhor
+- **Segurança e robustez**: sanitização de nomes e validação de duração fail-fast evitam arquivos indevidos e estados inválidos.
+- **Coesão**: uma única função de validação para vídeos reduz manutenção e risco de divergência.
+- **Governança**: estrutura opcional por usuário/memória facilita auditoria e limpeza sem quebrar clientes existentes.
+
+---
+
+# Busca de Música (Spotify)
+
+## O que mudou
+Integração com a API do Spotify centralizada em `SpotifyClient` com cache de token e `requests.Session()`; controller usa um wrapper `_search_spotify_api` para desacoplar a busca e facilitar testes.
+
+## Lógica Antiga vs. Nova
+
+### Antes
+Token em variáveis globais, chamadas com `urllib`, erros silenciosos retornavam `[]` e lógica espalhada no controller.
+
+### Agora
+- Cliente dedicado em `backend/src/utils/spotify_client.py` gerencia o token (Client Credentials) e realiza buscas com timeouts e `raise_for_status()`.
+- Controller chama `_search_spotify_api(query, limit)` que delega ao cliente, registra erros e mantém fallback de catálogo local quando não há credenciais (`SPOTIFY_CLIENT_ID/SECRET`).
+- O wrapper `_search_spotify_api` é "mockável" e mantém compatibilidade com testes.
+
+## Por que é melhor
+- **Desacoplamento e coesão**: controller orquestra, cliente encapsula transporte e autenticação.
+- **Observabilidade e fail-fast**: logs estruturados, timeouts e tratamento explícito de erros evitam falhas silenciosas.
+- **Testabilidade**: wrapper permite monkeypatch nos testes sem abrir mão do novo design.
+
+---
+
+# Refatoração de Novas Funcionalidades
+
+## Integração Spotify
+
+### O que mudou
+- Cliente Spotify centralizado em `src/utils/spotify_client.py` com `requests.Session()`, cache interno de token e timeouts.
+- Controller ajustado para usar o cliente, removendo globais e `urllib`.
+- Logs estruturados para erros na busca.
+
+### Lógica Antiga vs. Nova
+
+**Antes:**
+Token em globais de módulo (`_SPOTIFY_TOKEN`) e chamadas com `urllib` e `base64`; erros silenciosos devolviam `[]` sem logging (`backend/src/controllers/spotify_controller.py:81–116`, `117–153`).
+
+**Agora:**
+Classe `SpotifyClient` gerencia token com expiração e busca via sessão HTTP (`backend/src/utils/spotify_client.py`), controller instancia um cliente e usa `client.search_tracks`, com `logger.error('spotify_search_error', extra={...})` em falhas (`backend/src/controllers/spotify_controller.py:16–22`, `33–41`).
+
+### Por que é melhor
+- **Desacoplamento**: reduz acoplamento entre controller e detalhes HTTP; aumenta coesão do módulo utilitário.
+- **Fail-fast e observabilidade**: timeouts e `raise_for_status()` + logs estruturados evitam erros silenciosos.
+- **Manutenibilidade e testabilidade**: cliente pode ser mockado; remove estado global compartilhado, diminuindo risco de race conditions em ambientes multi-thread/processo.
+
+---
+
+## Sistema de Upload
+
+### O que mudou
+- Consolidação de validação de duração de vídeo em `src/utils/validators.py`.
+- Geração de nomes de arquivo únicos e sanitizados no controller.
+- Suporte opcional a estrutura por usuário/memória (`user_X/memory_Y`) e logs de upload.
+
+### Lógica Antiga vs. Nova
+
+**Antes:**
+`validate_video_duration` duplicada em dois módulos (`backend/src/utils/validators.py:201–216` e `backend/src/utils/media_manager.py:41–55`); gravação em `static/uploads/{photos|videos}` com nome original (`backend/src/controllers/media_controller.py:17–21`, `44–57`); sem logs.
+
+**Agora:**
+Validação única em `validators.py`; nomes com `generate_unique_filename` + `sanitize_filename` (`backend/src/controllers/media_controller.py:17–24`); quando `user_id` e `memory_id` são fornecidos, usa `build_memory_dirs` para segmentar armazenamento (`backend/src/controllers/media_controller.py:44–55`); logs `logger.info('media_upload', extra={...})`.
+
+### Por que é melhor
+- **Segurança e robustez**: sanitização reduz risco de path traversal e colisões; nomes únicos evitam sobrescrita acidental.
+- **Coesão**: uma única fonte de verdade para validação de vídeo; elimina duplicidade e divergência.
+- **Governança de dados**: estrutura por usuário/memória facilita auditoria, exclusão e migrações futuras.
+
+---
+
+## Módulo de Música
+
+### O que mudou
+- Validação explícita do campo `music` no POST e PUT de memórias.
+- Centralização de serialização do modelo Memory com detecção robusta de mídia (foto vs. vídeo).
+
+### Lógica Antiga vs. Nova
+
+**Antes:**
+`music` passava sem validação tipada; `to_dict` separava vídeos apenas quando eram data URLs `data:video/` (`backend/src/models/memory.py:132–138`) e convertia camelCase/snake_case localmente (`backend/src/models/memory.py:124–127`).
+
+**Agora:**
+`validate_music` verifica chaves (`id/spotify_id`, `title/name`, tipos de `artists`, `startTime`, `duration`) (`backend/src/utils/validators.py:201+`); `Memory.to_dict` delega para `serialize_memory_dict`, que separa vídeos por prefixo, extensão (`mp4`, `mov`…) e diretório (`/videos/`) e mapeia campos de forma centralizada (`backend/src/utils/helpers.py:220+`, `backend/src/models/memory.py:115–121`).
+
+### Por que é melhor
+- **Fail-fast**: validação no início previne estados inválidos e erros downstream.
+- **Coesão e consistência**: serialização padronizada; reduz lógica de apresentação dentro do modelo e melhora compatibilidade com o frontend.
+- **Confiabilidade**: detecção de mídia mais completa evita erros em cenários de uploads por caminho.
+
+---
+
+# Refatoração Geral do Projeto
+
+## Correção do ThemeController
+
+### O que mudou
+Corrigido bug crítico no `update_theme` para passar a instância `Theme` ao repositório (`backend/src/controllers/theme_controller.py:127`).
+
+### Lógica Antiga vs. Nova
+
+**Antes:**
+`theme_repo.update(theme.id, **update_data)`, passando `id` onde se esperava a instância.
+
+**Agora:**
+`theme_repo.update(theme, **update_data)`, alinhado com assinatura do repositório.
+
+### Por que é melhor
+- **Estabilidade**: elimina `TypeError`/comportamentos inesperados ao atualizar tema.
+- **Consistência**: segue o padrão usado nos repositórios (coesão da API de atualização).
+- **Manutenibilidade**: reduz dívida técnica e fragilidade em operações sobre entidades.
+
+---
+
+## Testes Automatizados (QA)
+
+### O que mudou
+`backend/test_api.py` refatorado para fluxo dinâmico: Registro → Login com credenciais do registro → Operações autenticadas (CRUD de memória) com asserts claros.
+
+Remoção de login hardcoded e verificações explícitas de status code e payload em cada etapa.
+
+### Lógica Antiga vs. Nova
+
+**Antes:**
+`register` gerava email dinâmico, mas `login` usava credenciais fixas (`teste@memorybook.com`), causando falha de autenticação; execução terminava precocemente.
+
+**Agora:**
+`test_register()` retorna `{email, password, user, token}`; `test_login(credentials)` usa o email/senha criados; `test_me(token)` e `test_memory_crud(token)` validam status code e campos (`access_token`, `user`, `memory.id`) e fazem update/delete da memória criada.
+
+### Por que é melhor
+- **Confiabilidade**: elimina falso-negativo por desconexão de dados; o teste reflete o fluxo real do sistema.
+- **Fail-fast e clareza**: asserts em cada requisição com mensagens informativas; facilita diagnóstico de falhas.
+- **Coesão do QA**: um único script cobre ciclo de vida completo, aumentando cobertura e detectando regressões funcionais.
+
+---
+
+## Padronização de Validadores
+
+### O que mudou
+- Consolidação de `validate_video_duration` em `validators.py`.
+- Inclusão de `validate_music` para o payload de memórias.
+
+### Lógica Antiga vs. Nova
+
+**Antes:**
+Duplicidade de validação de vídeo (`validators.py` e `media_manager.py`); sem verificação tipada de `music`.
+
+**Agora:**
+`media_manager` delega a `validators.py` e controllers usam validação de `music` antes de persistir/atualizar (`backend/src/controllers/memory_controller.py:96–104`, `169–176`).
+
+### Por que é melhor
+- **Baixo acoplamento**: `media_manager` e controllers dependem de um ponto único de validação; facilita testes e evolução.
+- **Fail-fast**: dados inválidos são rejeitados cedo com mensagens claras, evitando inconsistências no banco.
+- **Prevenção de erros**: reduz divergências e minimiza risco de erros por duplicidade.
