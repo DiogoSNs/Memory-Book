@@ -1,21 +1,11 @@
-# Meu Projeto
-
-## Sumário
-- [Cenários de testes das funcionalidades entregues no T2 ](#cenários-de-teste)
-- [Instalação](#2-cenários-funcionais)
-- [Funcionalidades](#funcionalidades)
-- [Testes](#testes)
-- [API](#api)
-
----
-
-
 
 # Cenários de Teste
 
 ## 1 Funcionalidades
 
 O sistema Memory Book permite que usuários registrem, organizem e visualizem memórias associadas a locais em um mapa interativo. As funcionalidades envolvem criação de memórias, manipulação de conteúdos multimídia, personalização visual por temas e integração com serviços externos, tudo isso garantindo usabilidade, consistência e segurança.
+
+## Funcionalidades T2:
 
 ### 1.1 Necessidade 1 - Registrar memórias no mapa
 Como um usuário autenticado  
@@ -62,12 +52,14 @@ Como um usuário autenticado
 Eu quero navegar e selecionar pontos no mapa  
 De modo que eu possa registrar a memória no local exato onde ocorreu
 
-### 1.1 Necessidade 10 - Buscar músicas no Spotify (ENTREGA 3)
+## Funcionalidades T3:
+
+### 1.1 Necessidade 10 - Buscar músicas no Spotify
 Como um usuário autenticado  
 Eu quero buscar uma música digitando seu nome ou artista dentro da memória  
 De modo que eu possa selecionar uma faixa diretamente da lista de resultados sem precisar copiar links externos e tê-la associada a memória
 
-### 1.1 Necessidade 11 - Adicionar vídeos curtos à memória (ENTREGA 3)
+### 1.1 Necessidade 11 - Adicionar vídeos curtos à memória
 Como um usuário autenticado  
 Eu quero enviar um vídeo curto (até 30 segundos) ao criar ou editar uma memória  
 De modo que minhas recordações incluam registros audiovisuais rápidos do momento
@@ -79,6 +71,8 @@ De modo que minhas recordações incluam registros audiovisuais rápidos do mome
 Nesta seção são apresentados os cenários funcionais derivados diretamente das onze necessidades identificadas para o sistema Memory Book. Cada cenário descreve, de forma estruturada e objetiva, como o sistema deve se comportar diante de ações típicas do usuário, cobrindo desde operações essenciais como registrar, visualizar, editar e excluir memórias até funcionalidades de suporte, como autenticação, personalização por temas e interação com o mapa.
 
 Os cenários foram organizados por funcionalidade principal, seguindo a sequência lógica estabelecida nas necessidades: primeiro as operações relacionadas às memórias, depois os mecanismos de personalização e, por fim, o fluxo de autenticação do usuário. Cada caso está descrito no formato Dado – Quando – Então, permitindo fácil reprodutibilidade, clareza nos requisitos validados e associação direta com os testes realizados posteriormente.
+
+## 2 Cenários Funcionais T2:
 
 ### 2.1 Registrar memórias no mapa
 
@@ -172,7 +166,9 @@ Dado que o usuário está autenticado
 Quando usar zoom e arrastar o mapa  
 Então o sistema deve ajustar a visualização sem perda de marcadores
 
-### 2.10 Buscar músicas no Spotify (ENTREGA 3)
+## 2 Cenários Funcionais T3:
+
+### 2.10 Buscar músicas no Spotify
 
 Cenário 13: Pesquisar música digitando nome ou artista  
 Dado que o usuário está autenticado  
@@ -180,7 +176,7 @@ Quando digitar o nome da música ou do artista no campo de busca dentro da cria�
 Então o sistema deve exibir uma lista de resultados correspondentes obtidos via integração com o Spotify  
 E permitir que o usuário selecione uma faixa da lista para vinculá-la à memória
 
-### 2.11 Adicionar vídeos curtos à memória (ENTREGA 3)
+### 2.11 Adicionar vídeos curtos à memória
 
 Cenário 14: Enviar vídeo curto de até 30 segundos  
 Dado que o usuário está autenticado  
@@ -196,6 +192,8 @@ E associá-lo à memória sem comprometer o restante do processo de criação ou
 Nesta seção são definidos os cenários de desempenho que avaliam a eficiência, capacidade de resposta e estabilidade do sistema Memory Book sob diferentes condições. Os cenários refletem operações críticas observadas nos testes funcionais como por exemplo criação, visualização, edição e exclusão de memórias mas agora analisadas sob a perspectiva de performance, escalabilidade e impacto no usuário.
 
 Os testes aqui descritos permitem identificar gargalos, prever comportamentos em situações de estresse e estabelecer métricas mínimas de qualidade para as funcionalidades essenciais do sistema.
+
+## 3 Cenários de Desempenho T2:
 
 ### 3.1 Registro, Login e Logout
 
@@ -245,7 +243,9 @@ Dado que não há token no header
 Quando consulta a lista  
 Então o sistema retorna 401 rapidamente
 
-### 3.4 Busca de Música (Spotify) - Entrega 3
+## 3 Cenários de Desempenho T3:
+
+### 3.4 Busca de Música (Spotify)
 
 Cenário 8: Spotify (função de acesso com mock)  
 Descrição do Cenário: Função de acesso ao Spotify (mock) com estrutura mínima.  
@@ -259,7 +259,7 @@ Dado que há um termo de busca
 Quando consulta /api/spotify/search?q=Imagine  
 Então a API retorna lista de resultados rapidamente
 
-### 3.5 Upload de Vídeos - Entrega 3
+### 3.5 Upload de Vídeos
 
 Cenário 10: Vídeo (upload válido ≤ 30s)  
 Descrição do Cenário: Upload de vídeo válido até 30 segundos.  
@@ -281,9 +281,7 @@ Então o sistema retorna 400 com mensagem adequada
 
 O escopo das atividades de Verificação e Validação considerou todas as funcionalidades atualmente implementadas no Memory Book, abrangendo o fluxo de autenticação (registro, login e logout), as operações de criação, visualização, edição e exclusão de memórias, bem como a navegação no mapa interativo.
 
-Foram realizados testes manuais cobrindo os itens D.1 a D.5, com foco em validar o comportamento funcional, a integridade das interfaces, a consistência dos dados e a estabilidade da aplicação durante o uso contínuo. As funcionalidades principais mostraram funcionamento adequado, permitindo ao usuário autenticar-se, registrar memórias geolocalizadas, visualizar seus marcadores no mapa, editar detalhes e removê-los quando necessário.
-
-Alguns parâmetros de desempenho e cenários de carga ainda dependem de testes automatizados — tais como tempo médio de carregamento de memórias, latência de requisições e simulação de múltiplos usuários. No entanto, os testes manuais confirmaram a conformidade funcional do sistema de acordo com os requisitos atuais.
+Foram realizados teste cobrindo Tabela 1 - Tabela 5, com foco em validar o comportamento funcional, a integridade das interfaces, a consistência dos dados e a estabilidade da aplicação durante o uso contínuo. As funcionalidades principais mostraram funcionamento adequado, permitindo ao usuário autenticar-se, registrar memórias geolocalizadas, visualizar seus marcadores no mapa, editar detalhes e removê-los quando necessário.
 
 ---
 
