@@ -404,7 +404,7 @@ Alguns aspectos de desempenho ainda dependem de medições adicionais, especialm
 |-------------|------------|----------------|--------|
 | Alta        | 0          | 0              | 0      |
 | Média       | 0          | 0              | 0      |
-| Baixa       | 0          | 0              | 1      |
+| Baixa       | 0          | 0              | 0      |
 
 ---
 
