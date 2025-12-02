@@ -2,7 +2,7 @@
 
 ## Sumário
 - [Cenários de testes das funcionalidades entregues no T2 ](##cenários-de-teste-t2)
-- [Cenários de testes das funcionalidades entregues no T3](##cenários-de-teste-t3)
+- [Cenários de testes das funcionalidades entregues no T3](#cenários-de-teste-t3)
 - [Funcionalidades](#funcionalidades)
 - [Testes](#testes)
 - [API](#api)
