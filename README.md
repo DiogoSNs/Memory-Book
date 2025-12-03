@@ -336,7 +336,7 @@ Foram realizados testes cobrindo as Tabela 1 - Tabela 5, com foco em validar o c
 
 ---
 
-# Tabela 3: Teste de Regressão (Alberto)
+# Tabela 3: Teste de Regressão (Diogo)
 
 | Funcionalidade | Módulo | Demandas |
 |---------------|--------|----------|
