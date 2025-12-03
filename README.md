@@ -5,8 +5,8 @@
 - [Relatório de Testes dos Trabalhos 2 e 3](#Relatório-de-Consolidação-de-Teste)
 - [Testes Automatizados dos Trabalhos 2 e 3](#Testes-Automatizados)
 - [Correção de Bugs Trabalho 2](#Correção-de-Bugs-T2)
-- [Refatoração do Trabalho 2](#Refatoração-T2)
-- [Teste e desenvolvimento de novas funcionalidades](#Teste-e-desenvolvimento-de-novas-funcionalidades)
+- [Refatoração do Trabalho 2 (TDD DIOGO)](#Refatoração-T2)
+- [Teste e desenvolvimento de novas funcionalidades (TDD ALBERTO E GUILHERME)](#Teste-e-desenvolvimento-de-novas-funcionalidades)
 - [Refatoração de Novas Funcionalidades](#Refatoração-de-Novas-Funcionalidades)
 - [Integração das Funcionalidades do Trabalho 2 e Trabalho 3](#INTEGRAÇÃO)
 - [Slides](./Apresentação%20-%20Eng%20de%20Software%20-%203.pdf)
@@ -355,13 +355,13 @@ Foram realizados testes cobrindo as Tabela 1 - Tabela 5, com foco em validar o c
 
 | Funcionalidade | Módulo | Demandas |
 |---------------|--------|----------|
-| Carregamento inicial | Mapa Interativo | Medir tempo de carregamento inicial do mapa |
+| Carregamento inicial | Mapa Interativo | Medir tempo de carregamento inicial do mapa — teste não realizado** |
 | Listagem de memórias | Backend | Medir tempo médio de resposta ao listar memórias — ok (via testes automatizados) |
-| Upload de imagens | Backend | Medir tempo de upload de imagens |
+| Upload de imagens | Backend | Medir tempo de upload de imagens — teste não realizado** |
 | Validação Spotify | Spotify | Medir latência na busca de músicas — ok (mock e real) |
 | Navegação no mapa | Frontend | Testar fluidez com zoom/arraste intensos — estável |
 | Análise de gargalos | Sistema Completo | Identificar gargalos internos — *inconclusivo* |
-| Exportação PDF | Exportador PDF | Medir tempo de exportação de PDF |
+| Exportação PDF | Exportador PDF | Medir tempo de exportação de PDF — teste não realizado** |
 | Upload de vídeos | Mídia | Validar rapidez no envio de vídeos curtos — ok |
 
 ---
@@ -371,12 +371,14 @@ Foram realizados testes cobrindo as Tabela 1 - Tabela 5, com foco em validar o c
 | Funcionalidade | Módulo | Demandas |
 |---------------|--------|----------|
 | Objetivo geral do sistema | Sistema Completo | Confirmar que o Memory Book registra memórias geolocalizadas com multimídia |
-| Interface e usabilidade | Frontend | Avaliar se a interface é intuitiva e responsiva |
+| Interface e usabilidade | Frontend | Avaliar se a interface é intuitiva e responsiva — teste não realizado** |
 | Fluxo principal | Sistema Completo | Criar → visualizar → editar → exportar memória — funcionando |
-| Estabilidade | Sistema Completo | Confirmar estabilidade do sistema em sessões longas |
-| Teste de temas | Preferências | Avaliar temas e impacto visual na experiência |
-| Satisfação do usuário | Sistema Completo | Métricas de satisfação do usuário |
+| Estabilidade | Sistema Completo | Confirmar estabilidade do sistema em sessões longas — teste não realizado** |
+| Teste de temas | Preferências | Avaliar temas e impacto visual na experiência — teste não realizado** |
+| Satisfação do usuário | Sistema Completo | Métricas de satisfação do usuário — teste não realizado** |
 | Uso sob carga | Sistema Completo | Avaliar comportamento sob alta demanda — *inconclusivo* |
+
+**Devido a natureza extensa do trabalho nem tudo que foi descrito no cenário de teste foi possível de ser testado
 
 # Resultados Obtidos
 
@@ -533,7 +535,8 @@ maxNativeZoom={getCurrentMapThemeData().maxNativeZoom}
 
 ---
 
-# Refatoração T2:
+# Refatoração T2
+## TDD - DIOGO
 
 ## Padrão de Projeto Implementado: Observer (Explícito)
 
@@ -631,7 +634,7 @@ Corrigido bug crítico no `update_theme` para passar a instância `Theme` ao rep
 
 # Teste e desenvolvimento de novas funcionalidades:
 
-# Vídeo nas Memórias
+# Vídeo nas Memórias (TDD ALBERTO)
 
 ## O que mudou
 Adicionamos suporte de upload de vídeo ao backend com validação de duração (máx. 30s), sanitização de nome e retorno de metadados. Compatibilizamos o armazenamento com fotos e a API de memórias continua estável para o frontend.
@@ -653,7 +656,7 @@ Apenas fotos eram suportadas; validação de vídeo existia duplicada e não era
 - **Coesão**: uma única função de validação para vídeos reduz manutenção e risco de divergência.
 - **Governança**: estrutura opcional por usuário/memória facilita auditoria e limpeza sem quebrar clientes existentes.
 
-# Busca de Música (Spotify)
+# Busca de Música (Spotify) (TDD GUILHERME)
 
 ## O que mudou
 Integração com a API do Spotify centralizada em `SpotifyClient` com cache de token e `requests.Session()`; controller usa um wrapper `_search_spotify_api` para desacoplar a busca e facilitar testes.
