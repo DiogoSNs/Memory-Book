@@ -2,7 +2,7 @@
 
 ## Sumário
 - [Cenários de Testes dos Trabalho 2 e 3](#Cenários-de-Teste-T2-e-T3)
-- [Relatório dos Testes dos Trabalhos 2 e 3](#Relatório-de-Consolidação-de-Teste)
+- [Relatório de Testes dos Trabalhos 2 e 3](#Relatório-de-Consolidação-de-Teste)
 - [Testes Automatizados dos Trabalhos 2 e 3](#Testes-Automatizados)
 - [Correção de Bugs Trabalho 2](#Correção-de-Bugs-T2)
 - [Refatoração do Trabalho 2](#Refatoração-T2)
