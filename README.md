@@ -603,7 +603,7 @@ Para sincronizar a interface quando dados importantes mudam (como login/logout),
 - `notify()` → chama cada observer com o snapshot atual
 - `setPartial(partial)` → atualiza estado e chama `notify()`
 
-- **Referência no código:**
+ **Referência no código:**
 - `frontend/src/contexts/AuthContext.jsx:16–51` (estrutura do Subject)
 - `frontend/src/contexts/AuthContext.jsx:58–80` (check inicial)
 - `frontend/src/contexts/AuthContext.jsx:81–142` (login)
