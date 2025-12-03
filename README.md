@@ -9,12 +9,13 @@
 - [Teste e desenvolvimento de novas funcionalidades](#Teste-e-desenvolvimento-de-novas-funcionalidades)
 - [Refatoração de Novas Funcionalidades](#Refatoração-de-Novas-Funcionalidades)
 - [Integração das Funcionalidades do Trabalho 2 e Trabalho 3](#INTEGRAÇÃO)
+- [Vídeo demonstrando o funcionamento da aplicação ](#Link-do-Video)
 
 ---
 
 # Cenários de Teste T2 e T3
 
-## 1 Funcionalidades
+## 1 Funcionalidades (Alberto)
 
 O sistema Memory Book permite que usuários registrem, organizem e visualizem memórias associadas a locais em um mapa interativo. As funcionalidades envolvem criação de memórias, manipulação de conteúdos multimídia, personalização visual por temas e integração com serviços externos, tudo isso garantindo usabilidade, consistência e segurança.
 
@@ -77,7 +78,7 @@ Como um usuário autenticado
 Eu quero enviar um vídeo curto (até 30 segundos) ao criar ou editar uma memória  
 De modo que minhas recordações incluam registros audiovisuais rápidos do momento
 
-## 2 Cenários Funcionais
+## 2 Cenários Funcionais (Diogo)
 
 Nesta seção são apresentados os cenários funcionais derivados diretamente das necessidades identificadas para o sistema Memory Book. Cada cenário descreve, de forma estruturada e objetiva, como o sistema deve se comportar diante de ações típicas do usuário, cobrindo desde operações essenciais como registrar, visualizar, editar e excluir memórias até funcionalidades de suporte, como autenticação, personalização por temas e interação com o mapa.
 
@@ -196,7 +197,7 @@ Então o sistema deve validar que o vídeo possui até 30 segundos
 E deve fazer upload do conteúdo para armazenamento interno  
 E associá-lo à memória sem comprometer o restante do processo de criação ou edição
 
-## 3 Cenários de Desempenho
+## 3 Cenários de Desempenho (Guilherme)
 
 Nesta seção são definidos os cenários de desempenho que avaliam a eficiência, capacidade de resposta e estabilidade do sistema Memory Book sob diferentes condições. Os cenários refletem operações críticas observadas nos testes funcionais como por exemplo criação, visualização, edição e exclusão de memórias mas agora analisadas sob a perspectiva de performance, escalabilidade e impacto no usuário.
 
@@ -294,7 +295,7 @@ Foram realizados testes cobrindo as Tabela 1 - Tabela 5, com foco em validar o c
 
 ---
 
-# Tabela 1: Teste de Requisitos
+# Tabela 1: Teste de Requisitos  (Alberto)
 
 | Funcionalidade | Módulo | Demandas |
 |---------------|--------|----------|
@@ -314,7 +315,7 @@ Foram realizados testes cobrindo as Tabela 1 - Tabela 5, com foco em validar o c
 
 ---
 
-# Tabela 2: Testes Funcionais
+# Tabela 2: Testes Funcionais  (Alberto)
 
 | Funcionalidade | Módulo | Demandas |
 |---------------|--------|----------|
@@ -334,7 +335,7 @@ Foram realizados testes cobrindo as Tabela 1 - Tabela 5, com foco em validar o c
 
 ---
 
-# Tabela 3: Teste de Regressão
+# Tabela 3: Teste de Regressão (Alberto)
 
 | Funcionalidade | Módulo | Demandas |
 |---------------|--------|----------|
@@ -349,7 +350,7 @@ Foram realizados testes cobrindo as Tabela 1 - Tabela 5, com foco em validar o c
 
 ---
 
-# Tabela 4: Teste de Performance
+# Tabela 4: Teste de Performance  (Guilherme)
 
 | Funcionalidade | Módulo | Demandas |
 |---------------|--------|----------|
@@ -364,7 +365,7 @@ Foram realizados testes cobrindo as Tabela 1 - Tabela 5, com foco em validar o c
 
 ---
 
-# Tabela 5: Teste de Aceite
+# Tabela 5: Teste de Aceite  (Guilherme)
 
 | Funcionalidade | Módulo | Demandas |
 |---------------|--------|----------|
@@ -444,7 +445,7 @@ Alguns aspectos de desempenho ainda dependem de medições adicionais, especialm
 
 ## 📋 T2 — Funcionalidades e Testes Automatizados do Trabalho 2:
 
-### Autenticação
+### Autenticação  (Diogo)
 - **Registro de usuário (sucesso):** garante criação de conta com dados válidos
 - **Registro com campo faltando:** valida rejeição quando informações obrigatórias não são enviadas
 - **Login (sucesso):** autentica usuário com credenciais corretas e retorna token
@@ -452,11 +453,11 @@ Alguns aspectos de desempenho ainda dependem de medições adicionais, especialm
 - **Logout (sucesso):** invalida sessão atual do usuário autenticado
 - **Logout sem token:** bloqueia tentativa de logout sem autenticação
 
-### Sistema
+### Sistema  (Alberto)
 - **Health check (sucesso):** confirma disponibilidade da API em rota de status
 - **Health check rota inválida:** assegura retorno adequado em rotas inexistentes
 
-### Gerenciamento de Memórias
+### Gerenciamento de Memórias (Diogo)
 - **Criar memória (sucesso):** cadastra memória com título, data e coordenadas válidas
 - **Criar memória sem título:** rejeita criação quando campo obrigatório está ausente
 - **Listar memórias com token:** retorna memórias do usuário autenticado
@@ -466,7 +467,7 @@ Alguns aspectos de desempenho ainda dependem de medições adicionais, especialm
 - **Deletar memória (sucesso):** remove memória do usuário com confirmação
 - **Deletar memória de outro usuário:** impede exclusão de recursos que não pertencem ao solicitante
 
-### Preferências e Temas
+### Preferências e Temas (Diogo)
 - **Obter preferências (sucesso):** retorna configurações atuais do usuário
 - **Atualizar preferências com valor inválido:** valida e rejeita entradas fora do padrão
 - **Selecionar tema (sucesso):** registra tema preferencial do usuário com dados válidos
@@ -476,16 +477,16 @@ Alguns aspectos de desempenho ainda dependem de medições adicionais, especialm
 
 ## 📋 T3 — Funcionalidades e Testes Automatizados do Trabalho 3:
 
-### Integração Spotify
+### Integração Spotify (Diogo)
 - **Spotify (função de acesso com mock):** confirma que a função retorna estrutura mínima válida (nome, artistas, link) usando simulação
 - **Spotify (busca por música):** valida retorno de resultados ao consultar título/termo válido
 - **Spotify (consulta vazia):** assegura que nomes vazios retornam lista de resultados vazia
 
-### Música na Memória
+### Música na Memória (Guilherme)
 - **Música na memória (armazenamento):** verifica que o link selecionado é persistido ao criar memória
 - **Música na memória (edição):** valida substituição da música previamente salva por nova seleção via mock
 
-### Upload de Vídeo
+### Upload de Vídeo (Diogo)
 - **Vídeo (upload válido ≤ 30s):** confirma sucesso do upload quando a duração é aceita
 - **Vídeo (bloqueio > 30s):** rejeita upload quando a duração excede o limite estabelecido
 - **Vídeo (exclusão):** assegura remoção do vídeo/mídia anexada por meio de atualização da memória
@@ -822,5 +823,9 @@ Os testes automatizados e manuais confirmaram que:
 - Os fluxos combinados (autenticação → criação → multimídia → edição → exclusão) operam de modo consistente  
 
 Assim, a versão final do Memory Book representa a consolidação das duas etapas de desenvolvimento, compondo um sistema robusto, extensível e funcional.
+
+# Link do Video 
+
+[Acesse a pasta no Google Drive](https://drive.google.com/drive/folders/1VXGodr3X3-qbV6X0G1itTfOX9M8Uo5-1)
 
 ---
