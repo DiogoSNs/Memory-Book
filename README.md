@@ -1,5 +1,18 @@
+# Memory Book
 
-# Cenários de Teste
+## Sumário
+- [Cenários de Testes dos Trabalho 2 e 3](#Cenários-de-Teste-T2-e-T3)
+- [Relatório dos Testes dos Trabalhos 2 e 3](#Relatório-de-Consolidação-de-Teste)
+- [Testes Automatizados dos Trabalhos 2 e 3](#Testes-Automatizados)
+- [Correção de Bugs Trabalho 2](#🐛-Correção-de-Bugs-T2:)
+- [Refatoração do Trabalho 2](#Refatoração-T2:)
+- [Teste e desenvolvimento de novas funcionalidades](#Teste-e-desenvolvimento-de-novas-funcionalidades:)
+- [Refatoração de Novas Funcionalidades](#Refatoração-de-Novas-Funcionalidades)
+- [Integração das Funcionalidades do Trabalho 2 e Trabalho 3](#INTEGRAÇÃO)
+
+---
+
+# Cenários de Teste T2 e T3
 
 ## 1 Funcionalidades
 
@@ -64,11 +77,9 @@ Como um usuário autenticado
 Eu quero enviar um vídeo curto (até 30 segundos) ao criar ou editar uma memória  
 De modo que minhas recordações incluam registros audiovisuais rápidos do momento
 
----
-
 ## 2 Cenários Funcionais
 
-Nesta seção são apresentados os cenários funcionais derivados diretamente das onze necessidades identificadas para o sistema Memory Book. Cada cenário descreve, de forma estruturada e objetiva, como o sistema deve se comportar diante de ações típicas do usuário, cobrindo desde operações essenciais como registrar, visualizar, editar e excluir memórias até funcionalidades de suporte, como autenticação, personalização por temas e interação com o mapa.
+Nesta seção são apresentados os cenários funcionais derivados diretamente das necessidades identificadas para o sistema Memory Book. Cada cenário descreve, de forma estruturada e objetiva, como o sistema deve se comportar diante de ações típicas do usuário, cobrindo desde operações essenciais como registrar, visualizar, editar e excluir memórias até funcionalidades de suporte, como autenticação, personalização por temas e interação com o mapa.
 
 Os cenários foram organizados por funcionalidade principal, seguindo a sequência lógica estabelecida nas necessidades: primeiro as operações relacionadas às memórias, depois os mecanismos de personalização e, por fim, o fluxo de autenticação do usuário. Cada caso está descrito no formato Dado – Quando – Então, permitindo fácil reprodutibilidade, clareza nos requisitos validados e associação direta com os testes realizados posteriormente.
 
@@ -185,8 +196,6 @@ Então o sistema deve validar que o vídeo possui até 30 segundos
 E deve fazer upload do conteúdo para armazenamento interno  
 E associá-lo à memória sem comprometer o restante do processo de criação ou edição
 
----
-
 ## 3 Cenários de Desempenho
 
 Nesta seção são definidos os cenários de desempenho que avaliam a eficiência, capacidade de resposta e estabilidade do sistema Memory Book sob diferentes condições. Os cenários refletem operações críticas observadas nos testes funcionais como por exemplo criação, visualização, edição e exclusão de memórias mas agora analisadas sob a perspectiva de performance, escalabilidade e impacto no usuário.
@@ -281,7 +290,7 @@ Então o sistema retorna 400 com mensagem adequada
 
 O escopo das atividades de Verificação e Validação considerou todas as funcionalidades atualmente implementadas no Memory Book, abrangendo o fluxo de autenticação (registro, login e logout), as operações de criação, visualização, edição e exclusão de memórias, bem como a navegação no mapa interativo.
 
-Foram realizados teste cobrindo Tabela 1 - Tabela 5, com foco em validar o comportamento funcional, a integridade das interfaces, a consistência dos dados e a estabilidade da aplicação durante o uso contínuo. As funcionalidades principais mostraram funcionamento adequado, permitindo ao usuário autenticar-se, registrar memórias geolocalizadas, visualizar seus marcadores no mapa, editar detalhes e removê-los quando necessário.
+Foram realizados testes cobrindo as Tabela 1 - Tabela 5, com foco em validar o comportamento funcional, a integridade das interfaces, a consistência dos dados e a estabilidade da aplicação durante o uso contínuo. As funcionalidades principais mostraram funcionamento adequado, permitindo ao usuário autenticar-se, registrar memórias geolocalizadas, visualizar seus marcadores no mapa, editar detalhes e removê-los quando necessário.
 
 ---
 
@@ -433,9 +442,7 @@ Alguns aspectos de desempenho ainda dependem de medições adicionais, especialm
 
 # Testes Automatizados
 
----
-
-## 📋 T2 — Funcionalidades e Testes do Trabalho 2
+## 📋 T2 — Funcionalidades e Testes Automatizados do Trabalho 2:
 
 ### Autenticação
 - **Registro de usuário (sucesso):** garante criação de conta com dados válidos
@@ -467,7 +474,7 @@ Alguns aspectos de desempenho ainda dependem de medições adicionais, especialm
 
 ---
 
-## 📋 T3 — Funcionalidades e Testes Adicionados no Trabalho 3
+## 📋 T3 — Funcionalidades e Testes Automatizados do Trabalho 3:
 
 ### Integração Spotify
 - **Spotify (função de acesso com mock):** confirma que a função retorna estrutura mínima válida (nome, artistas, link) usando simulação
@@ -485,13 +492,13 @@ Alguns aspectos de desempenho ainda dependem de medições adicionais, especialm
 
 ---
 
-## 🐛 Correção de Bugs (Trabalho 2)
+# 🐛 Correção de Bugs T2:
 
-### 1️⃣ Comportamento antes da correção
+### 1 Comportamento antes da correção
 
 Ao aplicar zoom out máximo, o mapa extrapolava os limites visíveis, gerando espaços em branco nas bordas. Isso comprometia a experiência de navegação e dava a impressão de área "fora do mapa".
 
-### 2️⃣ Solução aplicada e comportamento esperado
+### 2️2 Solução aplicada e comportamento esperado
 
 Foi estabelecido um limite seguro para o nível mínimo de zoom (zoom out), evitando que o mapa ultrapasse os limites de renderização do componente de mapa.
 
@@ -524,9 +531,9 @@ maxNativeZoom={getCurrentMapThemeData().maxNativeZoom}
 
 ---
 
-## 🔧 Manutenção do Projeto
+# Refatoração T2:
 
-### 📡 Padrão de Projeto Implementado: Observer (Explícito)
+## Padrão de Projeto Implementado: Observer (Explícito)
 
 #### 📌 Motivação da Refatoração
 
@@ -602,7 +609,23 @@ Para sincronizar a interface quando dados importantes mudam (como login/logout),
 
 - **Onde o `notify()` acontece:** é invocado sempre que `setPartial(...)` é chamado, ver `frontend/src/contexts/AuthContext.jsx:59–62`
 
----
+## Correção do ThemeController
+
+### O que mudou
+Corrigido bug crítico no `update_theme` para passar a instância `Theme` ao repositório (`backend/src/controllers/theme_controller.py:127`).
+
+### Lógica Antiga vs. Nova
+
+**Antes:**
+`theme_repo.update(theme.id, **update_data)`, passando `id` onde se esperava a instância.
+
+**Agora:**
+`theme_repo.update(theme, **update_data)`, alinhado com assinatura do repositório.
+
+### Por que é melhor
+- **Estabilidade**: elimina `TypeError`/comportamentos inesperados ao atualizar tema.
+- **Consistência**: segue o padrão usado nos repositórios (coesão da API de atualização).
+- **Manutenibilidade**: reduz dívida técnica e fragilidade em operações sobre entidades.
 
 # Teste e desenvolvimento de novas funcionalidades:
 
@@ -627,8 +650,6 @@ Apenas fotos eram suportadas; validação de vídeo existia duplicada e não era
 - **Segurança e robustez**: sanitização de nomes e validação de duração fail-fast evitam arquivos indevidos e estados inválidos.
 - **Coesão**: uma única função de validação para vídeos reduz manutenção e risco de divergência.
 - **Governança**: estrutura opcional por usuário/memória facilita auditoria e limpeza sem quebrar clientes existentes.
-
----
 
 # Busca de Música (Spotify)
 
@@ -674,8 +695,6 @@ Classe `SpotifyClient` gerencia token com expiração e busca via sessão HTTP (
 - **Fail-fast e observabilidade**: timeouts e `raise_for_status()` + logs estruturados evitam erros silenciosos.
 - **Manutenibilidade e testabilidade**: cliente pode ser mockado; remove estado global compartilhado, diminuindo risco de race conditions em ambientes multi-thread/processo.
 
----
-
 ## Sistema de Upload
 
 ### O que mudou
@@ -696,8 +715,6 @@ Validação única em `validators.py`; nomes com `generate_unique_filename` + `s
 - **Coesão**: uma única fonte de verdade para validação de vídeo; elimina duplicidade e divergência.
 - **Governança de dados**: estrutura por usuário/memória facilita auditoria, exclusão e migrações futuras.
 
----
-
 ## Módulo de Música
 
 ### O que mudou
@@ -716,52 +733,6 @@ Validação única em `validators.py`; nomes com `generate_unique_filename` + `s
 - **Fail-fast**: validação no início previne estados inválidos e erros downstream.
 - **Coesão e consistência**: serialização padronizada; reduz lógica de apresentação dentro do modelo e melhora compatibilidade com o frontend.
 - **Confiabilidade**: detecção de mídia mais completa evita erros em cenários de uploads por caminho.
-
----
-
-# Refatoração Geral do Projeto
-
-## Correção do ThemeController
-
-### O que mudou
-Corrigido bug crítico no `update_theme` para passar a instância `Theme` ao repositório (`backend/src/controllers/theme_controller.py:127`).
-
-### Lógica Antiga vs. Nova
-
-**Antes:**
-`theme_repo.update(theme.id, **update_data)`, passando `id` onde se esperava a instância.
-
-**Agora:**
-`theme_repo.update(theme, **update_data)`, alinhado com assinatura do repositório.
-
-### Por que é melhor
-- **Estabilidade**: elimina `TypeError`/comportamentos inesperados ao atualizar tema.
-- **Consistência**: segue o padrão usado nos repositórios (coesão da API de atualização).
-- **Manutenibilidade**: reduz dívida técnica e fragilidade em operações sobre entidades.
-
----
-
-## Testes Automatizados (QA)
-
-### O que mudou
-`backend/test_api.py` refatorado para fluxo dinâmico: Registro → Login com credenciais do registro → Operações autenticadas (CRUD de memória) com asserts claros.
-
-Remoção de login hardcoded e verificações explícitas de status code e payload em cada etapa.
-
-### Lógica Antiga vs. Nova
-
-**Antes:**
-`register` gerava email dinâmico, mas `login` usava credenciais fixas (`teste@memorybook.com`), causando falha de autenticação; execução terminava precocemente.
-
-**Agora:**
-`test_register()` retorna `{email, password, user, token}`; `test_login(credentials)` usa o email/senha criados; `test_me(token)` e `test_memory_crud(token)` validam status code e campos (`access_token`, `user`, `memory.id`) e fazem update/delete da memória criada.
-
-### Por que é melhor
-- **Confiabilidade**: elimina falso-negativo por desconexão de dados; o teste reflete o fluxo real do sistema.
-- **Fail-fast e clareza**: asserts em cada requisição com mensagens informativas; facilita diagnóstico de falhas.
-- **Coesão do QA**: um único script cobre ciclo de vida completo, aumentando cobertura e detectando regressões funcionais.
-
----
 
 ## Padronização de Validadores
 
@@ -786,17 +757,16 @@ Duplicidade de validação de vídeo (`validators.py` e `media_manager.py`); sem
 
 # INTEGRAÇÃO 
 
-## Integração das Funcionalidades da Entrega 2 e Entrega 3
+## Integração das Funcionalidades dos Trabalhos 2 e 3
 
 Esta seção apresenta de forma organizada a integração entre as funcionalidades desenvolvidas na Entrega 2 e as funcionalidades adicionais implementadas na Entrega 3. Assim como nas demais partes do relatório, o objetivo é demonstrar a evolução incremental do sistema Memory Book, destacando como os recursos anteriormente existentes foram mantidos, ampliados e validados por meio dos testes funcionais, de regressão e de desempenho.
 
 A seguir, as funcionalidades estão separadas por entrega, refletindo o escopo implementado em cada fase e a consolidação final do sistema.
 
----
 
-### **Entrega 2 — Funcionalidades Implementadas**
+### **Trabalho 2 — Funcionalidades Implementadas**
 
-As funcionalidades abaixo constituem o núcleo fundamental do Memory Book e foram totalmente desenvolvidas na Entrega 2. Elas definem o fluxo principal de uso do sistema:
+As funcionalidades abaixo constituem o núcleo fundamental do Memory Book e foram totalmente desenvolvidas no Trabalho 2. Elas definem o fluxo principal de uso do sistema:
 
 - Registro de memórias no mapa (com texto e imagem)
 - Visualização de memórias existentes no mapa
@@ -808,13 +778,13 @@ As funcionalidades abaixo constituem o núcleo fundamental do Memory Book e fora
 - Logout
 - Navegação no mapa interativo (zoom e arraste)
 
-Essas funcionalidades formam a base lógica sobre a qual os recursos avançados da Entrega 3 foram posteriormente integrados.
+Essas funcionalidades formam a base lógica sobre a qual os recursos avançados do Trabalho 3 foram posteriormente integrados.
 
 ---
 
-### **Entrega 3 — Funcionalidades Adicionadas**
+### **Trabalho 3 — Funcionalidades Adicionadas**
 
-A Entrega 3 introduziu novas capacidades ao sistema, com foco em integração externa e multimídia avançada. Todos os itens listados abaixo foram especificados como parte da terceira entrega:
+o Trabalho 3 introduziu novas capacidades ao sistema, com foco em integração externa e multimídia avançada. Todos os itens listados abaixo foram especificados como parte da terceira entrega:
 
 - Busca de músicas no Spotify utilizando nome da música ou artista
 - Retorno de lista de resultados (mock) para seleção de faixa
@@ -829,9 +799,9 @@ Essas funcionalidades ampliaram o escopo do sistema, permitindo que cada memóri
 
 ---
 
-### **Integração Entre Entrega 2 e Entrega 3**
+### **Integração Entre Trabalho 2 e Trabalho 3**
 
-As funcionalidades da Entrega 3 foram integradas ao fluxo definido na Entrega 2 sem comprometer os componentes já existentes. A interface de criação e edição de memórias foi estendida para incluir:
+As funcionalidades do Trabalho 3 foram integradas ao fluxo definido no Trabalho 2 sem comprometer os componentes já existentes. A interface de criação e edição de memórias foi estendida para incluir:
 
 - Campo de busca por músicas  
 - Lista de resultados provenientes do mock de integração Spotify  
