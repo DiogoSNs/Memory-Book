@@ -9,7 +9,7 @@
 - [Teste e desenvolvimento de novas funcionalidades (TDD ALBERTO E GUILHERME)](#Teste-e-desenvolvimento-de-novas-funcionalidades)
 - [Refatoração de Novas Funcionalidades](#Refatoração-de-Novas-Funcionalidades)
 - [Integração das Funcionalidades do Trabalho 2 e Trabalho 3](#INTEGRAÇÃO)
-- [Slides](./Apresenta%C3%A7%C3%A3o%20-%20Eng%20de%20Software%20-%203.pdf)
+- [Slides da Apresentação](./Apresentacao.pdf)
 - [Vídeo demonstrando o funcionamento da aplicação ](#Link-do-Video)
 
 ---
