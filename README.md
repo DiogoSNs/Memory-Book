@@ -4,7 +4,7 @@
 - [Cenários de Testes dos Trabalho 2 e 3](#Cenários-de-Teste-T2-e-T3)
 - [Relatório dos Testes dos Trabalhos 2 e 3](#Relatório-de-Consolidação-de-Teste)
 - [Testes Automatizados dos Trabalhos 2 e 3](#Testes-Automatizados)
-- [Correção de Bugs Trabalho 2](#🐛-Correção-de-Bugs-T2:)
+- [Correção de Bugs Trabalho 2](#Correção-de-Bugs-T2:)
 - [Refatoração do Trabalho 2](#Refatoração-T2:)
 - [Teste e desenvolvimento de novas funcionalidades](#Teste-e-desenvolvimento-de-novas-funcionalidades:)
 - [Refatoração de Novas Funcionalidades](#Refatoração-de-Novas-Funcionalidades)
@@ -492,7 +492,7 @@ Alguns aspectos de desempenho ainda dependem de medições adicionais, especialm
 
 ---
 
-# 🐛 Correção de Bugs T2:
+# Correção de Bugs T2:
 
 ### 1 Comportamento antes da correção
 
