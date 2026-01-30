@@ -67,11 +67,19 @@ class User(BaseModel):
         # Processamento específico: criptografar senha
         password_hash = cls._hash_password(password)
         
-        # Chamar Factory Method da classe pai com dados processados
+        # Garantir defaults robustos mesmo se o banco tiver server_default antigo
+        selected_gradient = kwargs.pop('selected_gradient', 'sunset')
+        theme_preference = kwargs.pop('theme_preference', 'auto')
+        map_theme = kwargs.pop('map_theme', 'light')
+
+        # Chamar Factory Method da classe pai com dados processados e defaults explícitos
         return super().create(
             name=name,
             email=email,
             password_hash=password_hash,
+            selected_gradient=selected_gradient,
+            theme_preference=theme_preference,
+            map_theme=map_theme,
             **kwargs
         )
     
