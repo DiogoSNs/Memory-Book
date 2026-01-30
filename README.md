@@ -7,10 +7,7 @@ A ideia é registrar momentos especiais (texto, fotos, descrições e localizaç
 
 ## 🔗 Demo Online
 
-Acesse: <a href="https://memory-book-six.vercel.app/" target="_blank" rel="noopener noreferrer">
-https://memory-book-six.vercel.app/
-</a>
-
+Acesse: https://memory-book-six.vercel.app/
 
 ---
 
