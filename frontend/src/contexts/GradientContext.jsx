@@ -85,7 +85,7 @@ export const GRADIENTS = {
 };
 
 export const GradientProvider = ({ children }) => {
-  // Inicializar com o gradiente salvo no localStorage ou 'sunset' como padrão
+  // Inicializar com 'sunset' na primeira visita; manter escolha anterior via localStorage
   const [currentGradient, setCurrentGradient] = useState(() => {
     const savedGradient = localStorage.getItem('selectedGradient');
     return (savedGradient && GRADIENTS[savedGradient]) ? savedGradient : 'sunset';

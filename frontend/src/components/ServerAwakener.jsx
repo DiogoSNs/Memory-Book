@@ -37,31 +37,65 @@ const ServerAwakener = ({ children }) => {
     }
   }, [attemptCount, isAwakening]);
 
-  // Health check do servidor
+  // Health check do servidor com aquecimento da raiz e tratamento de timeout
   useEffect(() => {
-    const checkServerHealth = async () => {
+    const fetchWithTimeout = (url, ms, options = {}) => {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), ms);
+      return fetch(url, { ...options, signal: controller.signal, cache: 'no-store' })
+        .finally(() => clearTimeout(id));
+    };
+
+    const init = async () => {
       try {
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-        const baseUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
-        
-        const response = await fetch(`${baseUrl}/health`);
-        
-        if (response.ok) {
-          setProgress(100);
-          setStatusMessage('Servidor pronto!');
-          setIsAwakening(false);
-          setTimeout(() => setIsServerReady(true), 800);
-        } else {
-          setAttemptCount(prev => prev + 1);
-          setTimeout(checkServerHealth, 2000);
+        const trimmed = apiUrl.replace(/\/+$/, '');
+
+        let origin = trimmed;
+        try {
+          const u = new URL(apiUrl);
+          origin = `${u.protocol}//${u.host}`;
+        } catch {
+          origin = trimmed.replace(/\/?api$/, '');
         }
-      } catch (error) {
+
+        const hasApi = /\/?api$/.test(trimmed);
+        const healthUrl = hasApi ? `${trimmed}/health` : `${origin}/api/health`;
+
+        setStatusMessage('Inicializando conexão');
+
+        try {
+          await fetchWithTimeout(`${origin}/`, 8000);
+        } catch {
+          setStatusMessage('Conectando...');
+        }
+
+        const poll = async () => {
+          try {
+            const response = await fetchWithTimeout(healthUrl, 10000);
+            if (response.ok) {
+              setProgress(100);
+              setStatusMessage('Servidor pronto!');
+              setIsAwakening(false);
+              setTimeout(() => setIsServerReady(true), 800);
+              return;
+            }
+            setAttemptCount(prev => prev + 1);
+            setTimeout(poll, 2000);
+          } catch {
+            setAttemptCount(prev => prev + 1);
+            setTimeout(poll, 2000);
+          }
+        };
+
+        poll();
+      } catch {
         setAttemptCount(prev => prev + 1);
-        setTimeout(checkServerHealth, 2000);
+        setTimeout(init, 2000);
       }
     };
 
-    checkServerHealth();
+    init();
   }, []);
 
   if (isServerReady) {
