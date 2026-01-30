@@ -42,7 +42,12 @@ class Config:
     JWT_ALGORITHM = 'HS256'  # Algoritmo de assinatura
     
     # Configurações do banco de dados
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///memory_book.db'
+    # Fix para Render: Postgres deve usar protocolo 'postgresql://'
+    database_url = os.environ.get('DATABASE_URL')
+    if database_url and database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    
+    SQLALCHEMY_DATABASE_URI = database_url or 'sqlite:///memory_book.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Configurações de CORS
