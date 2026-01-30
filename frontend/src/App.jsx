@@ -29,6 +29,7 @@
  */
 
 import React from 'react';
+import ServerAwakener from './components/ServerAwakener.jsx';
 import { AuthProvider, authSubject } from './contexts/AuthContext.jsx';
 import { MemoryProvider } from './controllers/MemoryController.jsx';
 import { ToastProvider, useToast } from './contexts/ToastContext.jsx';
@@ -103,15 +104,17 @@ function AppContent() {
 // Componente principal da aplicação
 function App() {
   return (
-    <AuthProvider>
+    <ServerAwakener>
       <ToastProvider>
-        <GradientProvider>
+        <AuthProvider>
           <MapThemeProvider>
-            <AppContent />
+            <GradientProvider>
+              <AppContent />
+            </GradientProvider>
           </MapThemeProvider>
-        </GradientProvider>
+        </AuthProvider>
       </ToastProvider>
-    </AuthProvider>
+    </ServerAwakener>
   );
 }
 
