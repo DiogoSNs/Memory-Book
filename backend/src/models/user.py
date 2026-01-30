@@ -29,7 +29,7 @@ class User(BaseModel):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     
     # Preferências de tema/gradiente
-    selected_gradient = db.Column(db.String(50), default='sunset', nullable=False)  # aurora, sunset, ocean, forest, cosmic
+    selected_gradient = db.Column(db.String(50), default='aurora', nullable=False)  # aurora, sunset, ocean, forest, cosmic
     theme_preference = db.Column(db.String(20), default='auto', nullable=False)  # light, dark, auto
     map_theme = db.Column(db.String(20), default='light', nullable=False)  # light, dark, satellite
     
@@ -68,7 +68,7 @@ class User(BaseModel):
         password_hash = cls._hash_password(password)
         
         # Garantir defaults robustos mesmo se o banco tiver server_default antigo
-        selected_gradient = kwargs.pop('selected_gradient', 'sunset')
+        selected_gradient = kwargs.pop('selected_gradient', 'aurora')
         theme_preference = kwargs.pop('theme_preference', 'auto')
         map_theme = kwargs.pop('map_theme', 'light')
 
