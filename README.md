@@ -131,8 +131,6 @@ O projeto está configurado para deploy contínuo em ambiente serverless:
 *   **Backend:** Render
 *   **Database:** Neon (PostgreSQL)
 
-Consulte o arquivo `COMO_FAZER_DEPLOY.md` para instruções detalhadas.
-
 ---
 
 Desenvolvido para fins acadêmicos.
