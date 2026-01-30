@@ -80,5 +80,10 @@ def create_app(config_class):
     @app.route('/api/health')
     def health_check():
         return {'status': 'OK', 'message': 'Memory Book API is running'}
+
+    # Rota raiz para teste de conectividade (Render)
+    @app.route('/')
+    def root():
+        return {'status': 'OK', 'message': 'Memory Book Backend is online!'}
     
     return app

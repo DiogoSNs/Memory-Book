@@ -90,6 +90,34 @@ CREATE TABLE themes (
 );
 ```
 
+## 🌐 Endpoints Gerais
+
+### 1. Health Check
+```http
+GET /api/health
+```
+
+**Resposta de Sucesso (200)**:
+```json
+{
+  "status": "OK",
+  "message": "Memory Book API is running"
+}
+```
+
+### 2. Root (Conectividade)
+```http
+GET /
+```
+
+**Resposta de Sucesso (200)**:
+```json
+{
+  "status": "OK",
+  "message": "Memory Book Backend is online!"
+}
+```
+
 ## 🔐 Autenticação
 
 A API utiliza **JWT (JSON Web Tokens)** para autenticação. Todos os endpoints protegidos requerem o header:
