@@ -85,10 +85,10 @@ export const GRADIENTS = {
 };
 
 export const GradientProvider = ({ children }) => {
-  // Inicializar com o gradiente salvo no localStorage ou 'aurora' como padrão
+  // Inicializar com o gradiente salvo no localStorage ou 'sunset' como padrão
   const [currentGradient, setCurrentGradient] = useState(() => {
     const savedGradient = localStorage.getItem('selectedGradient');
-    return (savedGradient && GRADIENTS[savedGradient]) ? savedGradient : 'aurora';
+    return (savedGradient && GRADIENTS[savedGradient]) ? savedGradient : 'sunset';
   });
   const [isLoading, setIsLoading] = useState(false);
   // OBSERVER EXPLÍCITO: observa autenticação para sincronizar preferências do usuário

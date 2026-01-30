@@ -74,7 +74,7 @@ class Theme(BaseModel):
         Returns:
             str: CSS do gradiente padrão
         """
-        return "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+        return "linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #ec4899 100%)"
     
     def update_gradient(self, gradient_name, gradient_css):
         """

@@ -506,7 +506,7 @@ POST /api/themes/reset
   "theme": {
     "id": 1,
     "gradientName": "default",
-    "gradientCss": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    "gradientCss": "linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #ec4899 100%)",
     "isActive": true,
     "created_at": "2024-01-01T10:00:00Z",
     "updated_at": "2024-01-01T10:00:00Z"
